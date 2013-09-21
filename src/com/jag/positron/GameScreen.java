@@ -51,6 +51,8 @@ public class GameScreen extends Screen {
 
 	boolean recent, freeze, touch, posPressed, negPressed, wrongButton, lightning, lock, nextLevel, redRing,	
 	levelInA, levelInB, level1, level2, level3, level4, level5, level6, level7, level8, scoreReset, typePass;
+	
+	List<TouchEvent> touchEvents;
 
 	int timePassed, difficulty, recentInterval, score, scoreTemp, scoreTempTemp, scoreTempDraw, drawTimer, killx, killy, lightningDuration,
 	ballDuration, scoreMult, updateInterval, tcx, tcy, i, newLevel, gridInt, baseGrowth;
@@ -121,7 +123,7 @@ public class GameScreen extends Screen {
 		// Initialize game objects here
 		scene = new Scene(400);
 		screenheight = game.getGraphics().getHeight();
-		pieces = new ArrayList<Pieces>();
+		setPieces(new ArrayList<Pieces>());
 		pts = new ArrayList<PosTriangle>();
 
 		lane = 100;
@@ -215,9 +217,9 @@ public class GameScreen extends Screen {
 		wrongButton = false;
 		lightning = false;
 
-		alert = new Animation();
-		alert.addFrame(Assets.alarm1, 100);
-		alert.addFrame(Assets.alarm2, 100);
+		setAlert(new Animation());
+		getAlert().addFrame(Assets.alarm1, 100);
+		getAlert().addFrame(Assets.alarm2, 100);
 
 		magnet = new Animation();
 		magnet.addFrame(Assets.bf1, 100);
@@ -276,7 +278,7 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void update(float deltaTime) {
-		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+		touchEvents = game.getInput().getTouchEvents();
 
 		// We have four separate update methods in this example.
 		// Depending on the state of the game, we call different update methods.
@@ -316,12 +318,12 @@ public class GameScreen extends Screen {
 		}
 
 		if (touch == false && !topFreeze){
-			if (alert.getImage() == Assets.alarm1){
+			if (getAlert().getImage() == Assets.alarm1){
 				if (scoreTempTemp < 1){
 					scoreTempTemp = 1;
 				}
 			}
-			if (alert.getImage() == Assets.alarm2 && !topFreeze){
+			if (getAlert().getImage() == Assets.alarm2 && !topFreeze){
 				scoreTemp += scoreTempTemp*scoreMult;
 				scoreTempTemp = 0;
 			}
@@ -690,7 +692,7 @@ public class GameScreen extends Screen {
 			p.setSpeedX(p.getSpeedX()*level);
 			//	System.out.println("yep");
 			if (p.getSpeedX() == tempPiece.getSpeedX())
-				pieces.add(p);
+				getPieces().add(p);
 			else
 				tempPiece = p;
 			exitCases = false;
@@ -702,7 +704,7 @@ public class GameScreen extends Screen {
 
 		}
 
-		Iterator<Pieces> it = pieces.iterator();
+		Iterator<Pieces> it = getPieces().iterator();
 		while (it.hasNext()) {
 			Pieces p = it.next();			
 
@@ -725,7 +727,7 @@ public class GameScreen extends Screen {
 				//recent = false;
 				scoreReset = true;
 				p.wayback = false;
-				pieces = new ArrayList<Pieces>();
+				setPieces(new ArrayList<Pieces>());
 				Assets.failSound.play(100);
 				exitCases = true;
 				freezeDur = 0;
@@ -803,7 +805,7 @@ public class GameScreen extends Screen {
 					tc = null;
 					Assets.tcDrone.pause();
 					tg = null;
-					pieces = new ArrayList<Pieces>();
+					setPieces(new ArrayList<Pieces>());
 					Assets.failSound.play(150);
 					currentTC = false;
 					currentTG = false;
@@ -833,7 +835,7 @@ public class GameScreen extends Screen {
 					tc = null;
 					Assets.tcDrone.pause();
 					tg = null;
-					pieces = new ArrayList<Pieces>();
+					setPieces(new ArrayList<Pieces>());
 					Assets.failSound.play(150);
 					currentTC = false;
 					currentTG = false;
@@ -920,7 +922,7 @@ public class GameScreen extends Screen {
 				tc = null;
 				Assets.tcDrone.pause();
 				tg = null;
-				pieces = new ArrayList<Pieces>();
+				setPieces(new ArrayList<Pieces>());
 				Assets.failSound.play(100);
 				currentTC = false;
 				currentTG = false;
@@ -980,7 +982,7 @@ public class GameScreen extends Screen {
 
 		//Debug.startMethodTracing();
 		Graphics g = game.getGraphics();
-		alert.update(10);
+		getAlert().update(10);
 		g.drawRect(0, 1196, 801, 10, Color.BLACK);
 
 
@@ -1010,10 +1012,10 @@ public class GameScreen extends Screen {
 
 					drawTimer = 0;
 					paint4.setAlpha(255);
-					if ((alert.getImage() == Assets.alarm2)&&circleRad>79){
+					if ((getAlert().getImage() == Assets.alarm2)&&circleRad>79){
 						circleRad += 1;
 					}
-					if ((alert.getImage() == Assets.alarm1)&&circleRad>79){
+					if ((getAlert().getImage() == Assets.alarm1)&&circleRad>79){
 						if (circleRad>80)
 							circleRad -= 1;
 					}
@@ -1098,7 +1100,7 @@ public class GameScreen extends Screen {
 
 			//SPRITES
 
-			for (Pieces p : pieces){
+			for (Pieces p : getPieces()){
 
 				if (p.getSwitched()&&!p.wayback){
 					if (p.type){
@@ -1121,12 +1123,12 @@ public class GameScreen extends Screen {
 					g.drawImage(Assets.neg, (p.x - 40), p.y);
 
 				if (p.wayback){
-					if (alert.getImage() == Assets.alarm2 && !topFreeze){
+					if (getAlert().getImage() == Assets.alarm2 && !topFreeze){
 						g.drawCircOut(p.x, p.y+39, 40, Color.RED, 20);
 					}
 				}	
 				if (p.wayback){
-					if (topFreeze && p.equals(pieces.get(0))){
+					if (topFreeze && p.equals(getPieces().get(0))){
 						g.drawCircFill(p.x, p.y+35, 40, Color.YELLOW, 205-p.y/6);
 					}
 				}
@@ -1337,7 +1339,7 @@ public class GameScreen extends Screen {
 					topFreeze = false;
 					freezeDur = 0;	
 					i = 0;
-					pieces.clear();
+					getPieces().clear();
 				}
 			}
 
@@ -1390,7 +1392,7 @@ public class GameScreen extends Screen {
 		// constructor.
 		paint = null;
 		scene = null;
-		pieces = null;	
+		setPieces(null);	
 		scene = null;		
 		paint2 = null;
 		paint3 = null;
@@ -1467,6 +1469,22 @@ public class GameScreen extends Screen {
 
 	public boolean getTopFreeze(){
 		return topFreeze;
+	}
+
+	public Animation getAlert() {
+		return alert;
+	}
+
+	public void setAlert(Animation alert) {
+		this.alert = alert;
+	}
+
+	public ArrayList<Pieces> getPieces() {
+		return pieces;
+	}
+
+	public void setPieces(ArrayList<Pieces> pieces) {
+		this.pieces = pieces;
 	}
 
 

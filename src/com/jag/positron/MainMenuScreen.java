@@ -37,12 +37,7 @@ public class MainMenuScreen extends Screen {
 		Assets.theme.setLooping(true);
 
 		loaded = false;
-
-
-
-
-
-	}
+		}
 
 
 	@Override
@@ -68,21 +63,18 @@ public class MainMenuScreen extends Screen {
 
 			if (event.x < 400 && event.y > 1050 &&instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded) {
 				//START GAME
-				System.out.println(game.getLoadHeight());
-				System.out.println(game.getLoadWidth());
 				Assets.click.play(100);
 				Assets.theme.stop();
-				game.setScreen(new GameScreen(game));
+				game.setScreen(new Tutorial(game));
 			}
-
-			if (event.x > 550 && event.y < 250 && event.type == TouchEvent.TOUCH_UP && instr != 0 && loaded){
-				Assets.click2.play(100);
-				instr++;
-			}
-
 			if (event.x > 400 && event.y > 950 && event.y < 1090 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
 				instr = 1;
 				Assets.click2.play(100);
+			}
+			
+			if (event.x > 550 && event.y < 250 && event.type == TouchEvent.TOUCH_UP && instr != 0 && loaded){
+				Assets.click2.play(100);
+				instr++;
 			}
 
 			if (event.x > 420 && event.y > 1100 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
