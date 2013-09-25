@@ -14,8 +14,7 @@
     <application
         android:icon="@drawable/posimg"
         android:label="Positron" >
-        <activity 
-            
+        <activity
             android:name="com.jag.positron.PosInit"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="Positron"

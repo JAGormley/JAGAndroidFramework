@@ -61,23 +61,23 @@ public class MainMenuScreen extends Screen {
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
 
-			if (event.x < 400 && event.y > 1050 &&instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded) {
+			if (event.x < game.getLoadWidth()/2 && event.y > game.getLoadHeight()*.87 &&instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded) {
 				//START GAME
 				Assets.click.play(100);
 				Assets.theme.stop();
 				game.setScreen(new Tutorial(game));
 			}
-			if (event.x > 400 && event.y > 950 && event.y < 1090 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
+			if (event.x > game.getLoadWidth()/2 && event.y > game.getLoadHeight()*.79 && event.y < game.getLoadHeight()*.9 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
 				instr = 1;
 				Assets.click2.play(100);
 			}
 			
-			if (event.x > 550 && event.y < 250 && event.type == TouchEvent.TOUCH_UP && instr != 0 && loaded){
+			if (event.x > game.getLoadWidth()*.69 && event.y < game.getLoadHeight()*.21 && event.type == TouchEvent.TOUCH_UP && instr != 0 && loaded){
 				Assets.click2.play(100);
 				instr++;
 			}
 
-			if (event.x > 420 && event.y > 1100 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
+			if (event.x > game.getLoadWidth()*.53 && event.y > game.getLoadHeight()*.91 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
 				android.os.Process.killProcess(android.os.Process.myPid());
 			}
 

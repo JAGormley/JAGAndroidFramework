@@ -60,8 +60,8 @@ public abstract class AndroidGame extends Activity implements Game {
         int frameBufferWidth = 500;
         int frameBufferHeight = 500;
         
-        	frameBufferWidth = 1205;
-        	frameBufferHeight = 800;
+        	frameBufferWidth = 800;
+        	frameBufferHeight = 1205;
 //        	frameBufferHeight = height;
       
         
