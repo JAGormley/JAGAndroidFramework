@@ -6,6 +6,9 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
+import android.view.Display;
+
 import com.jag.framework.Music;
 
 
@@ -18,18 +21,24 @@ import android.content.Context;
 
 public class LoadingScreen extends Screen {
 	
+	int screenW;
+	int screenH;	
+	
 	public Bitmap thisbitmap, croppedBmp;	
 	AssetManager assets;
 	
 	public LoadingScreen(Game game) {
 		super(game);
+		screenH = game.getLoadHeight();
+		screenW = game.getLoadWidth();
+		
 	}
-
-
+	
 	@Override
-	public void update(float deltaTime) {		
+	public void update(float deltaTime) {	
 		Graphics g = game.getGraphics();
 		//g.drawString("LOADING", 350, 500, null);
+		
 		
 		Assets.loadScreen = g.newImage("LOADSCREEN.png", ImageFormat.ARGB8888);
 		g.drawImage(Assets.loadScreen, 0, 0);
@@ -37,6 +46,8 @@ public class LoadingScreen extends Screen {
 		
 		//Assets.menu = g.newImage("menudr3(dr2).png", ImageFormat.ARGB8888);
 		
+		
+		//SOUNDS!
 		Assets.menu = g.newImage("newMenu.png", ImageFormat.ARGB8888);
 		Assets.click = game.getAudio().createSound("lightning_strike.ogg");
 		Assets.posPoint = game.getAudio().createSound("POSSOUND.ogg");
@@ -50,6 +61,10 @@ public class LoadingScreen extends Screen {
 		Assets.tcDrone = game.getAudio().createMusic("TCdrone.mp3");		
 		Assets.gridDrone = game.getAudio().createMusic("GRIDDRONE.mp3");
 		
+		
+		
+		//IMGS!!
+		if (screenH > 1000){
 		Assets.menu1 = g.newImage("newMenu1.png", ImageFormat.RGB565);
 		Assets.menu2 = g.newImage("newMenu2.png", ImageFormat.RGB565);
 		Assets.menu3 = g.newImage("newMenu3.png", ImageFormat.RGB565);
@@ -57,6 +72,16 @@ public class LoadingScreen extends Screen {
 		Assets.menu5 = g.newImage("newMenu5.png", ImageFormat.RGB565);
 		Assets.menu6 = g.newImage("newMenu6.png", ImageFormat.RGB565);
 		Assets.menu7 = g.newImage("newMenu7.png", ImageFormat.RGB565);
+		}
+		else {
+			Assets.menu1 = g.newImage("newMenu1c.png", ImageFormat.RGB565);
+			Assets.menu2 = g.newImage("newMenu2c.png", ImageFormat.RGB565);
+			Assets.menu3 = g.newImage("newMenu3c.png", ImageFormat.RGB565);
+			Assets.menu4 = g.newImage("newMenu4c.png", ImageFormat.RGB565);
+			Assets.menu5 = g.newImage("newMenu5c.png", ImageFormat.RGB565);
+			Assets.menu6 = g.newImage("newMenu6c.png", ImageFormat.RGB565);
+			Assets.menu7 = g.newImage("newMenu7c.png", ImageFormat.RGB565);			
+		}
 		
 		
 //		Assets.instr1 = g.newImage("instr1.png", ImageFormat.RGB565);
@@ -75,35 +100,26 @@ public class LoadingScreen extends Screen {
 		Assets.pos = g.newImage("pos1.png", ImageFormat.ARGB8888);
 		Assets.neg = g.newImage("neg2.png", ImageFormat.ARGB8888);				
 		Assets.alarm1 = g.newImage("alarm1b.png", ImageFormat.ARGB8888);
-		Assets.alarm2 = g.newImage("alarm2b.png", ImageFormat.ARGB8888);
-		
-		//Assets.face = g.newImage("face1.png", ImageFormat.ARGB8888);
-		Assets.rdscreen = g.newImage("RDSCREEN.png", ImageFormat.ARGB8888);
-		
-		Assets.elecbase1 = g.newImage("elecbuttonNEG1.png", ImageFormat.ARGB8888);
-		Assets.elecbase2 = g.newImage("elecbuttonNEG2.png", ImageFormat.ARGB8888);
-		Assets.elecbase3 = g.newImage("elecbuttonNEG3.png", ImageFormat.ARGB8888);
-		Assets.elecbase4 = g.newImage("elecbuttonNEG4.png", ImageFormat.ARGB8888);
-		Assets.elecbase5 = g.newImage("elecbuttonNEG5.png", ImageFormat.ARGB8888);
-		Assets.elecbase6 = g.newImage("elecbuttonNEG6.png", ImageFormat.ARGB8888);
-		Assets.elecbasea = g.newImage("elecbuttonPOS1.png", ImageFormat.ARGB8888);
-		Assets.elecbaseb = g.newImage("elecbuttonPOS2.png", ImageFormat.ARGB8888);
-		Assets.elecbasec = g.newImage("elecbuttonPOS3.png", ImageFormat.ARGB8888);
-		Assets.elecbased = g.newImage("elecbuttonPOS4.png", ImageFormat.ARGB8888);
-		Assets.elecbasee = g.newImage("elecbuttonPOS5.png", ImageFormat.ARGB8888);
-		Assets.elecbasef = g.newImage("elecbuttonPOS6.png", ImageFormat.ARGB8888);
-		
-		Assets.pauseScreen = g.newImage("PAUSESCREEN.png", ImageFormat.RGB565);
+		Assets.alarm2 = g.newImage("alarm2b.png", ImageFormat.ARGB8888);		
 		
 		
+		//UNCOMMENT:
+//		Assets.rdscreen = g.newImage("RDSCREEN.png", ImageFormat.ARGB8888);
 		
+//		Assets.elecbase1 = g.newImage("elecbuttonNEG1.png", ImageFormat.ARGB8888);
+//		Assets.elecbase2 = g.newImage("elecbuttonNEG2.png", ImageFormat.ARGB8888);
+//		Assets.elecbase3 = g.newImage("elecbuttonNEG3.png", ImageFormat.ARGB8888);
+//		Assets.elecbase4 = g.newImage("elecbuttonNEG4.png", ImageFormat.ARGB8888);
+//		Assets.elecbase5 = g.newImage("elecbuttonNEG5.png", ImageFormat.ARGB8888);
+//		Assets.elecbase6 = g.newImage("elecbuttonNEG6.png", ImageFormat.ARGB8888);
+//		Assets.elecbasea = g.newImage("elecbuttonPOS1.png", ImageFormat.ARGB8888);
+//		Assets.elecbaseb = g.newImage("elecbuttonPOS2.png", ImageFormat.ARGB8888);
+//		Assets.elecbasec = g.newImage("elecbuttonPOS3.png", ImageFormat.ARGB8888);
+//		Assets.elecbased = g.newImage("elecbuttonPOS4.png", ImageFormat.ARGB8888);
+//		Assets.elecbasee = g.newImage("elecbuttonPOS5.png", ImageFormat.ARGB8888);
+//		Assets.elecbasef = g.newImage("elecbuttonPOS6.png", ImageFormat.ARGB8888);
 		
-		
-		
-		
-//		Assets.grid = g.newImage("grid2.png", ImageFormat.ARGB8888);
-		
-		
+//		Assets.pauseScreen = g.newImage("PAUSESCREEN.png", ImageFormat.RGB565);	
 				
 		game.setScreen(new MainMenuScreen(game));
 		
