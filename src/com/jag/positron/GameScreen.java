@@ -138,14 +138,11 @@ public class GameScreen extends Screen {
 		lane = sw/8;
 		recent = true;
 		
-		
-		
-		
 		lg = new LinearGradient(sh/2, -(sh/12) , sh/2, (float) (sh*.033), Color.BLUE, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
 		lg2 = new LinearGradient(sh/2, (float) (sh*.66) , sh/2, (float) (sh*.813), Color.GREEN, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
 
 		paint = new Paint();
-		paint.setTextSize(30);
+		paint.setTextSize(Math.round(sh*.025));
 		paint.setTextAlign(Paint.Align.CENTER);
 		paint.setAntiAlias(true);
 		paint.setColor(Color.WHITE);	
@@ -153,25 +150,25 @@ public class GameScreen extends Screen {
 		paint2 = new Paint();
 		paint2.setColor(Color.BLUE);
 		paint2.setStyle(Style.STROKE);
-		paint2.setStrokeWidth(10);
+		paint2.setStrokeWidth(Math.round(sh*.01));
 
 		paint3 = new Paint();
 		paint3.setTypeface(Assets.font);
-		paint3.setTextSize(120);
+		paint3.setTextSize(Math.round(sh*.1));
 		paint3.setTextAlign(Paint.Align.CENTER);
 		paint3.setAntiAlias(true);
 		paint3.setColor(Color.BLUE);
 
 		paint4 = new Paint();
 		paint4.setTypeface(Assets.font);
-		paint4.setTextSize(43);
+		paint4.setTextSize(Math.round(sh*.035));
 		paint4.setTextAlign(Paint.Align.CENTER);
 		paint4.setAntiAlias(true);
 		paint4.setColor(Color.RED);
 
 		paint5 = new Paint();
 		paint5.setTypeface(Assets.font);
-		paint5.setTextSize(180);
+		paint5.setTextSize(Math.round(sh*.15));
 		paint5.setTextAlign(Paint.Align.CENTER);
 		paint5.setAntiAlias(true);
 		paint5.setColor(Color.RED);
@@ -179,14 +176,14 @@ public class GameScreen extends Screen {
 
 		paint6 = new Paint();
 		paint6.setTypeface(Assets.font);
-		paint6.setTextSize(40);
+		paint6.setTextSize(Math.round(sh*.033));
 		paint6.setTextAlign(Paint.Align.CENTER);
 		paint6.setAntiAlias(true);
 		paint6.setColor(Color.BLUE);
 
 		paint7 = new Paint();
 		paint7.setTypeface(Assets.font);
-		paint7.setTextSize(80);
+		paint7.setTextSize(Math.round(sh*.066));
 		paint7.setTextAlign(Paint.Align.CENTER);
 		paint7.setAntiAlias(true);
 		paint7.setColor(Color.RED);
@@ -204,21 +201,21 @@ public class GameScreen extends Screen {
 
 		paint11 = new Paint();
 		paint11.setTypeface(Assets.font);
-		paint11.setTextSize(60);
+		paint11.setTextSize(Math.round(sh*.05));
 		paint11.setTextAlign(Paint.Align.CENTER);
 		paint11.setAntiAlias(true);
 		paint11.setColor(Color.RED);
 
 		paint12 = new Paint();
 		paint12.setTypeface(Assets.font);
-		paint12.setTextSize(160);
+		paint12.setTextSize(Math.round(sh*.133));
 		paint12.setTextAlign(Paint.Align.CENTER);
 		paint12.setAntiAlias(true);
 		paint12.setColor(Color.RED);
 
 		paint13 = new Paint();
 		paint13.setTypeface(Assets.font);
-		paint13.setTextSize(43);
+		paint13.setTextSize(Math.round(sh*.036));
 		paint13.setTextAlign(Paint.Align.CENTER);
 		paint13.setAntiAlias(true);
 		paint13.setColor(Color.BLUE);
@@ -311,7 +308,7 @@ public class GameScreen extends Screen {
 		int len = touchEvents.size();
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
-			if (event.x > 325 && event.x< 475 && event.y > 550 && event.y< 725){
+			if (event.x > Math.round(sh*.27) && event.x< Math.round(sh*.394) && event.y > Math.round(sh*.46) && event.y< Math.round(sh*.6)){
 			game.getGraphics().clearScreen(Color.BLACK);			
 			state = GameState.Running;
 			Assets.theme.stop();
@@ -324,8 +321,8 @@ public class GameScreen extends Screen {
 		// 1. All touch input is handled here:
 		int len = touchEvents.size();
 
-		if ((touch == false)&&circleRad<80){
-			circleRad+=20;
+		if ((touch == false)&&circleRad<Math.round(sh*.066)){
+			circleRad+=Math.round(sh*.017);
 			lock = true;
 		}
 
@@ -345,8 +342,8 @@ public class GameScreen extends Screen {
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
 
-			if ((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN) && event.y <= 1000 &&			
-					((event.x < scene.getLine()+100)&&(event.x > scene.getLine()-100))&&(event.y < fingery+100)&&(event.y > fingery-100)){
+			if ((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN) && event.y <= Math.round(sh*.83) &&			
+					((event.x < scene.getLine()+Math.round(sh*.083))&&(event.x > scene.getLine()-Math.round(sh*.083)))&&(event.y < fingery+Math.round(sh*.083))&&(event.y > fingery-Math.round(sh*.083))){
 				lock = false;
 				if (!topFreeze){
 					if (score-scoreTemp < 0)
@@ -361,7 +358,7 @@ public class GameScreen extends Screen {
 				}
 			}
 
-			if ((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN) && event.y <= 1000&&!lock) {
+			if ((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN) && event.y <= Math.round(sh*.83)&&!lock) {
 				touch = true;
 				scene.setLine(event.x);
 				fingery = event.y;
@@ -369,12 +366,12 @@ public class GameScreen extends Screen {
 			}	
 
 			//POSITIVE BUTTON
-			if (event.type == TouchEvent.TOUCH_DOWN && ((0 < event.x) && (event.x < 250)) && event.y > 1000) {
+			if (event.type == TouchEvent.TOUCH_DOWN && ((0 < event.x) && (event.x < Math.round(sh*.207))) && event.y > Math.round(sh*.83)) {
 				posPressed = true;
 			}
 
 			//NEGATIVE BUTTON
-			if (event.type == TouchEvent.TOUCH_DOWN && ((550 < event.x) && (event.x < 800)) && event.y > 1000) {
+			if (event.type == TouchEvent.TOUCH_DOWN && ((Math.round(sh*.456) < event.x) && (event.x < Math.round(sh*.664))) && event.y > Math.round(sh*.83)) {
 				negPressed = true;
 			}
 
@@ -1092,18 +1089,18 @@ public class GameScreen extends Screen {
 				if (levelStart < 70){
 					paint5.setAlpha(255-(levelStart*3));
 					paint7.setAlpha(255-(levelStart*3));
-					g.drawString(String.valueOf(scoreMult), g.getWidth()/2, g.getHeight()/2-100, paint5);
+					g.drawString(String.valueOf(scoreMult), g.getWidth()/2, (int) (g.getHeight()/2-Math.round(sh*.083)), paint5);
 					if (scoreMult == 1){
-						g.drawString("x", (g.getWidth()/2)-50, g.getHeight()/2-100, paint7);
+						g.drawString("x", (g.getWidth()/2)-50, (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
 					}
 					if ((scoreMult > 1)&&(scoreMult<10)){						
-						g.drawString("x", (g.getWidth()/2)-70, g.getHeight()/2-100, paint7);
+						g.drawString("x", (g.getWidth()/2)-70, (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
 					}
 					if ((scoreMult>=10)&&(scoreMult<20)){						
-						g.drawString("x", (g.getWidth()/2)-90, g.getHeight()/2-100, paint7);
+						g.drawString("x", (g.getWidth()/2)-90, (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
 					}					
 					if ((scoreMult>=20)){						
-						g.drawString("x", (g.getWidth()/2)-120, g.getHeight()/2-100, paint7);
+						g.drawString("x", (g.getWidth()/2)-120, (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
 					}
 
 					levelStart++;
@@ -1158,7 +1155,7 @@ public class GameScreen extends Screen {
 
 			if (tcDeath){
 				if (ballDuration < 20){
-					g.drawCircFill(tcx, tcy, 100, Color.BLUE, 200-ballDuration*10);
+					g.drawCircFill(tcx, tcy, Math.round(sh*.083), Color.BLUE, 200-ballDuration*10);
 					ballDuration++;				
 				}
 				else {
@@ -1181,8 +1178,8 @@ public class GameScreen extends Screen {
 				else {
 					gridPieceCount = 0;
 					newGridPiece = false;
-					gridX = -100;
-					gridY = -100;
+					gridX = (int) -(Math.round(sh*.083));
+					gridY = (int) -(Math.round(sh*.083));
 				}				
 			}
 
@@ -1246,7 +1243,7 @@ public class GameScreen extends Screen {
 			//if (scoreMult == 10){
 			for (PosTriangle posT : pts){			
 				if (!posT.getSide()){
-					if (posT.getX()>100)
+					if (posT.getX()>Math.round(sh*.083))
 						g.drawPosTri(posT, 280-(posT.getX()/3));
 					else g.drawPosTri(posT, 255);
 				}
