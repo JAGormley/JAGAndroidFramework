@@ -90,7 +90,7 @@ public class Tutorial extends GameScreen {
 	}
 
 	private void drawOne(Graphics g) {
-		g.drawRect(50, 50, 50, 50, Color.BLUE);	
+//		g.drawRect(50, 50, 50, 50, Color.BLUE);
 	}
 
 	private void drawTwo(Graphics g) {

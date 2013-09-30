@@ -40,17 +40,8 @@ public class LoadingScreen extends Screen {
 	public void update(float deltaTime) {	
 		Graphics g = game.getGraphics();
 		//g.drawString("LOADING", 350, 500, null);
-
-
-
 		//Assets.block = g.newImage("PositronBlock.png", ImageFormat.RGB565);
-
 		//Assets.menu = g.newImage("menudr3(dr2).png", ImageFormat.ARGB8888);
-
-
-
-
-
 
 		//IMGS!!
 		if (screenH > 1000){
@@ -72,19 +63,19 @@ public class LoadingScreen extends Screen {
 		}
 		else {
 			
-			Assets.loadScreen = g.newImage("LOADSCREENt.png", ImageFormat.RGB565);
+			Assets.loadScreen = g.newImage("LOADSCREENs.png", ImageFormat.RGB565);
 			g.drawImage(Assets.loadScreen, 0, 0);	
 			
-			Assets.menu1 = g.newImage("newMenu1b.png", ImageFormat.RGB565);
-			Assets.menu2 = g.newImage("newMenu2b.png", ImageFormat.RGB565);
-			Assets.menu3 = g.newImage("newMenu3b.png", ImageFormat.RGB565);
-			Assets.menu4 = g.newImage("newMenu4b.png", ImageFormat.RGB565);
-			Assets.menu5 = g.newImage("newMenu5b.png", ImageFormat.RGB565);
-			Assets.menu6 = g.newImage("newMenu6b.png", ImageFormat.RGB565);
-			Assets.menu7 = g.newImage("newMenu7b.png", ImageFormat.RGB565);	
+			Assets.menu1 = g.newImage("newMenu1s.png", ImageFormat.RGB565);
+			Assets.menu2 = g.newImage("newMenu2s.png", ImageFormat.RGB565);
+			Assets.menu3 = g.newImage("newMenu3s.png", ImageFormat.RGB565);
+			Assets.menu4 = g.newImage("newMenu4s.png", ImageFormat.RGB565);
+			Assets.menu5 = g.newImage("newMenu5s.png", ImageFormat.RGB565);
+			Assets.menu6 = g.newImage("newMenu6s.png", ImageFormat.RGB565);
+			Assets.menu7 = g.newImage("newMenu7s.png", ImageFormat.RGB565);	
 			
-			Assets.rdscreen = g.newImage("RDSCREENt.png", ImageFormat.RGB565);
-			Assets.pauseScreen = g.newImage("PAUSESCREENt.png", ImageFormat.RGB565);
+			Assets.rdscreen = g.newImage("RDSCREENs.png", ImageFormat.RGB565);
+			Assets.pauseScreen = g.newImage("PAUSESCREENs.png", ImageFormat.RGB565);
 		}
 
 
@@ -103,27 +94,26 @@ public class LoadingScreen extends Screen {
 
 		//UNCOMMENT:
 
-//		Assets.pos = g.newImage("pos1.png", ImageFormat.ARGB8888);
-//		Assets.neg = g.newImage("neg2.png", ImageFormat.ARGB8888);				
-//		Assets.alarm1 = g.newImage("alarm1b.png", ImageFormat.ARGB8888);
-//		Assets.alarm2 = g.newImage("alarm2b.png", ImageFormat.ARGB8888);
+		Assets.pos = g.newImage("pos1.png", ImageFormat.ARGB8888);
+		Assets.neg = g.newImage("neg2.png", ImageFormat.ARGB8888);				
+		Assets.alarm1 = g.newImage("alarm1b.png", ImageFormat.ARGB8888);
+		Assets.alarm2 = g.newImage("alarm2b.png", ImageFormat.ARGB8888);
 //
-//		Assets.elecbase1 = g.newImage("elecbuttonNEG1.png", ImageFormat.ARGB8888);
-//		Assets.elecbase2 = g.newImage("elecbuttonNEG2.png", ImageFormat.ARGB8888);
-//		Assets.elecbase3 = g.newImage("elecbuttonNEG3.png", ImageFormat.ARGB8888);
-//		Assets.elecbase4 = g.newImage("elecbuttonNEG4.png", ImageFormat.ARGB8888);
-//		Assets.elecbase5 = g.newImage("elecbuttonNEG5.png", ImageFormat.ARGB8888);
-//		Assets.elecbase6 = g.newImage("elecbuttonNEG6.png", ImageFormat.ARGB8888);
-//		Assets.elecbasea = g.newImage("elecbuttonPOS1.png", ImageFormat.ARGB8888);
-//		Assets.elecbaseb = g.newImage("elecbuttonPOS2.png", ImageFormat.ARGB8888);
-//		Assets.elecbasec = g.newImage("elecbuttonPOS3.png", ImageFormat.ARGB8888);
-//		Assets.elecbased = g.newImage("elecbuttonPOS4.png", ImageFormat.ARGB8888);
-//		Assets.elecbasee = g.newImage("elecbuttonPOS5.png", ImageFormat.ARGB8888);
-//		Assets.elecbasef = g.newImage("elecbuttonPOS6.png", ImageFormat.ARGB8888);
+		Assets.elecbase1 = g.newImage("elecbuttonNEG1.png", ImageFormat.ARGB8888);
+		Assets.elecbase2 = g.newImage("elecbuttonNEG2.png", ImageFormat.ARGB8888);
+		Assets.elecbase3 = g.newImage("elecbuttonNEG3.png", ImageFormat.ARGB8888);
+		Assets.elecbase4 = g.newImage("elecbuttonNEG4.png", ImageFormat.ARGB8888);
+		Assets.elecbase5 = g.newImage("elecbuttonNEG5.png", ImageFormat.ARGB8888);
+		Assets.elecbase6 = g.newImage("elecbuttonNEG6.png", ImageFormat.ARGB8888);
+		Assets.elecbasea = g.newImage("elecbuttonPOS1.png", ImageFormat.ARGB8888);
+		Assets.elecbaseb = g.newImage("elecbuttonPOS2.png", ImageFormat.ARGB8888);
+		Assets.elecbasec = g.newImage("elecbuttonPOS3.png", ImageFormat.ARGB8888);
+		Assets.elecbased = g.newImage("elecbuttonPOS4.png", ImageFormat.ARGB8888);
+		Assets.elecbasee = g.newImage("elecbuttonPOS5.png", ImageFormat.ARGB8888);
+		Assets.elecbasef = g.newImage("elecbuttonPOS6.png", ImageFormat.ARGB8888);
 
 
 		//SOUNDS!
-		Assets.menu = g.newImage("newMenu.png", ImageFormat.ARGB8888);
 		Assets.click = game.getAudio().createSound("lightning_strike.ogg");
 		Assets.posPoint = game.getAudio().createSound("POSSOUND.ogg");
 		Assets.negPoint = game.getAudio().createSound("NEGSOUND.ogg");

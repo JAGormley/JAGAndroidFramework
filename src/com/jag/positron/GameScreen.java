@@ -34,11 +34,16 @@ public class GameScreen extends Screen {
 	}
 
 	GameState state = GameState.Ready;
-
+	
 	// Variable Setup
 	private static Scene scene;
 	public static int screenheight;
 
+	
+	//screen h/w
+	int sh;
+	int sw;
+	
 	private ArrayList<Pieces> pieces;
 	private ArrayList<PosTriangle> pts;
 	Queue<Integer> heights = new LinkedList<Integer>();
@@ -121,16 +126,23 @@ public class GameScreen extends Screen {
 		super(game);
 
 		// Initialize game objects here
-		scene = new Scene(400);
+		
+		sh = game.getLoadHeight();
+		sw = game.getLoadWidth();
+		
+		scene = new Scene(sw/2);
 		screenheight = game.getGraphics().getHeight();
 		setPieces(new ArrayList<Pieces>());
 		pts = new ArrayList<PosTriangle>();
 
-		lane = 100;
+		lane = sw/8;
 		recent = true;
-
-		lg = new LinearGradient(600, -10 , 600, 40, Color.BLUE, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
-		lg2 = new LinearGradient(600, 800 , 600, 980, Color.GREEN, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
+		
+		
+		
+		
+		lg = new LinearGradient(sh/2, -(sh/12) , sh/2, (float) (sh*.033), Color.BLUE, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
+		lg2 = new LinearGradient(sh/2, (float) (sh*.66) , sh/2, (float) (sh*.813), Color.GREEN, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
 
 		paint = new Paint();
 		paint.setTextSize(30);
@@ -272,7 +284,7 @@ public class GameScreen extends Screen {
 		Assets.gridDrone.setLooping(true);
 
 		tempPiece = new Pieces(0, 0, true, this);	
-		score = 0;
+		score = 1000;
 
 	}
 
@@ -1350,7 +1362,9 @@ public class GameScreen extends Screen {
 				else {
 					j = 0;
 				}
-				lg = new LinearGradient(600, -5 , 600, 40+Math.round(j), Color.BLUE, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
+				lg = new LinearGradient(sh/2, -(sh/240) , sh/2, (float)(sh*.033) + Math.round(j), Color.BLUE, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
+//						new LinearGradient(600, -5 , 600, 40+Math.round(j), Color.BLUE, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
+				
 				paint9.setShader(lg);
 				g.drawRect2(0, 0, g.getWidth(), 100, Color.BLUE, paint9);
 				magnet.update(10);
