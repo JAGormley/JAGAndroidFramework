@@ -553,14 +553,14 @@ public class GameScreen extends Screen {
 		if ((scoreMult == 5 || scoreMult == 10)&&!currentTC&&tc==null&&!currentTG){
 			//	if (!currentTC&&tc==null&&scoreMult==1){
 			if (100	 > randomInt3 && !topFreeze){
-				tc = new TimeCharge((randomInt2+1)*lane, 940, 5);				
+				tc = new TimeCharge((randomInt2+1)*lane, (int) Math.round(sh*.78), 5);				
 				Assets.tcDrone.play();
 				currentTC = true;
 			}			
 		}
 		if ((scoreMult >= 25)&&!currentTC&&tc==null){
 			if (400	 > randomInt3 && !topFreeze){
-				tc = new TimeCharge((randomInt2+1)*lane, 940, 5);
+				tc = new TimeCharge((randomInt2+1)*lane, (int) Math.round(sh*.78), 5);
 				Assets.tcDrone.play();
 				currentTC = true;
 				tc.setSpeed(5);
@@ -586,7 +586,7 @@ public class GameScreen extends Screen {
 			}
 
 			if ((!touch)&&(currentTC))
-				if ((Math.abs(tc.getY()-fingery)<150)&&(Math.abs(tc.getX()-scene.getLine())<150)){
+				if ((Math.abs(tc.getY()-fingery) < Math.round(sh*.124))&&(Math.abs(tc.getX()-scene.getLine()) < Math.round(sh*.124))){
 					tcDeath = true;
 					tcx = tc.x;
 					tcy = tc.y;
@@ -603,7 +603,7 @@ public class GameScreen extends Screen {
 		// timeGRID
 		if ((scoreMult == 10 && scoreMult < 15)&&!currentTG&&tg==null&&!currentTC){
 			if (100 > randomInt4 && !topFreeze){
-				tg = new TimeGrid(1050);	
+				tg = new TimeGrid((int) Math.round(sh*.87));	
 				currentTG = true;				
 				Assets.gridDrone.play();
 				gridX = -10;
@@ -612,7 +612,7 @@ public class GameScreen extends Screen {
 		}
 		if ((scoreMult >= 50)&&!currentTG&&tg==null){
 			if (400 > randomInt4 && !topFreeze){
-				tg = new TimeGrid(1050);	
+				tg = new TimeGrid((int) Math.round(sh*.87));	
 				currentTG = true;				
 				Assets.gridDrone.play();
 				tg.setSizeSpeed(2);
@@ -622,7 +622,7 @@ public class GameScreen extends Screen {
 		}
 
 		if (tg != null){
-			if (tg.getY()-tg.getSize() < (screenheight/2-200)){
+			if (tg.getY()-tg.getSize() < (screenheight/2-(int) Math.round(sh*.166))){
 				tgDeath = true;
 				tgTemp = tg;
 				tg = null;
@@ -635,7 +635,7 @@ public class GameScreen extends Screen {
 			tg.update();
 			for (GridLine gl: tg.getGLs()){
 				gl.setY(gl.getY()+tg.getGridSpeed());
-				if (gl.getY()>1200){				
+				if (gl.getY()>sh){				
 					gl.setY(0);					
 				}
 			}
@@ -680,7 +680,7 @@ public class GameScreen extends Screen {
 			while (it2.hasNext()) {
 				PosTriangle posT = it2.next();
 				posT.moveTri();				
-				if ((posT.getSide() && posT.getX() > 800) || (!posT.getSide() && posT.getX() < 0)){
+				if ((posT.getSide() && posT.getX() > (int) Math.round(sh*.664)) || (!posT.getSide() && posT.getX() < 0)){
 					it2.remove();
 				}
 			}
@@ -693,7 +693,7 @@ public class GameScreen extends Screen {
 
 		// Pieces
 		if ((randomInt < chanceOfNewPiece)&&!recent) {
-			Pieces p = new Pieces((randomInt2+1)*lane, 960, randomBool, this);
+			Pieces p = new Pieces((randomInt2+1)*lane, (int)Math.round(sh*.8), randomBool, this);
 			if (currentTG){
 				Assets.gridVoice.play(100);
 			}
