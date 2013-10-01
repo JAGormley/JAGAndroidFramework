@@ -717,7 +717,7 @@ public class GameScreen extends Screen {
 		while (it.hasNext()) {
 			Pieces p = it.next();			
 
-			if (p.y>=p.getGenPoint()-22&&topFreeze&&p.wayback&&!negPressed&&!posPressed&&!exitCases){
+			if (p.y>=p.getGenPoint()-Math.round(sh*.018)&&topFreeze&&p.wayback&&!negPressed&&!posPressed&&!exitCases){
 				if (postScore<score){
 					postScore = score;
 					newHigh = true;
@@ -745,7 +745,7 @@ public class GameScreen extends Screen {
 			}
 
 			else if (p.isVisible()&&topFreeze&&!freeze&&p.wayback&&!negPressed&&!posPressed&&!exitCases){
-				p.setBackspeed(15);		
+				p.setBackspeed((int) Math.round(sh*.0124));		
 				p.updateback();
 				System.out.println("yes2");
 			}
@@ -753,7 +753,7 @@ public class GameScreen extends Screen {
 
 			else if (p.isVisible()&&!p.wayback&&!freeze&&currentTG&&p.getY()>tg.getY()-tg.getSize()&&!exitCases){
 				System.out.println("yes3");
-				p.setY((tg.getY()-tg.getSize())-15);
+				p.setY((int) ((tg.getY()-tg.getSize())-Math.round(sh*.017)));
 				//				if (currentTG){
 
 				gridX = p.getX();
@@ -766,8 +766,8 @@ public class GameScreen extends Screen {
 
 			else if (p.isVisible()&&!p.wayback&&!freeze&&!exitCases){
 				for (PosTriangle pt : pts){
-					if (p.getX()-40 <= pt.getX() && p.getX() + 40 >= pt.getX()
-							&& p.getY()+45 >= pt.getHeight() && p.getY()-25 <= pt.getHeight()){
+					if (p.getX()-Math.round(sh*.033) <= pt.getX() && p.getX() + Math.round(sh*.033) >= pt.getX()
+							&& p.getY()+Math.round(sh*.037) >= pt.getHeight() && p.getY()-Math.round(sh*.021) <= pt.getHeight()){
 						if (!p.getSwitched()){
 							p.switchType();							
 						}
@@ -900,7 +900,7 @@ public class GameScreen extends Screen {
 				//	System.out.println("yes7b");
 			}
 
-			else if (p.y < 10){
+			else if (p.y < Math.round(sh*.008)){
 				score += 1*scoreMult;
 				if (p.type)
 					Assets.posPoint.play(20);
@@ -918,7 +918,7 @@ public class GameScreen extends Screen {
 			//			}
 
 			//FINAL			
-			else if (!exitCases&&p.y >= p.getGenPoint()-15){
+			else if (!exitCases&&p.y >= p.getGenPoint()-Math.round(sh*.012)){
 				if (postScore<score){
 					postScore = score;
 					newHigh = true;
@@ -955,16 +955,16 @@ public class GameScreen extends Screen {
 		Assets.theme.play();
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
-			if (event.type == TouchEvent.TOUCH_UP&& event.x >150 && event.x < 650 && event.y<175) {
+			if (event.type == TouchEvent.TOUCH_UP&& event.x >Math.round(sw*.188) && event.x < Math.round(sw*.813) && event.y<Math.round(sh*.145)) {
 				state = GameState.Running;
 				Assets.click2.play(100);
 				Assets.theme.play();
 			}
-			if (event.type == TouchEvent.TOUCH_UP && event.x > 300 && event.x < 500 && event.y > 850 && event.y< 975) {
+			if (event.type == TouchEvent.TOUCH_UP && event.x > Math.round(sw*.375) && event.x < Math.round(sw*.625) && event.y > Math.round(sh*.705) && event.y< Math.round(sh*.809)) {
 				android.os.Process.killProcess(android.os.Process.myPid());
 			}
 			
-			if (event.type == TouchEvent.TOUCH_UP && event.x > 225 && event.x < 585 && event.y > 390 && event.y< 510) {
+			if (event.type == TouchEvent.TOUCH_UP && event.x > Math.round(sw*.281) && event.x < Math.round(sw*.731) && event.y > Math.round(sh*.324) && event.y< Math.round(sh*.423)) {
 				//nullify();
 				Assets.theme.stop();
 				Assets.click2.play(100);
@@ -992,7 +992,7 @@ public class GameScreen extends Screen {
 		//Debug.startMethodTracing();
 		Graphics g = game.getGraphics();
 		getAlert().update(10);
-		g.drawRect(0, 1196, 801, 10, Color.BLACK);
+		g.drawRect(0, sh, sw, sh/120, Color.BLACK);
 
 
 		//BOARD ELEMENTS / SCORE
@@ -1001,17 +1001,17 @@ public class GameScreen extends Screen {
 			int fingerx = scene.getLine();
 
 			if (topFreeze){
-				g.drawRect(0, 0, g.getWidth(), 1202, Color.GRAY);
+				g.drawRect(0, 0, g.getWidth(), sh+2, Color.GRAY);
 				g.drawString(String.valueOf(score),
-						402, 1150, paint3);
+						sw/2, (int) Math.round(sh*.954), paint3);
 				g.drawString("high "+String.valueOf(postScore),
-						402, 1190, paint6);
+						sw/2, (int) Math.round(sw*.99), paint6);
 			}
 
 			if (!topFreeze){
 
-				g.drawRect(fingerx, 0, g.getWidth(), 1205, Color.BLACK);
-				g.drawRect(0, 0, fingerx+2, 1202, Color.WHITE);
+				g.drawRect(fingerx, 0, g.getWidth(), sh+5, Color.BLACK);
+				g.drawRect(0, 0, fingerx+2, sh+2, Color.WHITE);
 
 				if (!freeze&&!topFreeze){
 					baseGrowth = 0;		
@@ -1021,14 +1021,14 @@ public class GameScreen extends Screen {
 
 					drawTimer = 0;
 					paint4.setAlpha(255);
-					if ((getAlert().getImage() == Assets.alarm2)&&circleRad>79){
+					if ((getAlert().getImage() == Assets.alarm2)&&circleRad>Math.round(sh*.066)){
 						circleRad += 1;
 					}
-					if ((getAlert().getImage() == Assets.alarm1)&&circleRad>79){
-						if (circleRad>80)
+					if ((getAlert().getImage() == Assets.alarm1)&&circleRad>Math.round(sh*.066)){
+						if (circleRad>Math.round(sh*.066)+1)
 							circleRad -= 1;
 					}
-					g.drawCircFill(fingerx, fingery, circleRad, Color.GRAY, 90);
+					g.drawCircFill(fingerx, fingery, circleRad, Color.GRAY, (int) Math.round(sh*.075));
 					g.drawCircOut(fingerx, fingery, circleRad, Color.RED, 5);
 					g.drawCircOut(fingerx, fingery, (circleRad/5)*4, Color.RED, 5);
 					g.drawCircOut(fingerx, fingery, (circleRad/5)*3, Color.RED, 5);
