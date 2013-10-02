@@ -1032,13 +1032,13 @@ public class GameScreen extends Screen {
 					g.drawCircOut(fingerx, fingery, circleRad, Color.RED, 5);
 					g.drawCircOut(fingerx, fingery, (circleRad/5)*4, Color.RED, 5);
 					g.drawCircOut(fingerx, fingery, (circleRad/5)*3, Color.RED, 5);
-					g.drawString("-"+String.valueOf(scoreTemp), fingerx, (int)fingery+15, paint4);
+					g.drawString("-"+String.valueOf(scoreTemp), fingerx, (int)fingery+(int) Math.round(sw*.019), paint4);
 				}
 
 				if (touch == true){
 					if (drawTimer < 40){
 						paint4.setAlpha(200 - drawTimer*4);
-						g.drawString("-"+String.valueOf(scoreTempDraw), 402, 950-(drawTimer), paint4);
+						g.drawString("-"+String.valueOf(scoreTempDraw), sw/2, (int) (Math.round(sh*.788)-(drawTimer)), paint4);
 						drawTimer += 1;
 					}
 				}		
@@ -1046,9 +1046,9 @@ public class GameScreen extends Screen {
 				if (!scoreReset){
 
 					g.drawString(String.valueOf(score),
-							402, 1150, paint3);
+							sw/2, (int) Math.round(sh*.954), paint3);
 					g.drawString("high "+String.valueOf(postScore),
-							402, 1190, paint6);					
+							sw/2, (int) Math.round(sh*.988), paint6);					
 
 				}
 				if (scoreReset){
@@ -1060,17 +1060,17 @@ public class GameScreen extends Screen {
 						paint12.setAlpha(255 - scoreDeathDur*6);
 						if (newHigh){
 							g.drawString("NEW HIGH SCORE!",
-									402, 420, paint11);
-							g.drawString(String.valueOf(postScore), 402, 550, paint12);
+									sw/2, (int) Math.round(sh*.349), paint11);
+							g.drawString(String.valueOf(postScore), sw/2, (int) Math.round(sh*.456), paint12);
 						}
 						else {
-							g.drawString("YA BLEW IT!", 402, 420, paint11);
-							g.drawString(String.valueOf(tempyScore), 402, 550, paint12);
+							g.drawString("YA BLEW IT!", sw/2, (int) Math.round(sh*.349), paint11);
+							g.drawString(String.valueOf(tempyScore), sw/2, (int) Math.round(sh*.456), paint12);
 						}
 
 						g.drawString(String.valueOf(score),
-								402, 1150, paint3);
-						g.drawString("high "+String.valueOf(postScore),	402, 1190, paint6);
+								sw/2, (int) Math.round(sh*.988), paint3);
+						g.drawString("high "+String.valueOf(postScore),	sw/2, (int) Math.round(sh*.988), paint6);
 						g.drawCircOut(400, 1190, scoreDeathDur*60, Color.RED, 10, 255- scoreDeathDur*6);
 
 						scoreDeathDur++;
@@ -1091,16 +1091,16 @@ public class GameScreen extends Screen {
 					paint7.setAlpha(255-(levelStart*3));
 					g.drawString(String.valueOf(scoreMult), g.getWidth()/2, (int) (g.getHeight()/2-Math.round(sh*.083)), paint5);
 					if (scoreMult == 1){
-						g.drawString("x", (g.getWidth()/2)-50, (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
+						g.drawString("x", (g.getWidth()/2)-(int) Math.round(sw*.063), (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
 					}
 					if ((scoreMult > 1)&&(scoreMult<10)){						
-						g.drawString("x", (g.getWidth()/2)-70, (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
+						g.drawString("x", (g.getWidth()/2)-(int) Math.round(sw*.086), (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
 					}
 					if ((scoreMult>=10)&&(scoreMult<20)){						
-						g.drawString("x", (g.getWidth()/2)-90, (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
+						g.drawString("x", (g.getWidth()/2)-(int) Math.round(sw*.113), (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
 					}					
 					if ((scoreMult>=20)){						
-						g.drawString("x", (g.getWidth()/2)-120, (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
+						g.drawString("x", (g.getWidth()/2)-(int) Math.round(sw*.15), (int) (g.getHeight()/2-Math.round(sh*.083)), paint7);
 					}
 
 					levelStart++;
@@ -1114,31 +1114,31 @@ public class GameScreen extends Screen {
 				if (p.getSwitched()&&!p.wayback){
 					if (p.type){
 						p.updateTimer();
-						g.drawCircFill(p.x, p.y+39, 50, Color.MAGENTA, p.getTimer()*10);
+						g.drawCircFill(p.x, p.y+(int) Math.round(sh*.032), (float) Math.round(sh*.041), Color.MAGENTA, p.getTimer()*10);
 						if (p.getTimer()==0)
 							p.resetSwitched();
 					}
 					if (!p.type){
 						p.updateTimer();
-						g.drawCircFill(p.x, p.y+35, 50, Color.MAGENTA, p.getTimer()*10);
+						g.drawCircFill(p.x, p.y+(int) Math.round(sh*.029), (float) Math.round(sh*.0625), Color.MAGENTA, p.getTimer()*10);
 						if (p.getTimer()<=1)
 							p.resetSwitched();
 					}
 				}
 				if (p.type == true)
-					g.drawImage(Assets.pos, (p.x - 40), p.y);
+					g.drawImage(Assets.pos, (p.x - (int) Math.round(sh*.05)), p.y);
 
 				if (p.type == false)
-					g.drawImage(Assets.neg, (p.x - 40), p.y);
+					g.drawImage(Assets.neg, (p.x - (int) Math.round(sw*.05)), p.y);
 
 				if (p.wayback){
 					if (getAlert().getImage() == Assets.alarm2 && !topFreeze){
-						g.drawCircOut(p.x, p.y+39, 40, Color.RED, 20);
+						g.drawCircOut(p.x, p.y+Math.round(sh*.032), (int) Math.round(sh*.05), Color.RED, (int) Math.round(sh*.017));
 					}
 				}	
 				if (p.wayback){
 					if (topFreeze && p.equals(getPieces().get(0))){
-						g.drawCircFill(p.x, p.y+35, 40, Color.YELLOW, 205-p.y/6);
+						g.drawCircFill(p.x, p.y+(int) Math.round(sh*.029), (int) Math.round(sh*.05), Color.YELLOW, 205-p.y/6);
 					}
 				}
 
@@ -1150,7 +1150,7 @@ public class GameScreen extends Screen {
 				i = 0;
 			}
 			if (tc != null){
-				g.drawCircBlue(tc.getX(), tc.getY(), 90, Color.rgb(255,215,0), i);
+				g.drawCircBlue(tc.getX(), tc.getY(), (int) Math.round(sh*.075), Color.rgb(255,215,0), i);
 			}
 
 			if (tcDeath){
@@ -1170,8 +1170,8 @@ public class GameScreen extends Screen {
 
 				if (gridPieceCount < 11){
 
-					g.drawCircFill(gridX, 1005, 35, Color.GREEN, 255-gridPieceCount*25);
-					g.drawCircFill(gridX, gridY+15, 35, Color.GREEN, 255-gridPieceCount*25);
+					g.drawCircFill(gridX, (int) Math.round(sh*.834), (int) Math.round(sh*.029), Color.GREEN, 255-gridPieceCount*25);
+					g.drawCircFill(gridX, gridY+(int) Math.round(sh*.012), (int) Math.round(sh*.029), Color.GREEN, 255-gridPieceCount*25);
 
 					gridPieceCount++;
 				}
@@ -1187,23 +1187,23 @@ public class GameScreen extends Screen {
 				// horizontal
 
 				for (GridLine gl: tg.getGLs()){
-					if (gl.getY()<1050&&gl.getY()-5>tg.getY()-tg.getSize())
-						g.drawLine(-1, gl.getY(), 801, gl.getY(), Color.GREEN, 255, 12, paint10);
+					if (gl.getY() < (int) Math.round(sh*.871) && gl.getY()-5 > tg.getY()-tg.getSize())
+						g.drawLine(-1, gl.getY(), sw+1, gl.getY(), Color.GREEN, 255, (int) Math.round(sh*.001) , paint10);
 				}		
 
 				// vertical
 
-				g.drawLine(1, 1050, 1, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(81, 1050, 81, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(161, 1050, 161, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(241, 1050, 241, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(321, 1050, 321, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(401, 1050, 401, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(481, 1050, 481, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(561, 1050, 561, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(641, 1050, 641, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(721, 1050, 721, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(801, 1050, 801, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine(1, (int) Math.round(sh*.871) , 1, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.101), (int) Math.round(sh*.871), 81, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.201), (int) Math.round(sh*.871), 161, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine(241, (int) Math.round(sh*.871), 241, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine(321, (int) Math.round(sh*.871), 321, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine(401, (int) Math.round(sh*.871), 401, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine(481, (int) Math.round(sh*.871), 481, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine(561, (int) Math.round(sh*.871), 561, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine(641, (int) Math.round(sh*.871), 641, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine(721, (int) Math.round(sh*.871), 721, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine(801, (int) Math.round(sh*.871), 801, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
 			}
 
 			if (tgDeath){
