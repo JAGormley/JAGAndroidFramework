@@ -1069,7 +1069,7 @@ public class GameScreen extends Screen {
 						}
 
 						g.drawString(String.valueOf(score),
-								sw/2, (int) Math.round(sh*.988), paint3);
+								sw/2, (int) Math.round(sh*.954), paint3);
 						g.drawString("high "+String.valueOf(postScore),	sw/2, (int) Math.round(sh*.988), paint6);
 						g.drawCircOut(400, 1190, scoreDeathDur*60, Color.RED, 10, 255- scoreDeathDur*6);
 
@@ -1126,19 +1126,19 @@ public class GameScreen extends Screen {
 					}
 				}
 				if (p.type == true)
-					g.drawImage(Assets.pos, (p.x - (int) Math.round(sh*.05)), p.y);
+					g.drawImage(Assets.pos, (p.x - (int) Math.round(sw*.05)), p.y);
 
 				if (p.type == false)
 					g.drawImage(Assets.neg, (p.x - (int) Math.round(sw*.05)), p.y);
 
 				if (p.wayback){
 					if (getAlert().getImage() == Assets.alarm2 && !topFreeze){
-						g.drawCircOut(p.x, p.y+Math.round(sh*.032), (int) Math.round(sh*.05), Color.RED, (int) Math.round(sh*.017));
+						g.drawCircOut(p.x, p.y+Math.round(sh*.032), (int) Math.round(sh*.03), Color.RED, (int) Math.round(sh*.017));
 					}
 				}	
 				if (p.wayback){
 					if (topFreeze && p.equals(getPieces().get(0))){
-						g.drawCircFill(p.x, p.y+(int) Math.round(sh*.029), (int) Math.round(sh*.05), Color.YELLOW, 205-p.y/6);
+						g.drawCircFill(p.x, p.y+(int) Math.round(sh*.029), (int) Math.round(sh*.03), Color.YELLOW, 205-p.y/6);
 					}
 				}
 

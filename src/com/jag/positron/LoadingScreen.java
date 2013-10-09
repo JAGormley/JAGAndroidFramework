@@ -105,12 +105,12 @@ public class LoadingScreen extends Screen {
 		Assets.elecbase4 = g.newImage("elecbuttonNEG4.png", ImageFormat.ARGB8888);
 		Assets.elecbase5 = g.newImage("elecbuttonNEG5.png", ImageFormat.ARGB8888);
 		Assets.elecbase6 = g.newImage("elecbuttonNEG6.png", ImageFormat.ARGB8888);
-		Assets.elecbasea = g.newImage("elecbuttonPOS1.png", ImageFormat.ARGB8888);
-		Assets.elecbaseb = g.newImage("elecbuttonPOS2.png", ImageFormat.ARGB8888);
-		Assets.elecbasec = g.newImage("elecbuttonPOS3.png", ImageFormat.ARGB8888);
-		Assets.elecbased = g.newImage("elecbuttonPOS4.png", ImageFormat.ARGB8888);
-		Assets.elecbasee = g.newImage("elecbuttonPOS5.png", ImageFormat.ARGB8888);
-		Assets.elecbasef = g.newImage("elecbuttonPOS6.png", ImageFormat.ARGB8888);
+		Assets.elecbasea = g.newImage("elecbuttonPOS1b.png", ImageFormat.ARGB8888);
+		Assets.elecbaseb = g.newImage("elecbuttonPOS2b.png", ImageFormat.ARGB8888);
+		Assets.elecbasec = g.newImage("elecbuttonPOS3b.png", ImageFormat.ARGB8888);
+		Assets.elecbased = g.newImage("elecbuttonPOS4b.png", ImageFormat.ARGB8888);
+		Assets.elecbasee = g.newImage("elecbuttonPOS5b.png", ImageFormat.ARGB8888);
+		Assets.elecbasef = g.newImage("elecbuttonPOS6b.png", ImageFormat.ARGB8888);
 
 
 		//SOUNDS!
