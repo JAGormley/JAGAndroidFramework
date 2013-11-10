@@ -9,6 +9,7 @@ public class TimeCharge {
 		this.y = y;
 		this.speed = speed;			
 	}	
+	
 	public void update(){
 		this.y -= speed;
 	}

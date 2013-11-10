@@ -91,6 +91,8 @@ public class GameScreen extends Screen {
 	private Paint paint11;
 	private Paint paint12;
 
+	private Frenzy f;
+	
 	private int tempyScore;
 
 	private boolean newGridPiece;
@@ -116,6 +118,8 @@ public class GameScreen extends Screen {
 	private int toothCount;
 
 	private Pieces tempPiece;
+
+	private boolean frenzy = false;
 
 
 
@@ -237,29 +241,81 @@ public class GameScreen extends Screen {
 		magnet.addFrame(Assets.bf4, 100);
 		currentMagnet = magnet.getImage();
 
-		elecBase = new Animation();
-		elecBase.addFrame(Assets.elecbase1, 30);
-		elecBase.addFrame(Assets.elecbase2, 30);
-		elecBase.addFrame(Assets.elecbase3, 30);
-		elecBase.addFrame(Assets.elecbase4, 30);
-		elecBase.addFrame(Assets.elecbase5, 30);
-		elecBase.addFrame(Assets.elecbase6, 30);
-		elecBase.addFrame(Assets.elecbase5, 30);
-		elecBase.addFrame(Assets.elecbase4, 30);
-		elecBase.addFrame(Assets.elecbase3, 30);
-		elecBase.addFrame(Assets.elecbase2, 30);
-
 		elecBase2 = new Animation();
-		elecBase2.addFrame(Assets.elecbasea, 30);
-		elecBase2.addFrame(Assets.elecbaseb, 30);
-		elecBase2.addFrame(Assets.elecbasec, 30);
-		elecBase2.addFrame(Assets.elecbased, 30);
-		elecBase2.addFrame(Assets.elecbasee, 30);
-		elecBase2.addFrame(Assets.elecbasef, 30);
-		elecBase2.addFrame(Assets.elecbasee, 30);
-		elecBase2.addFrame(Assets.elecbased, 30);
-		elecBase2.addFrame(Assets.elecbasec, 30);
-		elecBase2.addFrame(Assets.elecbaseb, 30);
+		elecBase2.addFrame(Assets.pbase0, 20);
+		elecBase2.addFrame(Assets.pbase1, 20);
+		elecBase2.addFrame(Assets.pbase2, 20);
+		elecBase2.addFrame(Assets.pbase3, 20);
+		elecBase2.addFrame(Assets.pbase4, 20);
+		elecBase2.addFrame(Assets.pbase5, 20);
+		elecBase2.addFrame(Assets.pbase6, 20);
+		elecBase2.addFrame(Assets.pbase7, 20);
+		elecBase2.addFrame(Assets.pbase8, 20);
+		elecBase2.addFrame(Assets.pbase9, 20);
+		elecBase2.addFrame(Assets.pbase10, 20);
+		elecBase2.addFrame(Assets.pbase11, 20);
+		elecBase2.addFrame(Assets.pbase12, 20);
+		elecBase2.addFrame(Assets.pbase13, 20);
+		elecBase2.addFrame(Assets.pbase14, 20);
+		elecBase2.addFrame(Assets.pbase15, 20);
+		elecBase2.addFrame(Assets.pbase16, 20);
+		elecBase2.addFrame(Assets.pbase17, 20);
+		elecBase2.addFrame(Assets.pbase18, 20);
+		elecBase2.addFrame(Assets.pbase19, 20);
+		elecBase2.addFrame(Assets.pbase20, 20);
+		elecBase2.addFrame(Assets.pbase21, 20);
+		elecBase2.addFrame(Assets.pbase22, 20);
+		elecBase2.addFrame(Assets.pbase23, 20);
+		elecBase2.addFrame(Assets.pbase24, 20);
+		elecBase2.addFrame(Assets.pbase25, 20);
+		elecBase2.addFrame(Assets.pbase26, 20);
+		elecBase2.addFrame(Assets.pbase27, 20);
+		elecBase2.addFrame(Assets.pbase28, 20);
+		elecBase2.addFrame(Assets.pbase29, 20);
+		elecBase2.addFrame(Assets.pbase30, 20);
+		elecBase2.addFrame(Assets.pbase31, 20);
+		elecBase2.addFrame(Assets.pbase32, 20);
+		elecBase2.addFrame(Assets.pbase33, 20);
+		elecBase2.addFrame(Assets.pbase34, 20);
+		elecBase2.addFrame(Assets.pbase35, 20);
+
+		elecBase = new Animation();
+		elecBase.addFrame(Assets.nbase0, 20);
+		elecBase.addFrame(Assets.nbase1, 20);
+		elecBase.addFrame(Assets.nbase2, 20);
+		elecBase.addFrame(Assets.nbase3, 20);
+		elecBase.addFrame(Assets.nbase4, 20);
+		elecBase.addFrame(Assets.nbase5, 20);
+		elecBase.addFrame(Assets.nbase6, 20);
+		elecBase.addFrame(Assets.nbase7, 20);
+		elecBase.addFrame(Assets.nbase8, 20);
+		elecBase.addFrame(Assets.nbase9, 20);
+		elecBase.addFrame(Assets.nbase10, 20);
+		elecBase.addFrame(Assets.nbase11, 20);
+		elecBase.addFrame(Assets.nbase12, 20);
+		elecBase.addFrame(Assets.nbase13, 20);
+		elecBase.addFrame(Assets.nbase14, 20);
+		elecBase.addFrame(Assets.nbase15, 20);
+		elecBase.addFrame(Assets.nbase16, 20);
+		elecBase.addFrame(Assets.nbase17, 20);
+		elecBase.addFrame(Assets.nbase18, 20);
+		elecBase.addFrame(Assets.nbase19, 20);
+		elecBase.addFrame(Assets.nbase20, 20);
+		elecBase.addFrame(Assets.nbase21, 20);
+		elecBase.addFrame(Assets.nbase22, 20);
+		elecBase.addFrame(Assets.nbase23, 20);
+		elecBase.addFrame(Assets.nbase24, 20);
+		elecBase.addFrame(Assets.nbase25, 20);
+		elecBase.addFrame(Assets.nbase26, 20);
+		elecBase.addFrame(Assets.nbase27, 20);
+		elecBase.addFrame(Assets.nbase28, 20);
+		elecBase.addFrame(Assets.nbase29, 20);
+		elecBase.addFrame(Assets.nbase30, 20);
+		elecBase.addFrame(Assets.nbase31, 20);
+		elecBase.addFrame(Assets.nbase32, 20);
+		elecBase.addFrame(Assets.nbase33, 20);
+		elecBase.addFrame(Assets.nbase34, 20);
+		elecBase.addFrame(Assets.nbase35, 20);
 
 		nextLevel = false;
 		lock = false;
@@ -320,7 +376,16 @@ public class GameScreen extends Screen {
 		Assets.theme.stop();
 		// 1. All touch input is handled here:
 		int len = touchEvents.size();
-
+		topFreeze = true;
+		
+		if (!frenzy && topFreeze){
+			f = new Frenzy(sw, sh);
+		}
+		
+		if (frenzy){
+			f.update();
+		}
+		
 		if ((touch == false)&&circleRad<Math.round(sh*.066)){
 			circleRad+=Math.round(sh*.017);
 			lock = true;
@@ -337,8 +402,7 @@ public class GameScreen extends Screen {
 				scoreTempTemp = 0;
 			}
 		}
-
-
+		
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
 
@@ -545,8 +609,6 @@ public class GameScreen extends Screen {
 			if (randomInt5 == 200 && scoreMult >= 50){
 				teeth = true;
 			}
-
-
 		}
 
 		// timeCHARGE
@@ -644,7 +706,7 @@ public class GameScreen extends Screen {
 		// TEETH
 		if ((randomInt < chanceOfNewPiece)&&!recentTooth&&!topFreeze&&teeth) {
 			PosTriangle pt = new PosTriangle(randomBool);
-			
+
 
 			if (heights.size() >= 2 && currentTG){
 				heights.poll();
@@ -662,6 +724,7 @@ public class GameScreen extends Screen {
 						recentTooth = true;
 						toothCount++;
 					}
+
 				if (!currentTG) {
 					pts.add(pt);
 					Assets.teeth.play(100);
@@ -992,7 +1055,7 @@ public class GameScreen extends Screen {
 		//Debug.startMethodTracing();
 		Graphics g = game.getGraphics();
 		getAlert().update(10);
-		g.drawRect(0, sh, sw, sh/120, Color.BLACK);
+//		g.drawRect(0, sh, sw, sh/120, Color.BLACK);
 
 
 		//BOARD ELEMENTS / SCORE
@@ -1001,7 +1064,7 @@ public class GameScreen extends Screen {
 			int fingerx = scene.getLine();
 
 			if (topFreeze){
-				g.drawRect(0, 0, g.getWidth(), sh+2, Color.GRAY);
+				g.drawRect(0, 0, g.getWidth()+3, sh+2, Color.GRAY);
 				g.drawString(String.valueOf(score),
 						sw/2, (int) Math.round(sh*.954), paint3);
 				g.drawString("high "+String.valueOf(postScore),
@@ -1010,7 +1073,7 @@ public class GameScreen extends Screen {
 
 			if (!topFreeze){
 
-				g.drawRect(fingerx, 0, g.getWidth(), sh+5, Color.BLACK);
+				g.drawRect(fingerx, 0, g.getWidth()+3, sh+5, Color.BLACK);
 				g.drawRect(0, 0, fingerx+2, sh+2, Color.WHITE);
 
 				if (!freeze&&!topFreeze){
@@ -1194,16 +1257,16 @@ public class GameScreen extends Screen {
 				// vertical
 
 				g.drawLine(1, (int) Math.round(sh*.871) , 1, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine((int) Math.round(sw*.101), (int) Math.round(sh*.871), 81, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine((int) Math.round(sw*.201), (int) Math.round(sh*.871), 161, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(241, (int) Math.round(sh*.871), 241, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(321, (int) Math.round(sh*.871), 321, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(401, (int) Math.round(sh*.871), 401, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(481, (int) Math.round(sh*.871), 481, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(561, (int) Math.round(sh*.871), 561, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(641, (int) Math.round(sh*.871), 641, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(721, (int) Math.round(sh*.871), 721, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
-				g.drawLine(801, (int) Math.round(sh*.871), 801, tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.101), (int) Math.round(sh*.871), (int) Math.round(sw*.101), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.201), (int) Math.round(sh*.871), (int) Math.round(sw*.201), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.301), (int) Math.round(sh*.871), (int) Math.round(sw*.301), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.401), (int) Math.round(sh*.871), (int) Math.round(sw*.401), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.501), (int) Math.round(sh*.871), (int) Math.round(sw*.501), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.601), (int) Math.round(sh*.871), (int) Math.round(sw*.601), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.701), (int) Math.round(sh*.871), (int) Math.round(sw*.701), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.801), (int) Math.round(sh*.871), (int) Math.round(sw*.801), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.901), (int) Math.round(sh*.871), (int) Math.round(sw*.901), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
+				g.drawLine((int) Math.round(sw*.1001), (int) Math.round(sh*.871), (int) Math.round(sw*.1001), tg.getY()-tg.getSize(), Color.GREEN, 255, 12, paint10);
 			}
 
 			if (tgDeath){
@@ -1263,21 +1326,21 @@ public class GameScreen extends Screen {
 			if (!topFreeze)
 				launchCol = Color.GRAY;
 
-			g.drawCircFill(lane, 1005, 40, launchCol, 100);
-			g.drawCircFill(lane*2, 1005, 40, launchCol, 100);
-			g.drawCircFill(lane*3, 1005, 40, launchCol, 100);
-			g.drawCircFill(lane*4, 1005, 40, launchCol, 100);
-			g.drawCircFill(lane*5, 1005, 40, launchCol, 100);
-			g.drawCircFill(lane*6, 1005, 40, launchCol, 100);
-			g.drawCircFill(lane*7, 1005, 40, launchCol, 100);
+			g.drawCircFill(lane, Math.round(sh*.83), Math.round(sw*.05), launchCol, 100);
+			g.drawCircFill(lane*2, Math.round(sh*.83), Math.round(sw*.05), launchCol, 100);
+			g.drawCircFill(lane*3, Math.round(sh*.83), Math.round(sw*.05), launchCol, 100);
+			g.drawCircFill(lane*4, Math.round(sh*.83), Math.round(sw*.05), launchCol, 100);
+			g.drawCircFill(lane*5, Math.round(sh*.83), Math.round(sw*.05), launchCol, 100);
+			g.drawCircFill(lane*6, Math.round(sh*.83), Math.round(sw*.05), launchCol, 100);
+			g.drawCircFill(lane*7, Math.round(sh*.83), Math.round(sw*.05), launchCol, 100);
 
 			if (freeze||topFreeze) {
-				g.drawImage(elecBase.getImage(), 604, 1055);
-				g.drawImage(elecBase2.getImage(), 64, 1055);
+				g.drawImage(elecBase.getImage(), (int) Math.round(sw*.76), (int) Math.round(sh*.88));
+				g.drawImage(elecBase2.getImage(), (int) Math.round(sw*.08), (int) Math.round(sh*.88));
 				elecBase.update(10);
 				elecBase2.update(10);
-				if (baseGrowth <= 125)
-					baseGrowth+=35;
+				if (baseGrowth <= Math.round(sw*.16))
+					baseGrowth+=Math.round(sw*.043);
 
 				int buttonCol = 0;
 				if (!topFreeze)
@@ -1285,12 +1348,12 @@ public class GameScreen extends Screen {
 				if (topFreeze)
 					buttonCol = Color.YELLOW;
 
-				g.drawCircOut(130, 1120, baseGrowth+5, buttonCol, 10, 140);
-				g.drawCircOut(130, 1120, (baseGrowth/5)*4+5, buttonCol, 10, 140);
-				g.drawCircOut(130, 1120, (baseGrowth/5)*3+5, buttonCol, 10, 140);
-				g.drawCircOut(670, 1120, baseGrowth+5, buttonCol, 10, 120);
-				g.drawCircOut(670, 1120, (baseGrowth/5)*4+5, buttonCol, 10, 140);
-				g.drawCircOut(670, 1120, (baseGrowth/5)*3+5, buttonCol, 10, 140);
+				g.drawCircOut(Math.round(sw*.163), Math.round(sh*.93), baseGrowth+Math.round(sw*.006), buttonCol, (int) Math.round(sw*.013), 140);
+				g.drawCircOut(Math.round(sw*.163), Math.round(sh*.93), (baseGrowth/5)*4+Math.round(sw*.006), buttonCol, (int) Math.round(sw*.013), 140);
+				g.drawCircOut(Math.round(sw*.163), Math.round(sh*.93), (baseGrowth/5)*3+Math.round(sw*.006), buttonCol, (int) Math.round(sw*.013), 140);
+				g.drawCircOut(Math.round(sw*.84), Math.round(sh*.93), baseGrowth+Math.round(sw*.006), buttonCol, (int) Math.round(sw*.013), 120);
+				g.drawCircOut(Math.round(sw*.84), Math.round(sh*.93), (baseGrowth/5)*4+Math.round(sw*.006), buttonCol, (int) Math.round(sw*.013), 140);
+				g.drawCircOut(Math.round(sw*.84), Math.round(sh*.93), (baseGrowth/5)*3+Math.round(sw*.006), buttonCol, (int) Math.round(sw*.013), 140);
 			}
 
 			//LIGHTNING
@@ -1298,27 +1361,27 @@ public class GameScreen extends Screen {
 				if (lightningDuration < 20){
 
 					paint13.setAlpha(200-lightningDuration*10);
-					g.drawString("-"+ String.valueOf(10*scoreMult), killx, killy-15, paint13);
+					g.drawString("-"+ String.valueOf(10*scoreMult), killx, killy-(int)Math.round(sw*.019), paint13);
 
-					g.drawLine(100, 977, killx, killy+39, Color.BLUE, 200-lightningDuration*10, 12);
-					g.drawLine(200, 977, killx, killy+39, Color.BLUE, 200-lightningDuration*10, 12);
-					g.drawLine(300, 977, killx, killy+39, Color.BLUE, 200-lightningDuration*10, 12);
-					g.drawLine(400, 977, killx, killy+39, Color.BLUE, 200-lightningDuration*10, 12);
-					g.drawLine(500, 977, killx, killy+39, Color.BLUE, 200-lightningDuration*10, 12);
-					g.drawLine(600, 977, killx, killy+39, Color.BLUE, 200-lightningDuration*10, 12);
-					g.drawLine(700, 977, killx, killy+39, Color.BLUE, 200-lightningDuration*10, 12);
+					g.drawLine(lane,   (int)Math.round(sh*.81), killx, killy+(int)Math.round(sw*.048), Color.BLUE, 200-lightningDuration*10, 12);
+					g.drawLine(lane*2, (int)Math.round(sh*.81), killx, killy+(int)Math.round(sw*.048), Color.BLUE, 200-lightningDuration*10, 12);
+					g.drawLine(lane*3, (int)Math.round(sh*.81), killx, killy+(int)Math.round(sw*.048), Color.BLUE, 200-lightningDuration*10, 12);
+					g.drawLine(lane*4, (int)Math.round(sh*.81), killx, killy+(int)Math.round(sw*.048), Color.BLUE, 200-lightningDuration*10, 12);
+					g.drawLine(lane*5, (int)Math.round(sh*.81), killx, killy+(int)Math.round(sw*.048), Color.BLUE, 200-lightningDuration*10, 12);
+					g.drawLine(lane*6, (int)Math.round(sh*.81), killx, killy+(int)Math.round(sw*.048), Color.BLUE, 200-lightningDuration*10, 12);
+					g.drawLine(lane*7, (int)Math.round(sh*.81), killx, killy+(int)Math.round(sw*.048), Color.BLUE, 200-lightningDuration*10, 12);
 
-					g.drawCircFill(lane, 1005, 35, Color.BLUE, 200-lightningDuration*10);
-					g.drawCircFill(lane*2, 1005, 35, Color.BLUE, 200-lightningDuration*10);
-					g.drawCircFill(lane*3, 1005, 35, Color.BLUE, 200-lightningDuration*10);
-					g.drawCircFill(lane*4, 1005, 35, Color.BLUE, 200-lightningDuration*10);
-					g.drawCircFill(lane*5, 1005, 35, Color.BLUE, 200-lightningDuration*10);
-					g.drawCircFill(lane*6, 1005, 35, Color.BLUE, 200-lightningDuration*10);
-					g.drawCircFill(lane*7, 1005, 35, Color.BLUE, 200-lightningDuration*10);
+					g.drawCircFill(lane, (int)Math.round(sh*.83), (int)Math.round(sw*.043), Color.BLUE, 200-lightningDuration*10);
+					g.drawCircFill(lane*2, (int)Math.round(sh*.83), (int)Math.round(sw*.043), Color.BLUE, 200-lightningDuration*10);
+					g.drawCircFill(lane*3, (int)Math.round(sh*.83), (int)Math.round(sw*.043), Color.BLUE, 200-lightningDuration*10);
+					g.drawCircFill(lane*4, (int)Math.round(sh*.83), (int)Math.round(sw*.043), Color.BLUE, 200-lightningDuration*10);
+					g.drawCircFill(lane*5, (int)Math.round(sh*.83), (int)Math.round(sw*.043), Color.BLUE, 200-lightningDuration*10);
+					g.drawCircFill(lane*6, (int)Math.round(sh*.83), (int)Math.round(sw*.043), Color.BLUE, 200-lightningDuration*10);
+					g.drawCircFill(lane*7, (int)Math.round(sh*.83), (int)Math.round(sw*.043), Color.BLUE, 200-lightningDuration*10);
 
 					if (typePass)
-						g.drawImage(Assets.pos, tcx-40, tcy, 200-lightningDuration*10);
-					else g.drawImage(Assets.neg, tcx-40, tcy, 200-lightningDuration*10);
+						g.drawImage(Assets.pos, tcx-(int)Math.round(sw*.05), tcy, 200-lightningDuration*10);
+					else g.drawImage(Assets.neg, tcx-(int)Math.round(sw*.05), tcy, 200-lightningDuration*10);
 
 					if (lightningDuration == 1)
 						g.drawRect(0, 0, g.getWidth()+1, g.getHeight()+1, Color.rgb(255,215,0));
@@ -1340,8 +1403,8 @@ public class GameScreen extends Screen {
 						i = 0;
 					}
 					paint8.setAlpha(255-freezeDur);
-					g.drawRect2(-5, 0, g.getWidth()+5, i, Color.rgb(255,215,0), paint8);
-					g.drawCircOut(400, 0, i*50, Color.YELLOW, 10, 255-freezeDur);
+					g.drawRect2(-5, 0, g.getWidth(), i, Color.rgb(255,215,0), paint8);
+					g.drawCircOut((int)Math.round(sw*.5), 0, i*50, Color.YELLOW, 10, 255-freezeDur);
 					freezeDur++;
 				}
 				else {
@@ -1397,6 +1460,8 @@ public class GameScreen extends Screen {
 		////g.drawImage(rings2, 0, 950);			
 		//g.restoreCanvas();
 	}
+	
+	
 	private void nullify() {
 
 		// Set all variables to null. You will be recreating them in the

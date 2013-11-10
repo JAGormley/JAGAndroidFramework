@@ -90,29 +90,92 @@ public class LoadingScreen extends Screen {
 		//		Assets.instr9 = g.newImage("instr9.png", ImageFormat.RGB565);
 		//		Assets.instrPause = g.newImage("instrPAUSE2.png", ImageFormat.ARGB8888);
 
-
-
-		//UNCOMMENT:
-
+		
+		
 		Assets.pos = g.newImage("pos1.png", ImageFormat.ARGB8888);
 		Assets.neg = g.newImage("neg2.png", ImageFormat.ARGB8888);				
 		Assets.alarm1 = g.newImage("alarm1b.png", ImageFormat.ARGB8888);
 		Assets.alarm2 = g.newImage("alarm2b.png", ImageFormat.ARGB8888);
 //
-		Assets.elecbase1 = g.newImage("elecbuttonNEG1.png", ImageFormat.ARGB8888);
-		Assets.elecbase2 = g.newImage("elecbuttonNEG2.png", ImageFormat.ARGB8888);
-		Assets.elecbase3 = g.newImage("elecbuttonNEG3.png", ImageFormat.ARGB8888);
-		Assets.elecbase4 = g.newImage("elecbuttonNEG4.png", ImageFormat.ARGB8888);
-		Assets.elecbase5 = g.newImage("elecbuttonNEG5.png", ImageFormat.ARGB8888);
-		Assets.elecbase6 = g.newImage("elecbuttonNEG6.png", ImageFormat.ARGB8888);
-		Assets.elecbasea = g.newImage("elecbuttonPOS1b.png", ImageFormat.ARGB8888);
-		Assets.elecbaseb = g.newImage("elecbuttonPOS2b.png", ImageFormat.ARGB8888);
-		Assets.elecbasec = g.newImage("elecbuttonPOS3b.png", ImageFormat.ARGB8888);
-		Assets.elecbased = g.newImage("elecbuttonPOS4b.png", ImageFormat.ARGB8888);
-		Assets.elecbasee = g.newImage("elecbuttonPOS5b.png", ImageFormat.ARGB8888);
-		Assets.elecbasef = g.newImage("elecbuttonPOS6b.png", ImageFormat.ARGB8888);
+		
+		//PBASE
+		Assets.pbase0 = g.newImage("elecbuttonPOS1.png", ImageFormat.ARGB8888);
+		Assets.pbase1 = g.newImage("elecbuttonPOS2.png", ImageFormat.ARGB8888);
+		Assets.pbase2 = g.newImage("elecbuttonPOS2b.png", ImageFormat.ARGB8888);
+		Assets.pbase3 = g.newImage("elecbuttonPOS3.png", ImageFormat.ARGB8888);
+		Assets.pbase4 = g.newImage("elecbuttonPOS4.png", ImageFormat.ARGB8888);
+		Assets.pbase5 = g.newImage("elecbuttonPOS5.png", ImageFormat.ARGB8888);
+		Assets.pbase6 = g.newImage("elecbuttonPOS6.png", ImageFormat.ARGB8888);
+		Assets.pbase7 = g.newImage("elecbuttonPOS7.png", ImageFormat.ARGB8888);
+		Assets.pbase8 = g.newImage("elecbuttonPOS8.png", ImageFormat.ARGB8888);
+		Assets.pbase9 = g.newImage("elecbuttonPOS9.png", ImageFormat.ARGB8888);
+		Assets.pbase10 = g.newImage("elecbuttonPOS10.png", ImageFormat.ARGB8888);
+		Assets.pbase11 = g.newImage("elecbuttonPOS11.png", ImageFormat.ARGB8888);
+		Assets.pbase12 = g.newImage("elecbuttonPOS12.png", ImageFormat.ARGB8888);
+		Assets.pbase13 = g.newImage("elecbuttonPOS13.png", ImageFormat.ARGB8888);
+		Assets.pbase14 = g.newImage("elecbuttonPOS14.png", ImageFormat.ARGB8888);
+		Assets.pbase15 = g.newImage("elecbuttonPOS15.png", ImageFormat.ARGB8888);
+		Assets.pbase16 = g.newImage("elecbuttonPOS16.png", ImageFormat.ARGB8888);
+		Assets.pbase17 = g.newImage("elecbuttonPOS17.png", ImageFormat.ARGB8888);
+		Assets.pbase18 = g.newImage("elecbuttonPOS18.png", ImageFormat.ARGB8888);
+		
+		Assets.pbase19 = g.newImage("elecbuttonPOS19.png", ImageFormat.ARGB8888);
+		Assets.pbase20 = g.newImage("elecbuttonPOS20.png", ImageFormat.ARGB8888);
+		Assets.pbase21 = g.newImage("elecbuttonPOS21.png", ImageFormat.ARGB8888);
+		Assets.pbase22 = g.newImage("elecbuttonPOS22.png", ImageFormat.ARGB8888);
+		Assets.pbase23 = g.newImage("elecbuttonPOS23.png", ImageFormat.ARGB8888);
+		Assets.pbase24 = g.newImage("elecbuttonPOS24.png", ImageFormat.ARGB8888);
+		Assets.pbase25 = g.newImage("elecbuttonPOS25.png", ImageFormat.ARGB8888);
+		Assets.pbase26 = g.newImage("elecbuttonPOS26.png", ImageFormat.ARGB8888);
+		Assets.pbase27 = g.newImage("elecbuttonPOS27.png", ImageFormat.ARGB8888);
+		Assets.pbase28 = g.newImage("elecbuttonPOS28.png", ImageFormat.ARGB8888);
+		Assets.pbase29 = g.newImage("elecbuttonPOS29.png", ImageFormat.ARGB8888);
+		Assets.pbase30 = g.newImage("elecbuttonPOS30.png", ImageFormat.ARGB8888);
+		Assets.pbase31 = g.newImage("elecbuttonPOS31.png", ImageFormat.ARGB8888);
+		Assets.pbase32 = g.newImage("elecbuttonPOS32.png", ImageFormat.ARGB8888);
+		Assets.pbase33 = g.newImage("elecbuttonPOS33.png", ImageFormat.ARGB8888);
+		Assets.pbase34 = g.newImage("elecbuttonPOS34.png", ImageFormat.ARGB8888);
+		Assets.pbase35 = g.newImage("elecbuttonPOS35.png", ImageFormat.ARGB8888);
 
-
+		//NBASE		
+		Assets.nbase0 = g.newImage("elecbuttonNEG0.png", ImageFormat.ARGB8888);
+		Assets.nbase1 = g.newImage("elecbuttonNEG1.png", ImageFormat.ARGB8888);
+		Assets.nbase2 = g.newImage("elecbuttonNEG2.png", ImageFormat.ARGB8888);
+		Assets.nbase3 = g.newImage("elecbuttonNEG3.png", ImageFormat.ARGB8888);
+		Assets.nbase4 = g.newImage("elecbuttonNEG4.png", ImageFormat.ARGB8888);
+		Assets.nbase5 = g.newImage("elecbuttonNEG5.png", ImageFormat.ARGB8888);
+		Assets.nbase6 = g.newImage("elecbuttonNEG6.png", ImageFormat.ARGB8888);
+		Assets.nbase7 = g.newImage("elecbuttonNEG7.png", ImageFormat.ARGB8888);
+		Assets.nbase8 = g.newImage("elecbuttonNEG8.png", ImageFormat.ARGB8888);
+		Assets.nbase9 = g.newImage("elecbuttonNEG9.png", ImageFormat.ARGB8888);
+		Assets.nbase10 = g.newImage("elecbuttonNEG10.png", ImageFormat.ARGB8888);
+		Assets.nbase11 = g.newImage("elecbuttonNEG11.png", ImageFormat.ARGB8888);
+		Assets.nbase12 = g.newImage("elecbuttonNEG12.png", ImageFormat.ARGB8888);
+		Assets.nbase13 = g.newImage("elecbuttonNEG13.png", ImageFormat.ARGB8888);
+		Assets.nbase14 = g.newImage("elecbuttonNEG14.png", ImageFormat.ARGB8888);
+		Assets.nbase15 = g.newImage("elecbuttonNEG15.png", ImageFormat.ARGB8888);
+		Assets.nbase16 = g.newImage("elecbuttonNEG16.png", ImageFormat.ARGB8888);
+		Assets.nbase17 = g.newImage("elecbuttonNEG17.png", ImageFormat.ARGB8888);
+		Assets.nbase18 = g.newImage("elecbuttonNEG18.png", ImageFormat.ARGB8888);
+		
+		Assets.nbase19 = g.newImage("elecbuttonNEG19.png", ImageFormat.ARGB8888);
+		Assets.nbase20 = g.newImage("elecbuttonNEG20.png", ImageFormat.ARGB8888);
+		Assets.nbase21 = g.newImage("elecbuttonNEG21.png", ImageFormat.ARGB8888);
+		Assets.nbase22 = g.newImage("elecbuttonNEG22.png", ImageFormat.ARGB8888);
+		Assets.nbase23 = g.newImage("elecbuttonNEG23.png", ImageFormat.ARGB8888);
+		Assets.nbase24 = g.newImage("elecbuttonNEG24.png", ImageFormat.ARGB8888);
+		Assets.nbase25 = g.newImage("elecbuttonNEG25.png", ImageFormat.ARGB8888);
+		Assets.nbase26 = g.newImage("elecbuttonNEG26.png", ImageFormat.ARGB8888);
+		Assets.nbase27 = g.newImage("elecbuttonNEG27.png", ImageFormat.ARGB8888);
+		Assets.nbase28 = g.newImage("elecbuttonNEG28.png", ImageFormat.ARGB8888);
+		Assets.nbase29 = g.newImage("elecbuttonNEG29.png", ImageFormat.ARGB8888);
+		Assets.nbase30 = g.newImage("elecbuttonNEG30.png", ImageFormat.ARGB8888);
+		Assets.nbase31 = g.newImage("elecbuttonNEG31.png", ImageFormat.ARGB8888);
+		Assets.nbase32 = g.newImage("elecbuttonNEG32.png", ImageFormat.ARGB8888);
+		Assets.nbase33 = g.newImage("elecbuttonNEG33.png", ImageFormat.ARGB8888);
+		Assets.nbase34 = g.newImage("elecbuttonNEG34.png", ImageFormat.ARGB8888);
+		Assets.nbase35 = g.newImage("elecbuttonNEG35.png", ImageFormat.ARGB8888);
+		
 		//SOUNDS!
 		Assets.click = game.getAudio().createSound("lightning_strike.ogg");
 		Assets.posPoint = game.getAudio().createSound("POSSOUND.ogg");
