@@ -210,9 +210,7 @@ public class MainMenuScreen extends Screen {
 		//android.os.Process.killProcess(android.os.Process.myPid());
 		if (instr > 0){
 			Assets.click2.play(100);
-			instr--;			
-
-
-		}
+			instr--;
+			}
 	}
 }

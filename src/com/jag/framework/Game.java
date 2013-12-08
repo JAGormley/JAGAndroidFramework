@@ -1,5 +1,7 @@
 package com.jag.framework;
 
+import com.jag.framework.implementation.AndroidFastRenderView;
+
 public interface Game {
 
     public Audio getAudio();
@@ -19,4 +21,5 @@ public interface Game {
     public int getLoadHeight();
     
     public int getLoadWidth();
+    
 }

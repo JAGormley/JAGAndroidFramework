@@ -34,9 +34,10 @@ public abstract class AndroidGame extends Activity implements Game {
 	Screen screen;
 	WakeLock wakeLock;
 	Typeface tf;
-	private boolean sevenTwenty;
 	private int loadWidth;
 	private int loadHeight;
+	public static int actualLoadWidth;
+	public static int actualLoadHeight;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -54,15 +55,16 @@ public abstract class AndroidGame extends Activity implements Game {
 		display.getSize(size);
 		int width = size.x;
 		int height = size.y;
-		loadWidth = width;
-		loadHeight = height;
+		loadWidth = 800;
+		loadHeight = 1205;
+		actualLoadWidth = width;
+		actualLoadHeight = height;
 
 		int frameBufferWidth;
 		int frameBufferHeight;        
 		frameBufferWidth = loadWidth;
 		frameBufferHeight = loadHeight;
-
-
+		
 		Bitmap frameBuffer = Bitmap.createBitmap(frameBufferWidth,
 				frameBufferHeight, Config.RGB_565);
 
@@ -72,7 +74,6 @@ public abstract class AndroidGame extends Activity implements Game {
 				/ getWindowManager().getDefaultDisplay().getHeight();
 
 		renderView = new AndroidFastRenderView(this, frameBuffer);
-		System.out.println(renderView.getHeight());
 		graphics = new AndroidGraphics(getAssets(), frameBuffer);
 		fileIO = new AndroidFileIO(this);
 		audio = new AndroidAudio(this);
@@ -190,9 +191,7 @@ public abstract class AndroidGame extends Activity implements Game {
 	}
 
 
-
 	public Screen getCurrentScreen() {
-
 		return screen;
 	}
 }

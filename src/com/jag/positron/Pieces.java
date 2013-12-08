@@ -55,14 +55,14 @@ public class Pieces {
 				y -= speed;
 
 			} 
-			else if (y < 200&&gamescreen.getTopFreeze()){
+			else if (y < 210&&gamescreen.getTopFreeze()){
 				y -= speed;
 			}
-			else if (y < 200&&!gamescreen.getTopFreeze()){
+			else if (y < 210&&!gamescreen.getTopFreeze()){
 
 				if (type){
 					if (x > scene.getLine()){
-						y -= (y / 13) + 4;
+						y -= (y / 12) + 4;
 					}
 					if (x < scene.getLine()){
 						y -= speed*acc;
@@ -71,7 +71,7 @@ public class Pieces {
 				}
 				if (!type){
 					if (x < scene.getLine()){
-						y -= (y / 13) + 4;
+						y -= (y / 12) + 4;
 					}
 					if (x > scene.getLine()){
 						y -= speed*acc;
@@ -145,7 +145,6 @@ public class Pieces {
 	public boolean isVisible() {
 		return visible;
 	}
-
 	public void setX(int x) {
 		this.x = x;
 	}

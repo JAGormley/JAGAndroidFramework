@@ -16,8 +16,10 @@
         android:label="Positron" >
         <activity
             android:name="com.jag.positron.PosInit"
+            android:layout_gravity="center"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="Positron"
+            android:scaleType="fitXY"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.NoBackground" >
             <intent-filter>

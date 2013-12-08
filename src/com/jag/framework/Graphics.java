@@ -1,6 +1,7 @@
 package com.jag.framework;
 
 
+import com.jag.positron.Fader;
 import com.jag.positron.PosTriangle;
 
 import android.graphics.Bitmap;
@@ -33,6 +34,8 @@ public interface Graphics {
 	public void drawImage(Image Image, int x, int y);
 
 	void drawString(String text, int x, int y, Paint paint);
+	
+	void drawString(String text, int x, int y, Paint p, Fader f);
 
 	public int getWidth();
 
@@ -67,6 +70,7 @@ public interface Graphics {
 	public void drawPosTri(PosTriangle pt, int alph);
 
 	void drawRect(int x, int y, int width, int height, int color, int alpha);
+
 
 	
 

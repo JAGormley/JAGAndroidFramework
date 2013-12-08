@@ -8,6 +8,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.Bitmap.Config;
 import android.util.DisplayMetrics;
 import android.view.Display;
 
@@ -32,13 +33,14 @@ public class LoadingScreen extends Screen {
 	public LoadingScreen(Game game) {
 		super(game);
 		screenH = game.getLoadHeight();
-		screenW = game.getLoadWidth();
+		screenW = game.getLoadWidth();		
 
 	}
 
 	@Override
 	public void update(float deltaTime) {	
 		Graphics g = game.getGraphics();
+		
 		//g.drawString("LOADING", 350, 500, null);
 		//Assets.block = g.newImage("PositronBlock.png", ImageFormat.RGB565);
 		//Assets.menu = g.newImage("menudr3(dr2).png", ImageFormat.ARGB8888);
@@ -189,12 +191,8 @@ public class LoadingScreen extends Screen {
 		Assets.tcDrone = game.getAudio().createMusic("TCdrone.mp3");		
 		Assets.gridDrone = game.getAudio().createMusic("GRIDDRONE.mp3");
 
-
 		game.setScreen(new MainMenuScreen(game));
-
-
-
-	}
+		}
 
 	@Override
 	public void paint(float deltaTime) {

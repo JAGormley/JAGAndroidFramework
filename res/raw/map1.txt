@@ -1,5 +1,4 @@
-! Kilobolt Studios
-! http://kilobolt.com
+
 ! Game Development Tutorial - Unit 3
 ! Q-Bot Level 1
 ! # = Tile Legend 

@@ -22,6 +22,7 @@ import android.graphics.Typeface;
 import com.jag.framework.Graphics;
 import com.jag.framework.Image;
 import com.jag.framework.Graphics.ImageFormat;
+import com.jag.positron.Fader;
 import com.jag.positron.PosTriangle;
 
 public class AndroidGraphics implements Graphics {
@@ -32,9 +33,8 @@ public class AndroidGraphics implements Graphics {
 	Paint paint, paint2, paint3, paint4, paint5;
 	Rect srcRect = new Rect();
 	Rect dstRect = new Rect();
-	
-	
-	
+
+
 	public AndroidGraphics(AssetManager assets, Bitmap frameBuffer) {
 		this.assets = assets;
 		this.frameBuffer = frameBuffer;
@@ -222,7 +222,13 @@ public class AndroidGraphics implements Graphics {
 
 	@Override
 	public void drawString(String text, int x, int y, Paint paint){
-		canvas.drawText(text, x, y, paint);   	
+		canvas.drawText(text, x, y, paint);
+	}
+	
+	@Override
+	public void drawString(String text, int x, int y, Paint p, Fader f) {
+		canvas.drawText(text, x, y, p);
+		
 	}
 
 
@@ -313,9 +319,10 @@ public class AndroidGraphics implements Graphics {
 		p.setAlpha(alph);
 		p.setStrokeWidth(stroke);
 		
-		canvas.drawLine(x, y, x2, y2, p);
-		
+		canvas.drawLine(x, y, x2, y2, p);	
 	}
+
+	
 
 
 }
