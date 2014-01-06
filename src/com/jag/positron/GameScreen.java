@@ -23,6 +23,7 @@ import com.jag.framework.Image;
 import com.jag.framework.Graphics.ImageFormat;
 import com.jag.framework.Input.TouchEvent;
 import com.jag.framework.Screen;
+import com.jag.positron.Tutorial.TutState;
 
 public class GameScreen extends Screen {
 	enum GameState {
@@ -123,7 +124,9 @@ public class GameScreen extends Screen {
 	public boolean frenzy = false;
 
 	public ArrayList<Fader> faders;
-	
+
+	public Animation cougar;
+
 	// private PosTriangle posT;
 
 	public GameScreen(Game game) {
@@ -244,6 +247,13 @@ public class GameScreen extends Screen {
 		magnet.addFrame(Assets.bf3, 100);
 		magnet.addFrame(Assets.bf4, 100);
 		currentMagnet = magnet.getImage();
+		
+		cougar = new Animation();
+		cougar.addFrame(Assets.coug1, 100);
+		cougar.addFrame(Assets.coug2, 100);
+		cougar.addFrame(Assets.coug3, 100);
+		cougar.addFrame(Assets.coug4, 100);
+		cougar.addFrame(Assets.coug5, 100);
 
 		elecBase2 = new Animation();
 		elecBase2.addFrame(Assets.pbase0, 20);
@@ -349,11 +359,6 @@ public class GameScreen extends Screen {
 	public void update(float deltaTime) {
 		touchEvents = game.getInput().getTouchEvents();
 
-		// We have four separate update methods in this example.
-		// Depending on the state of the game, we call different update methods.
-		// Refer to Unit 3's code. We did a similar thing without separating the
-		// update methods.
-
 		if (state == GameState.Ready)
 			updateReady(touchEvents);
 		if (state == GameState.Running)
@@ -384,7 +389,7 @@ public class GameScreen extends Screen {
 		// 1. All touch input is handled here:
 		int len = touchEvents.size();
 
-//		topFreeze = true;
+		//		topFreeze = true;
 
 		// FRENZY UPDATE
 
@@ -668,12 +673,11 @@ public class GameScreen extends Screen {
 				pts.clear();
 				tc = null;
 				currentTG = false;
-				// System.out.println("1"+Assets.tcDrone.isPlaying());
 				Assets.tcDrone.stop();
-				// System.out.println("2"+Assets.tcDrone.isStopped());
-				// Assets.tcDrone.seekBegin();
+
 				currentTC = false;
-			}
+				
+	}
 
 			if ((!touch) && (currentTC))
 				if ((Math.abs(tc.getY() - fingery) < Math.round(sh * .124))
@@ -684,10 +688,7 @@ public class GameScreen extends Screen {
 					tcy = tc.y;
 					tc = null;
 					Assets.TCdeath.play(100);
-					// System.out.println("3"+Assets.tcDrone.isPlaying());
 					Assets.tcDrone.stop();
-					// System.out.println("4"+Assets.tcDrone.isStopped());
-					// Assets.tcDrone.seekBegin();
 					currentTC = false;
 				}
 		}
@@ -798,7 +799,7 @@ public class GameScreen extends Screen {
 			// System.out.println("yep");
 			if (p.getSpeedX() == tempPiece.getSpeedX())
 				getPieces().add(p);
-				
+
 			else
 				tempPiece = p;
 			exitCases = false;
@@ -1085,8 +1086,8 @@ public class GameScreen extends Screen {
 		Graphics g = game.getGraphics();
 		getAlert().update(10);
 		// g.drawRect(0, sh, sw, sh/120, Color.BLACK);
-		
-		
+
+
 
 		// BOARD ELEMENTS / SCORE
 		if (state == GameState.Running) {
@@ -1097,8 +1098,8 @@ public class GameScreen extends Screen {
 				//				g.drawRect(fingerx, 0, g.getWidth() + 3, sh + 5, Color.BLACK);
 				//				g.drawRect(0, 0, fingerx + 2, sh + 2, Color.WHITE);
 				if (!frenzy){
-				f = new Frenzy(sw, sh);
-				frenzy = true;
+					f = new Frenzy(sw, sh);
+					frenzy = true;
 				}
 				g.drawRect(0, 0, g.getWidth() + 3, sh + 2, Color.GRAY,
 						f.getNumber() * 10);
@@ -1122,21 +1123,21 @@ public class GameScreen extends Screen {
 					drawTimer = 0;
 					paint4.setAlpha(255);
 					if ((getAlert().getImage() == Assets.alarm2)
-							&& circleRad > Math.round(sh * .066)) {
+							&& circleRad > 79) {
 						circleRad += 1;
 					}
 					if ((getAlert().getImage() == Assets.alarm1)
-							&& circleRad > Math.round(sh * .066)) {
-						if (circleRad > Math.round(sh * .066) + 1)
+							&& circleRad > 79) {
+						if (circleRad > 80)
 							circleRad -= 1;
 					}
 					g.drawCircFill(fingerx, fingery, circleRad, Color.GRAY,
 							(int) Math.round(sh * .075));
-					g.drawCircOut(fingerx, fingery, circleRad, Color.RED, 5);
+					g.drawCircOut(fingerx, fingery, circleRad, Color.RED, 5, 150);
 					g.drawCircOut(fingerx, fingery, (circleRad / 5) * 4,
-							Color.RED, 5);
+							Color.RED, 5, 150);
 					g.drawCircOut(fingerx, fingery, (circleRad / 5) * 3,
-							Color.RED, 5);
+							Color.RED, 5, 150);
 					g.drawString("-" + String.valueOf(scoreTemp), fingerx,
 							(int) fingery + (int) Math.round(sw * .019), paint4);
 				}
@@ -1183,9 +1184,7 @@ public class GameScreen extends Screen {
 								(int) Math.round(sh * .954), paint3);
 						g.drawString("high " + String.valueOf(postScore),
 								sw / 2, (int) Math.round(sh * .988), paint6);
-						g.drawCircOut(400, 1190, scoreDeathDur * 60, Color.RED,
-								10, 255 - scoreDeathDur * 6);
-
+						failCircle(g);
 						scoreDeathDur++;
 					} else {
 						scoreReset = false;
@@ -1267,7 +1266,7 @@ public class GameScreen extends Screen {
 							p.y - Assets.pos.getHeight()/2);
 					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
 				}
-				
+
 
 				if (p.type == false){
 					g.drawImage(Assets.neg, p.x - Assets.neg.getWidth()/2,
@@ -1299,8 +1298,11 @@ public class GameScreen extends Screen {
 					flashUpdate = 0;
 			}
 			if (tc != null) {
-				g.drawCircBlue(tc.getX(), tc.getY(),
-						(int) Math.round(sh * .075), Color.rgb(255, 215, 0), i);
+//				g.drawCircBlue(tc.getX(), tc.getY(),
+//						(int) Math.round(sh * .075), Color.rgb(255, 215, 0), i);
+				
+				g.drawImage(cougar.getImage(), tc.getX()-cougar.getImage().getWidth()/2, tc.getY()-cougar.getImage().getHeight()/2);	
+				cougar.update(10);
 			}
 
 			// FRENZY DRAW
@@ -1501,15 +1503,22 @@ public class GameScreen extends Screen {
 			for (PosTriangle posT : pts) {
 				if (!posT.getSide()) {
 					if (posT.getX() > Math.round(sh * .083))
-						g.drawPosTri(posT, 280 - (posT.getX() / 3));
+						g.drawImage(Assets.eagleb, posT.getX() - Assets.eagleb.getWidth()/2, 
+								posT.getHeight() - Assets.eagleb.getHeight()/2, 280 - (posT.getX() / 3));
 					else
-						g.drawPosTri(posT, 255);
+						g.drawImage(Assets.eagleb, posT.getX() - Assets.eagleb.getWidth()/2, 
+								posT.getHeight() - Assets.eagleb.getHeight()/2, 255);
+//						g.drawPosTri(posT, 255);
 				}
 				if (posT.getSide())
-					if (posT.getX() < 700)
-						g.drawPosTri(posT, (posT.getX() / 3) - 247);
-					else
-						g.drawPosTri(posT, 255);
+					if (posT.getX() < 700)	{					
+						//						g.drawPosTri(posT, (posT.getX() / 3) - 247);
+						g.drawImage(Assets.eagle, posT.getX() - Assets.eagle.getWidth()/2, 
+								posT.getHeight() - Assets.eagle.getHeight()/2, (posT.getX() / 3) - 247);
+					}
+					else 
+						g.drawImage(Assets.eagle, posT.getX() - Assets.eagle.getWidth()/2, 
+								posT.getHeight() - Assets.eagle.getHeight()/2, 255);
 
 				// g.drawPosTri(1, 200, 255);
 			}
@@ -1693,7 +1702,7 @@ public class GameScreen extends Screen {
 						Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
 
 				paint9.setShader(lg);
-//				g.drawRect2(0, 0, g.getWidth(), 100, Color.BLUE, paint9);
+				//				g.drawRect2(0, 0, g.getWidth(), 100, Color.BLUE, paint9);
 				g.drawLine(0, (int)(j*.01), g.getWidth(), (int)(j*.01), Color.YELLOW, 255, 3, paint9);
 				g.drawLine(0, (int)(j*.2), g.getWidth(), (int)(j*.2), Color.YELLOW, 255, 3, paint9);
 				g.drawLine(0, (int)(j*.4), g.getWidth(), (int)(j*.4), Color.YELLOW, 255, 3, paint9);
@@ -1734,6 +1743,17 @@ public class GameScreen extends Screen {
 		// g.drawCropped(base2);
 		// //g.drawImage(rings2, 0, 950);
 		// g.restoreCanvas();
+	}
+
+	void failCircle(Graphics g){
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 60, Color.RED,
+				10, 255 - scoreDeathDur * 6);
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 68, Color.YELLOW,
+				10, 255 - scoreDeathDur * 6);
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 52, Color.MAGENTA,
+				10, 255 - scoreDeathDur * 6);
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 76, Color.GREEN,
+				10, 255 - scoreDeathDur * 6);
 	}
 
 	private void nullify() {
@@ -1786,7 +1806,7 @@ public class GameScreen extends Screen {
 		Assets.gridDrone.pause();
 		Assets.theme.pause();
 		state = GameState.Paused;
-		
+
 	}
 
 	@Override

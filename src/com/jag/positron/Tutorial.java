@@ -7,6 +7,8 @@ import java.util.Random;
 
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.os.CountDownTimer;
 
 import com.jag.framework.Game;
 import com.jag.framework.Graphics;
@@ -15,18 +17,29 @@ import com.jag.positron.GameScreen.GameState;
 
 public class Tutorial extends GameScreen {
 	enum TutState {
-		One, Two, Three, Four;	
+		One, Two, Three, Four, Five;
 	}
 
-	TutState TState = TutState.One;
+	TutState TState = TutState.Five;
 	public Message m;
 	public Message n;
+	PosTimer ptime;
+	private Paint paintSPRITE;
+	private Paint painty;
+	private boolean TwoB;
+	private Message c;
+	private int destroyCount;
+	private Paint painty2;
 
 	public Tutorial(Game game) {
 		super(game);
 		state = GameState.Running;
 		score = 0;
-
+		paintSPRITE = new Paint();
+		painty = new Paint();
+		painty2 = new Paint();
+		TwoB = false;
+		destroyCount = 0;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -68,6 +81,7 @@ public class Tutorial extends GameScreen {
 			}
 		}
 
+		// TOUCH
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
 
@@ -78,20 +92,24 @@ public class Tutorial extends GameScreen {
 							&& (event.y < fingery + Math.round(sh * .083))
 							&& (event.y > fingery - Math.round(sh * .083))) {
 				lock = false;
-				if (!topFreeze) {
-					if (score - scoreTemp < 0)
-						score = 0;
-					else {
-						score -= scoreTemp;
-					}
-					if (scoreTemp != 0) {
-						scoreTempDraw = scoreTemp;
-						scoreTemp = 0;
+				//TSTATE2||3||4
+				if (TState != TutState.Two && TState != TutState.Three && TState != TutState.Four){
+					if (!topFreeze) {
+						if (score - scoreTemp < 0)
+							score = 0;
+						else {
+							score -= scoreTemp;
+						}
+						if (scoreTemp != 0) {
+							scoreTempDraw = scoreTemp;
+							scoreTemp = 0;
+						}
 					}
 				}
 			}
 
-			if ((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN)
+			if (((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN) 
+					&& TState != TutState.Three)
 					&& !lock) {
 				if (event.y <= Math.round(sh * .83) && !topFreeze){
 					touch = true;
@@ -138,6 +156,8 @@ public class Tutorial extends GameScreen {
 			level = 1;
 			scoreMult = 1;
 			recentInterval = 30;
+			if (TState == TutState.Four)
+				recentInterval = 60;
 			if (levelStart < 68) {
 				nextLevel = true;
 				level1 = false;
@@ -291,7 +311,6 @@ public class Tutorial extends GameScreen {
 		// timeCHARGE
 		if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
 				&& !currentTG) {
-			// if (!currentTC&&tc==null&&scoreMult==1){
 			if (100 > randomInt3 && !topFreeze) {
 				tc = new TimeCharge((randomInt2 + 1) * lane,
 						(int) Math.round(sh * .78), 5);
@@ -321,11 +340,10 @@ public class Tutorial extends GameScreen {
 				pts.clear();
 				tc = null;
 				currentTG = false;
-				// System.out.println("1"+Assets.tcDrone.isPlaying());
-				Assets.tcDrone.stop();
-				// System.out.println("2"+Assets.tcDrone.isStopped());
-				// Assets.tcDrone.seekBegin();
+				Assets.tcDrone.stop();				
 				currentTC = false;
+				if (TState == TutState.Four)
+					destroyCount++;
 			}
 
 			if ((!touch) && (currentTC))
@@ -337,11 +355,10 @@ public class Tutorial extends GameScreen {
 					tcy = tc.y;
 					tc = null;
 					Assets.TCdeath.play(100);
-					// System.out.println("3"+Assets.tcDrone.isPlaying());
 					Assets.tcDrone.stop();
-					// System.out.println("4"+Assets.tcDrone.isStopped());
-					// Assets.tcDrone.seekBegin();
 					currentTC = false;
+					if (TState == TutState.Four)
+						destroyCount++;
 				}
 		}
 
@@ -439,7 +456,8 @@ public class Tutorial extends GameScreen {
 			toothCount = 0;
 		}
 
-		if (TState != TutState.One){
+		if (TState != TutState.One && TState != TutState.Two && TState != TutState.Three 
+				&& TState != TutState.Four && TState != TutState.Five){
 
 			// Pieces
 			if ((randomInt < chanceOfNewPiece) && !recent && !topFreeze) {
@@ -457,8 +475,6 @@ public class Tutorial extends GameScreen {
 				exitCases = false;
 				newPiece = true;
 				freeze = false;
-
-				// System.out.println(pieces);
 				recent = true;
 
 			}
@@ -469,7 +485,7 @@ public class Tutorial extends GameScreen {
 			Pieces p = it.next();
 			//			System.out.println(getPieces().toString());
 
-			if (p.y >= p.getGenPoint() - Math.round(sh * .018) && topFreeze
+			if (p.y >= p.getGenPoint() && topFreeze
 					&& p.wayback && !negPressed && !posPressed && !exitCases) {
 				if (postScore < score) {
 					postScore = score;
@@ -494,19 +510,21 @@ public class Tutorial extends GameScreen {
 				exitCases = true;
 				freezeDur = 0;
 				teeth = false;
-				// System.out.println("yes1");
+				//				 System.out.println("yes1");
 			}
 
 			else if (p.isVisible() && topFreeze && !freeze && p.wayback
 					&& !negPressed && !posPressed && !exitCases) {
 				p.setBackspeed((int) Math.round(sh * .0124));
+				if (TState == TutState.Three && !TwoB)
+					p.setBackspeed(10);
 				p.updateback();
-				//				System.out.println("yes2");
+				//								System.out.println("yes2");
 			}
 
 			else if (p.isVisible() && !p.wayback && !freeze && currentTG
 					&& p.getY() > tg.getY() - tg.getSize() && !exitCases) {
-				System.out.println("yes3");
+				//								System.out.println("yes3");
 				p.setY((int) ((tg.getY() - tg.getSize()) - Math
 						.round(sh * .017)));
 				// if (currentTG){
@@ -515,7 +533,6 @@ public class Tutorial extends GameScreen {
 				gridY = p.getY();
 				newGridPiece = true;
 
-				// }
 			}
 
 			else if (p.isVisible() && !p.wayback && !freeze && !exitCases) {
@@ -531,11 +548,11 @@ public class Tutorial extends GameScreen {
 						}
 					}
 				}
-
+				if (TState == TutState.Three && ptime != null){
+					ptime.update();				
+				}
 				p.update();
-				newPiece = false;
-
-				// System.out.println("yes4");
+				newPiece = false;				
 			}
 
 			else if (p.wayback && negPressed && !exitCases) {
@@ -557,17 +574,29 @@ public class Tutorial extends GameScreen {
 					killy = p.y;
 					lightning = true;
 					it.remove();
+					if (TState == TutState.Three)
+						destroyCount++;
+					if (ptime != null)
+						ptime = null;
 
 				}
 				if (!p.type) {
 					it.remove();
+					if (ptime != null)
+						ptime = null;
 					this.fail();
+					if (TState == TutState.Three && destroyCount > 0)
+						destroyCount--;
 				}
 			} else if (p.wayback && posPressed) {
 
 				if (p.type) {
 					it.remove();
+					if (ptime != null)
+						ptime = null;
 					this.fail();
+					if (TState == TutState.Three && destroyCount > 0)
+						destroyCount--;
 				}
 				if (!p.type) {
 					if (score - 10 * scoreMult < 0) {
@@ -581,31 +610,67 @@ public class Tutorial extends GameScreen {
 					killx = p.x;
 					killy = p.y;
 					it.remove();
+					if (TState == TutState.Three)
+						destroyCount++;
+					if (ptime != null)
+						ptime = null;
 					freeze = false;
 					posPressed = false;
 					lightning = true;
 					Assets.click.play(150);
 				}
-
-			} else if (!topFreeze && p.isVisible() && p.wayback && !freeze
+			} 
+			else if (!topFreeze && p.isVisible() && p.wayback && !freeze
 					&& !exitCases && !newPiece) {
-				if (scoreMult <= 15)
-					p.setBackspeed(25);
-				if (scoreMult > 15)
-					p.setBackspeed(30);
-				p.updateback();
-				freeze = true;
-				// System.out.println("yes7");
+
+				if (TState == TutState.Two && ptime.getTrigger()){
+					it.remove();
+					if (score > 0)
+						score--;
+					freeze = false;
+					ptime = null;
+					paintSPRITE.setAlpha(255);					
+				}
+				else {
+					if (scoreMult <= 15)
+						if (TState != TutState.Three)
+							p.setBackspeed(25);
+					if (TState == TutState.Three && !TwoB)
+						p.setBackspeed(10);
+					if (scoreMult > 15)
+						p.setBackspeed(30);
+					p.updateback();
+					freeze = true;
+					if (TState == TutState.Two && ptime != null){
+						ptime.update();						
+					}
+					//					System.out.println("yes7");
+				}
 			}
 
 			else if (p.isVisible() && freeze && !exitCases && p.wayback) {
-				if (scoreMult <= 15)
-					p.setBackspeed(25);
-				if (scoreMult > 15)
-					p.setBackspeed(30);
-				p.updateback();
-
-				// System.out.println("yes7b");
+				//TSTATE2
+				if (TState == TutState.Two && ptime.getTrigger()){
+					it.remove();
+					if (score > 0)
+						score -= 1;
+					freeze = false;
+					ptime = null;
+					paintSPRITE.setAlpha(255);				
+				}		
+				else{	
+					if (scoreMult <= 15)
+						p.setBackspeed(25);
+					if (TState == TutState.Three && !TwoB)
+						p.setBackspeed(10);
+					if (scoreMult > 15)
+						p.setBackspeed(30);
+					p.updateback();
+					if (TState == TutState.Two && ptime != null){
+						ptime.update();						
+					}
+					//					System.out.println("yes7b");
+				}
 			}
 
 			else if (p.y < Math.round(sh * .008)) {
@@ -616,18 +681,16 @@ public class Tutorial extends GameScreen {
 					Assets.negPoint.play(40);
 
 				it.remove();
+				if (ptime != null)
+					ptime = null;
 				freeze = false;
 				wrongButton = false;
-				// System.out.println("yes8");
 
 			}
-			// else if (p.y > 950&&p.wayback){
-			// System.out.println("yes9");
-			// }
 
 			// FINAL
 			else if (!exitCases
-					&& p.y >= p.getGenPoint() - Math.round(sh * .012)) {
+					&& p.y >= p.getGenPoint()) {
 				if (postScore < score) {
 					postScore = score;
 					newHigh = true;
@@ -644,6 +707,8 @@ public class Tutorial extends GameScreen {
 				topFreeze = false;
 				freezeDur = 0;
 				it.remove();
+				if (ptime != null)
+					ptime = null;
 				freeze = false;
 				wrongButton = false;
 				exitCases = true;
@@ -665,12 +730,11 @@ public class Tutorial extends GameScreen {
 
 
 		// BOARD ELEMENTS / SCORE
-		if (state == GameState.Running) {
-
+		if (state == GameState.Running) {			
 			int fingerx = scene.getLine();
 
 			if (topFreeze) {
-				if (!frenzy){
+				if (!frenzy && TState != TutState.Four){
 					f = new Frenzy(sw, sh);
 					frenzy = true;
 				}
@@ -680,9 +744,7 @@ public class Tutorial extends GameScreen {
 						(int) Math.round(sh * .954), paint3);
 				g.drawString("high " + String.valueOf(postScore), sw / 2,
 						(int) Math.round(sh * .99), paint6);
-
 			}
-
 
 			Random randomGenerator = new Random();
 			int randomInt = randomGenerator.nextInt(6);
@@ -698,38 +760,48 @@ public class Tutorial extends GameScreen {
 					baseGrowth = 0;
 				}
 
-				if (touch){
-					if (TState == TutState.One && pieces.size() == 0){
-						pieces.add(new Pieces((randomInt + 1) * lane,
-								(int) Math.round(sh * .8), randomBool, this));
-					}
-				}
-				if (!touch) {					
+				if (!touch) {				
 					drawTimer = 0;
 					paint4.setAlpha(255);
-					if ((getAlert().getImage() == Assets.alarm2)
-							&& circleRad > Math.round(sh * .066)) {
-						circleRad += 1;
-					}
-					if ((getAlert().getImage() == Assets.alarm1)
-							&& circleRad > Math.round(sh * .066)) {
-						if (circleRad > Math.round(sh * .066) + 1)
-							circleRad -= 1;
-					}
-					g.drawCircFill(fingerx, fingery, circleRad, Color.GRAY,
-							(int) Math.round(sh * .075));
-					g.drawCircOut(fingerx, fingery, circleRad, Color.RED, 5);
-					g.drawCircOut(fingerx, fingery, (circleRad / 5) * 4,
-							Color.RED, 5);
-					g.drawCircOut(fingerx, fingery, (circleRad / 5) * 3,
-							Color.RED, 5);
+					if(TState != TutState.Three){
+						if ((getAlert().getImage() == Assets.alarm2)
+								&& circleRad > 79) {
+							circleRad += 1;
+						}
+						if ((getAlert().getImage() == Assets.alarm1)
+								&& circleRad > 79) {
+							if (circleRad > 80)
+								circleRad -= 1;
+						}
 
-					//SCORE STUFF
-					if (TState != TutState.One){
+						g.drawCircFill(fingerx, fingery, circleRad, Color.GRAY,
+								(int) Math.round(sh * .075));
+						g.drawCircOut(fingerx, fingery, circleRad, Color.RED, 5, 150);
+						g.drawCircOut(fingerx, fingery, (circleRad / 5) * 4,
+								Color.RED, 5, 150);
+						g.drawCircOut(fingerx, fingery, (circleRad / 5) * 3,
+								Color.RED, 5, 150);
+					}
+
+					if (TState == TutState.Three){
+						g.drawImage(Assets.lock, screenwidth/2 - Assets.lock.getWidth()/2, (int) (screenheight*.7) - Assets.lock.getHeight()/2 - 3);
+						g.drawCircFill(screenwidth/2, (float) (screenheight*7), circleRad, Color.GRAY,
+								(int) Math.round(sh * .075));
+						g.drawCircOut(screenwidth/2, (float) (screenheight*.7), circleRad, Color.RED, 5, 150);
+						g.drawCircOut(screenwidth/2, (float) (screenheight*.7), (circleRad / 5) * 4,
+								Color.RED, 5, 150);
+						g.drawCircOut(screenwidth/2, (float) (screenheight*.7), (circleRad / 5) * 3,
+								Color.RED, 5, 150);
+					}
+				}
+
+				//SCORE STUFF
+				if (TState != TutState.One && TState != TutState.Three && TState != TutState.Four){
+					if (TState != TutState.Two){
 						g.drawString("-" + String.valueOf(scoreTemp), fingerx,
 								(int) fingery + (int) Math.round(sw * .019), paint4);
 
-						if (touch == true) {							
+						if (touch == true) {					
 							if (drawTimer < 40) {
 								paint4.setAlpha(200 - drawTimer * 4);
 								g.drawString("-" + String.valueOf(scoreTempDraw),
@@ -739,100 +811,114 @@ public class Tutorial extends GameScreen {
 								drawTimer += 1;
 							}
 						}
+					}
+					if (!scoreReset && TState != TutState.Three && TState != TutState.Four) {
 
-						if (!scoreReset) {
-
+						g.drawString(String.valueOf(score), sw / 2,
+								(int) Math.round(sh * .954), paint3);
+						g.drawString(String.valueOf(score), sw / 2,
+								(int) Math.round(sh * .954), paint3);
+						g.drawString("high " + String.valueOf(postScore), sw / 2,
+								(int) Math.round(sh * .988), paint6);
+					}
+					if (scoreReset) {
+						paint3.setColor(Color.RED);
+						paint6.setColor(Color.RED);
+						if (scoreDeathDur < 40) {
+							paint11.setAlpha(255 - scoreDeathDur * 6);
+							paint12.setAlpha(255 - scoreDeathDur * 6);
+							if (newHigh) {
+								g.drawString("NEW HIGH SCORE!", sw / 2,
+										(int) Math.round(sh * .349), paint11);
+								g.drawString(String.valueOf(postScore), sw / 2,
+										(int) Math.round(sh * .456), paint12);
+							} else {
+								g.drawString("YA BLEW IT!", sw / 2,
+										(int) Math.round(sh * .349), paint11);
+								g.drawString(String.valueOf(tempyScore), sw / 2,
+										(int) Math.round(sh * .456), paint12);
+							}
 							g.drawString(String.valueOf(score), sw / 2,
 									(int) Math.round(sh * .954), paint3);
-							g.drawString("high " + String.valueOf(postScore), sw / 2,
-									(int) Math.round(sh * .988), paint6);
-
-						}
-						if (scoreReset) {
-
-							paint3.setColor(Color.RED);
-							paint6.setColor(Color.RED);
-							if (scoreDeathDur < 40) {
-								paint11.setAlpha(255 - scoreDeathDur * 6);
-								paint12.setAlpha(255 - scoreDeathDur * 6);
-								if (newHigh) {
-									g.drawString("NEW HIGH SCORE!", sw / 2,
-											(int) Math.round(sh * .349), paint11);
-									g.drawString(String.valueOf(postScore), sw / 2,
-											(int) Math.round(sh * .456), paint12);
-								} else {
-									g.drawString("YA BLEW IT!", sw / 2,
-											(int) Math.round(sh * .349), paint11);
-									g.drawString(String.valueOf(tempyScore), sw / 2,
-											(int) Math.round(sh * .456), paint12);
-								}
-
-								g.drawString(String.valueOf(score), sw / 2,
-										(int) Math.round(sh * .954), paint3);
-								g.drawString("high " + String.valueOf(postScore),
-										sw / 2, (int) Math.round(sh * .988), paint6);
-								g.drawCircOut(400, 1190, scoreDeathDur * 60, Color.RED,
-										10, 255 - scoreDeathDur * 6);
-
-								scoreDeathDur++;
-							} else {
-								scoreReset = false;
-								paint3.setColor(Color.BLUE);
-								paint6.setColor(Color.BLUE);
-								scoreDeathDur = 0;
-								newHigh = false;
-							}
-						}
-					}
-
-					if (nextLevel && scoreMult > 1) {
-						if (levelStart < 70) {
-							paint5.setAlpha(255 - (levelStart * 3));
-							paint7.setAlpha(255 - (levelStart * 3));
-							g.drawString(String.valueOf(scoreMult), g.getWidth() / 2,
-									(int) (g.getHeight() / 2 - Math.round(sh * .083)),
-									paint5);
-							if (scoreMult == 1) {
-								g.drawString(
-										"x",
-										(g.getWidth() / 2)
-										- (int) Math.round(sw * .063), (int) (g
-												.getHeight() / 2 - Math
-												.round(sh * .083)), paint7);
-							}
-							if ((scoreMult > 1) && (scoreMult < 10)) {
-								g.drawString(
-										"x",
-										(g.getWidth() / 2)
-										- (int) Math.round(sw * .086), (int) (g
-												.getHeight() / 2 - Math
-												.round(sh * .083)), paint7);
-							}
-							if ((scoreMult >= 10) && (scoreMult < 20)) {
-								g.drawString(
-										"x",
-										(g.getWidth() / 2)
-										- (int) Math.round(sw * .113), (int) (g
-												.getHeight() / 2 - Math
-												.round(sh * .083)), paint7);
-							}
-							if ((scoreMult >= 20)) {
-								g.drawString(
-										"x",
-										(g.getWidth() / 2) - (int) Math.round(sw * .15),
-										(int) (g.getHeight() / 2 - Math
-												.round(sh * .083)), paint7);
-							}
-							levelStart++;
+							g.drawString("high " + String.valueOf(postScore),
+									sw / 2, (int) Math.round(sh * .988), paint6);
+							this.failCircle(g);
+							scoreDeathDur++;
+						} else {
+							scoreReset = false;
+							paint3.setColor(Color.BLUE);
+							paint6.setColor(Color.BLUE);
+							scoreDeathDur = 0;
+							newHigh = false;
 						}
 					}
 				}
+				if (scoreReset && TState == TutState.Three) {
+					paint3.setColor(Color.RED);
+					paint6.setColor(Color.RED);
+					if (scoreDeathDur < 40) {
+						paint11.setAlpha(255 - scoreDeathDur * 6);
+						paint12.setAlpha(255 - scoreDeathDur * 6);
+						g.drawString("YA BLEW IT!", sw / 2,
+								(int) Math.round(sh * .349), paint11);		
+						this.failCircle(g);
+
+						scoreDeathDur++;
+					} else {
+						scoreReset = false;
+						paint3.setColor(Color.BLUE);
+						paint6.setColor(Color.BLUE);
+						scoreDeathDur = 0;
+						newHigh = false;
+					}
+				}
+				if (nextLevel && scoreMult > 1) {
+					if (levelStart < 70) {
+						paint5.setAlpha(255 - (levelStart * 3));
+						paint7.setAlpha(255 - (levelStart * 3));
+						g.drawString(String.valueOf(scoreMult), g.getWidth() / 2,
+								(int) (g.getHeight() / 2 - Math.round(sh * .083)),
+								paint5);
+						if (scoreMult == 1) {
+							g.drawString(
+									"x",
+									(g.getWidth() / 2)
+									- (int) Math.round(sw * .063), (int) (g
+											.getHeight() / 2 - Math
+											.round(sh * .083)), paint7);
+						}
+						if ((scoreMult > 1) && (scoreMult < 10)) {
+							g.drawString(
+									"x",
+									(g.getWidth() / 2)
+									- (int) Math.round(sw * .086), (int) (g
+											.getHeight() / 2 - Math
+											.round(sh * .083)), paint7);
+						}
+						if ((scoreMult >= 10) && (scoreMult < 20)) {
+							g.drawString(
+									"x",
+									(g.getWidth() / 2)
+									- (int) Math.round(sw * .113), (int) (g
+											.getHeight() / 2 - Math
+											.round(sh * .083)), paint7);
+						}
+						if ((scoreMult >= 20)) {
+							g.drawString(
+									"x",
+									(g.getWidth() / 2) - (int) Math.round(sw * .15),
+									(int) (g.getHeight() / 2 - Math
+											.round(sh * .083)), paint7);
+						}
+						levelStart++;
+					}
+				}
 			}
-
 			// SPRITES
+			for (Pieces p : getPieces()) 
+			{
 
-			for (Pieces p : getPieces()) {
-
+				//SWITCHED
 				if (p.getSwitched() && !p.wayback) {
 					if (p.type) {
 						p.updateTimer();
@@ -851,24 +937,76 @@ public class Tutorial extends GameScreen {
 							p.resetSwitched();
 					}
 				}
+
 				if (p.type == true){
 					g.drawImage(Assets.pos, p.x - Assets.pos.getWidth()/2,
-							p.y - Assets.pos.getHeight()/2);
-					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
+							p.y - Assets.pos.getHeight()/2, paintSPRITE);
+					// TSTATE2
+					if (TState == TutState.Two && !p.wayback && !TwoB){
+						Paint painty = new Paint();
+						painty.setTypeface(Assets.font);
+						painty.setTextSize(Math.round(sh * .05));
+						painty.setTextAlign(Paint.Align.CENTER);
+						painty.setAntiAlias(true);
+						painty.setColor(Color.MAGENTA);
+						if (p.x < scene.getLine()){							
+							g.drawString("yep", p.x, p.y+(int)Math.round(sh *.1), painty);
+						}
+						if (p.x > scene.getLine()){							
+							g.drawString("nope", p.x, p.y+(int)Math.round(sh *.1), painty);
+						}						
+					}
+					// TSTATE3
+					if (TState == TutState.Three){
+						if (ptime == null)					
+							ptime = new PosTimer(255);
+						if (ptime != null && (ptime.getRemainingMillis())>10 && ptime.getRemainingMillis()<10000){
+							paintSPRITE.setAlpha((int) (255-ptime.getRemainingMillis()));
+						}
+					}
 				}
 
-
 				if (p.type == false){
+
 					g.drawImage(Assets.neg, p.x - Assets.neg.getWidth()/2,
-							p.y - Assets.neg.getHeight()/2);
-					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
+							p.y - Assets.neg.getHeight()/2, paintSPRITE);
+					// TSTATE2
+					if (TState == TutState.Two && !p.wayback && !TwoB){
+						Paint painty = new Paint();
+						painty.setTypeface(Assets.font);
+						painty.setTextSize(Math.round(sh * .05));
+						painty.setTextAlign(Paint.Align.CENTER);
+						painty.setAntiAlias(true);
+						painty.setColor(Color.MAGENTA);
+						if (p.x < scene.getLine()){							
+							g.drawString("nope", p.x, p.y+(int)Math.round(sh *.1), painty);
+						}
+						if (p.x > scene.getLine()){							
+							g.drawString("yep", p.x, p.y+(int)Math.round(sh *.1), painty);
+						}
+					}
+					// TSTATE3
+					if (TState == TutState.Three){
+						if (ptime == null)					
+							ptime = new PosTimer(255);
+						if (ptime != null && (ptime.getRemainingMillis())>10 && ptime.getRemainingMillis()<10000){
+							paintSPRITE.setAlpha((int) (255-ptime.getRemainingMillis()));
+						}
+					}
 				}
 
 				if (p.wayback) {
-					if (getAlert().getImage() == Assets.alarm2 && !topFreeze) {
-						g.drawCircOut(p.x, p.y,
-								(int) Math.round(sh * .03), Color.RED,
-								(int) Math.round(sh * .013));
+					if (TState != TutState.Two){
+						if (getAlert().getImage() == Assets.alarm2 && !topFreeze) {
+							g.drawCircOut(p.x, p.y,
+									(int) Math.round(sh * .03), Color.RED,
+									(int) Math.round(sh * .013));
+						}
+					}
+					if (TState == TutState.Two){
+						if (ptime == null)					
+							ptime = new PosTimer(350);
+						paintSPRITE.setAlpha((int) (ptime.getRemainingMillis()/4));
 					}
 				}
 				if (p.wayback) {
@@ -888,8 +1026,11 @@ public class Tutorial extends GameScreen {
 					flashUpdate = 0;
 			}
 			if (tc != null) {
-				g.drawCircBlue(tc.getX(), tc.getY(),
-						(int) Math.round(sh * .075), Color.rgb(255, 215, 0), i);
+//				g.drawCircBlue(tc.getX(), tc.getY(),
+//						(int) Math.round(sh * .075), Color.rgb(255, 215, 0), i);
+				
+				g.drawImage(cougar.getImage(), tc.getX()-cougar.getImage().getWidth()/2, tc.getY()-cougar.getImage().getHeight()/2);	
+				cougar.update(10);
 			}
 
 			// FRENZY DRAW
@@ -1094,13 +1235,10 @@ public class Tutorial extends GameScreen {
 
 				// g.drawPosTri(1, 200, 255);
 			}
-
-
 			// LAUNCHERS
 			int launchCol = 0;
 			if (!topFreeze){
 				launchCol = Color.GRAY;
-
 				g.drawCircFill(lane, Math.round(sh * .83), 
 						Math.round(sw * .05), launchCol, 100);
 				g.drawCircFill(lane * 2, Math.round(sh * .83),
@@ -1117,7 +1255,7 @@ public class Tutorial extends GameScreen {
 						Math.round(sw * .05), launchCol, 100);
 			}
 
-			if (TState != TutState.One){
+			if (TState != TutState.One && TState != TutState.Two){
 				if (freeze) {
 					g.drawImage(elecBase.getImage(), (int) Math.round(sw * .76),
 							(int) Math.round(sh * .88));
@@ -1159,8 +1297,9 @@ public class Tutorial extends GameScreen {
 					if (lightningDuration < 20) {
 
 						paint13.setAlpha(200 - lightningDuration * 10);
-						g.drawString("-" + String.valueOf(10 * scoreMult), killx,
-								killy - (int) Math.round(sw * .019), paint13);
+						if (TState != TutState.Three)
+							g.drawString("-" + String.valueOf(10 * scoreMult), killx,
+									killy - (int) Math.round(sw * .019), paint13);
 
 						g.drawLine(lane, (int) Math.round(sh * .81), killx, killy
 								+ (int) Math.round(sw * .048), Color.BLUE,
@@ -1264,39 +1403,315 @@ public class Tutorial extends GameScreen {
 				lg = new LinearGradient(sh / 2, -(sh / 240), sh / 2,
 						(float) (sh * .033) + Math.round(j)/2, Color.BLUE,
 						Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
-
+				//				System.out.println("CR: " + circleRad);
 				paint9.setShader(lg);
-				g.drawLine(0, (int)(j*.01), g.getWidth(), (int)(j*.01), Color.YELLOW, 255, 3, paint9);
-				g.drawLine(0, (int)(j*.2), g.getWidth(), (int)(j*.2), Color.YELLOW, 255, 3, paint9);
-				g.drawLine(0, (int)(j*.4), g.getWidth(), (int)(j*.4), Color.YELLOW, 255, 3, paint9);
-				g.drawLine(0, (int)(j*.6), g.getWidth(), (int)(j*.6), Color.YELLOW, 255, 3, paint9);
-				g.drawLine(0, (int)(j*.8), g.getWidth(), (int)(j*.8), Color.YELLOW, 255, 3, paint9);
-				g.drawLine(0, (int)j, g.getWidth(), (int)j, Color.YELLOW, 255, 3, paint9);
+				g.drawLine(0, (int)(j*.01), g.getWidth(), (int)(j*.01), Color.BLUE, 255, 3, paint9);
+				g.drawLine(0, (int)(j*.2), g.getWidth(), (int)(j*.2), Color.BLUE, 255, 3, paint9);
+				g.drawLine(0, (int)(j*.4), g.getWidth(), (int)(j*.4), Color.BLUE, 255, 3, paint9);
+				g.drawLine(0, (int)(j*.6), g.getWidth(), (int)(j*.6), Color.BLUE, 255, 3, paint9);
+				g.drawLine(0, (int)(j*.8), g.getWidth(), (int)(j*.8), Color.BLUE, 255, 3, paint9);
+				g.drawLine(0, (int)j, g.getWidth(), (int)j, Color.BLUE, 255, 3, paint9);
 				magnet.update(10);
 			}
-
 			// NEW TUTSTUFF
 
+			// TSTATE ONE
 			if (TState == TutState.One){
-				
-				if (m == null)
-					m = new Message(sw/2, 500, 2, 1 , "NICE ONE", g, Color.RED);
-				m.drawMessage();
-				
-				if (n == null)
-					n = new Message(fingerx, (int) (fingery-(circleRad+Math.round(sh * .066))), 
-							2, 1, "MOVE THIS!", g, Color.GREEN);
-				if (n != null && n.isAlive()){					
+				if (n == null){
+					n = new Message(fingerx, (int) (fingery- (sh*.1)), 
+							100, 1f, "MOVE THIS!", .075f, g, Color.MAGENTA);
+					ptime = new PosTimer(3000); 
+					fingery = (float) (sh*.75);
+				}
+
+				if (n != null && n.isAlive()){
+					if (touch && ptime!=null){
+						ptime.update();
+					}
 					n.drawMessage();
 					n.setX(fingerx);
-					n.setY((int) fingery);
+					n.setY((int) (int) (fingery- (sh*.1)));
+					if (ptime.getTrigger()){
+						n.triggerFade();
+					}
 				}
-				else n = null;
+				else {
+					if (m == null){
+						m = new Message(sw/2, (int)(.415*sh), 1f, .5f , "NICE ONE", .1f, g, Color.RED);
+						// PLAY SUCCESS BOOM					
+					}
+					m.drawMessage();
+					m.growM(.2f);
+					if (!m.isAlive()){
+						TState = TutState.Two;
+						n = null;
+						m = null;
+						ptime = null;
+					}
+				}
 			}
-			
-			
-			//fix
 
+			// TSTATE TWO
+			if (TState == TutState.Two){
+
+				if (m == null)
+					m = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "GET POINTS!", .1f, g, Color.MAGENTA);						
+				if (m.isAlive())
+					m.drawMessage();
+
+				else			
+					if (score < 15){
+						if (pieces.size() == 0){
+							pieces.add(new Pieces((randomInt + 1) * lane,
+									(int) Math.round(sh * .8), randomBool, this));
+							painty.setTypeface(Assets.font);
+							painty.setTextSize(Math.round(sh * .6));
+							painty.setTextAlign(Paint.Align.CENTER);
+							painty.setAntiAlias(true);
+							painty.setColor(Color.CYAN);
+						}					
+						painty.setAlpha(score * 9);
+						g.drawString(String.valueOf(score), sw/2, sh/2, painty);
+					}
+					else{
+						if (n == null){
+							if (!TwoB)
+								n = new Message(sw/2, (int)(.415*sh), 1f, .5f , "YA DID IT", .1f, g, Color.RED);
+							else 
+								n = new Message(sw/2, (int)(.415*sh), 1f, .5f , "WHOA.", .1f, g, Color.RED);
+							// PLAY SUCCESS BOOM
+						}
+						int alp = (int) (score * 9 - n.elapsedTime*100);
+						if (alp < 0)
+							alp = 0;
+						painty.setAlpha(alp);
+						g.drawString(String.valueOf(score), sw/2, sh/2, painty);
+						n.drawMessage();
+						n.growM(.2f);					
+						if (!n.isAlive()){
+							ptime = null;							
+							if (TwoB){
+								TState = TutState.Three;
+								n = null;
+								m = null;
+								ptime = null;
+								TwoB = false;
+							}
+							else{
+								if (c == null){
+									String s = "NO MORE HELPING";
+									c = new Message(sw/2, (int)(sh*.415) , 1f, .5f, s, .075f, g, Color.MAGENTA);
+								}
+								if (c.isAlive())
+									c.drawMessage();
+								else{
+									TwoB = true;
+									score = 0;
+									n = null;
+									c = null;
+								}
+							}
+						}
+					}
+			}
+			// TSTATE THREE
+			if (TState == TutState.Three){
+				// THINGS: lock mover, neg on white // pos on black
+				// slow down the back speed
+				scene.setLine(sw/2);
+				if (destroyCount < 10){
+					int alp = destroyCount*20;
+					painty.setAlpha(alp);				
+					g.drawString(String.valueOf(destroyCount), sw/2, sh/2, painty);
+				}
+
+				if (m == null){
+					m = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "IF YOU MISS...", .075f, g, Color.MAGENTA);	
+				}
+				if (m.isAlive())
+					m.drawMessage();
+
+				else 
+					if (destroyCount < 10){
+
+						if (pieces.size() == 0){
+							pieces.add(new Pieces((randomInt + 1) * lane,
+									(int) Math.round(sh * .8), randomBool, this));
+							if (!pieces.get(0).type){
+								pieces.get(0).x = lane*2;
+							}
+							if (pieces.get(0).type){
+								pieces.get(0).x = lane*6;
+							}
+							pieces.get(0).setY((int)(sh*.350));
+							pieces.get(0).wayback = false;
+							exitCases = false;					
+							freeze = false;
+							ptime = null;
+							paintSPRITE.setAlpha(0);
+							painty.setTypeface(Assets.font);
+							painty.setTextSize(Math.round(sh * .6));
+							painty.setTextAlign(Paint.Align.CENTER);
+							painty.setAntiAlias(true);
+							painty.setColor(Color.CYAN);
+						}
+					}
+
+					else {
+						if (c == null){
+							if (!TwoB)
+								c = new Message(sw/2, (int)(sh*.415), 1f, .5f, "FASTERRRRR", .1f, g, Color.MAGENTA);
+							else
+								c = new Message(sw/2, (int)(sh*.415), 1f, .5f, "YEEEAAA", .1f, g, Color.MAGENTA);
+						}
+						int alp2 = (int) (destroyCount*20 - c.elapsedTime*200);
+						if (alp2 < 0)
+							alp2 = 0;
+						painty.setAlpha(alp2);
+						g.drawString("10", sw/2, sh/2, painty);
+						c.drawMessage();
+						c.growM(.2f);
+						if (!c.isAlive()){
+							if (!TwoB){
+								TwoB = true;
+								destroyCount = 0;
+								c = null;
+							}
+							else{
+								TState = TutState.Four;
+								n = null;
+								m = null;
+								c = null;
+								ptime = null;
+								TwoB = false;
+								destroyCount = 0;
+							}
+						}
+					}
+
+				if (pieces.size() != 0){
+					if (pieces.get(0).type && n == null)
+						n = new Message((int) Math.round(sw * .84), (int) Math.round(sh * .95) , 20f, .62f, "HERE", .05f, g, Color.MAGENTA);
+					if (!pieces.get(0).type && n == null)
+						n = new Message((int) Math.round(sw * .16), (int) Math.round(sh * .95) , 20f, .62f, "HERE", .05f, g, Color.MAGENTA);
+					if (n.isAlive() && pieces.get(0).wayback){
+						n.drawMessage();
+						float grower;
+						if (!TwoB) grower = 3f;
+						else grower = 6f;
+						n.growM(grower);						
+					}
+					else n = null;
+				}
+			}
+
+			// TSTATE FOUR
+			if (TState == TutState.Four){
+				if (!touch){
+					ptime = null;
+					painty.setAlpha(0);
+				}
+				painty2.setTypeface(Assets.font);
+				painty2.setTextSize(Math.round(sh * .6));
+				painty2.setTextAlign(Paint.Align.CENTER);
+				painty2.setAntiAlias(true);
+				painty2.setColor(Color.CYAN);
+				if (destroyCount < 10){
+					int alp = destroyCount*20;
+					painty2.setAlpha(alp);				
+					g.drawString(String.valueOf(destroyCount), sw/2, sh/2, painty2);
+				}
+				if (m == null){
+					m = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "DESTROY THESE!", .075f, g, Color.RED);	
+				}		
+				if (m.isAlive())
+					m.drawMessage();
+				else {
+					if (!currentTC && destroyCount < 10){
+						tc = new TimeCharge((randomInt + 1) * lane,
+								(int) Math.round(sh * .78), 5);
+						Assets.tcDrone.play();
+						currentTC = true;
+						painty.setTypeface(Assets.font);
+						painty.setTextSize(Math.round(sh * .075));
+						painty.setTextAlign(Paint.Align.CENTER);
+						painty.setAntiAlias(true);
+						painty.setColor(Color.MAGENTA);
+					}
+					else if (currentTC) {
+						int liftX = tc.getX();
+						if (liftX > sw*.65)
+							liftX = (int) (sw*.65);
+						if (liftX < sw*.35)
+							liftX = (int) (sw*.35);
+
+						if (touch && fingerx < tc.getX()+(sw*.2) && fingerx > tc.getX()-(sw*.2) 
+								&& fingery < tc.getY()+(sw*.2) && fingery > tc.getY()-(sw*.2)){
+							if (ptime == null)
+								ptime = new PosTimer(255);
+							if (!ptime.getTrigger())
+								ptime.update();
+							int minusALP = (int) ptime.getRemainingMillis();
+							if (minusALP > 230)
+								minusALP = 230;
+							painty.setAlpha((int) (230-minusALP));
+							g.drawString("LIFT!", tc.getX(), (int) (tc.getY()+(sw*.3)), painty);
+						}
+					}
+				}
+				if (destroyCount == 10){
+					if (c == null)
+						c = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "YEP.", .075f, g, Color.RED);
+					if (c.isAlive()){
+						int alp2 = (int) (destroyCount*20 - c.elapsedTime*200);
+						if (alp2 < 0)
+							alp2 = 0;
+						painty2.setAlpha(alp2);
+						g.drawString("10", sw/2, sh/2, painty2);
+						c.drawMessage();
+						c.growM(.2f);
+					}
+					else{
+						TState = TutState.Five;
+						n = null;
+						m = null;
+						c = null;
+						ptime = null;
+						TwoB = false;
+						destroyCount = 0;					
+					}
+				}
+			}
+			if (TState == TutState.Five){
+
+				if (m == null){
+					m = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "NOW EVERYTHING!", .075f, g, Color.RED);
+				}
+				
+				if (m.isAlive())
+					m.drawMessage();
+				
+				if (ptime == null)
+					ptime = new PosTimer(500);								
+				
+				else if (ptime.getTrigger() && !freeze){
+					pieces.add(new Pieces((randomInt + 1) * lane,
+							(int) Math.round(sh * .8), randomBool, this));
+
+					ptime = null;
+					freeze = false;
+					exitCases = false;
+					newPiece = true;
+					recent = true;
+				}
+				if (ptime != null){
+				ptime.update();
+				
+				System.out.println(ptime.getRemainingMillis());
+				}
+				
+//				System.out.println("freeze: " + freeze);
+			}
 		}
 
 		if (state == GameState.Ready)
@@ -1308,4 +1723,19 @@ public class Tutorial extends GameScreen {
 		if (state == GameState.GameOver)
 			drawGameOverUI();
 	}
+
+	void failCircle(Graphics g){
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 60, Color.RED,
+				10, 255 - scoreDeathDur * 6);
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 68, Color.YELLOW,
+				10, 255 - scoreDeathDur * 6);
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 52, Color.MAGENTA,
+				10, 255 - scoreDeathDur * 6);
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 76, Color.GREEN,
+				10, 255 - scoreDeathDur * 6);
+	}
 }
+
+
+// TigerHeadTopFreeze
+// 

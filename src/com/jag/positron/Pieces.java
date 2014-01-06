@@ -84,7 +84,7 @@ public class Pieces {
 
 	public void updateback(){
 
-		if (y > (genPoint-40)){
+		if (y > (genPoint)){
 			visible = false;
 			wayback = false;
 		}

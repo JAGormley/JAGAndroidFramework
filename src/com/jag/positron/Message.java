@@ -24,18 +24,26 @@ public class Message {
 	private boolean alive;
 	float startTime;
 	float elapsedTime;
+	private float fadeTime;
+	private float textSize;
 	private float nonFadeTime;
+	private float origTSize;
+	private boolean firstUpdate;
 
-	public Message (int x, int y, float nonFadeTime, float fadeTime, String text, Graphics g, int colour){
+	public Message (int x, int y, float nonFadeTime, float fadeTime, String text, float textSize, Graphics g, int colour){
 		this.g = g;
 		this.text = text;
-		startTime = SystemClock.elapsedRealtime();
+		this.fadeTime = fadeTime;
+		this.nonFadeTime = nonFadeTime;
 		this.nonFadeTime= nonFadeTime; 
+		firstUpdate = true;
 		mX = x;
 		mY = y;
 		this.colour = colour;
+		this.textSize = Math.round(GameScreen.screenheight * textSize);
+		this.origTSize = Math.round(GameScreen.screenheight * textSize);
 		p.setTypeface(Assets.font);
-		p.setTextSize(Math.round(GameScreen.screenheight * .1));
+		p.setTextSize(Math.round(GameScreen.screenheight * textSize));
 		p.setTextAlign(Paint.Align.CENTER);
 		p.setAntiAlias(true);	
 		p.setColor(colour);
@@ -44,6 +52,10 @@ public class Message {
 	}
 	
 	public void drawMessage(){
+		if (firstUpdate){
+			startTime = SystemClock.elapsedRealtime();
+			firstUpdate = false;
+		}
 		elapsedTime = (SystemClock.elapsedRealtime() - startTime)/1000;
 		if (elapsedTime < nonFadeTime){
 //			System.out.println("elTime: "+elapsedTime);
@@ -52,11 +64,18 @@ public class Message {
 		else if (f.isAlive()){
 		p.setShader(new LinearGradient(f.getStart(), mY, f.getEnd(), mY, colour, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP));
 		g.drawString(text, mX, mY, p);
-		f.update();
-		
-		
+		f.update();		
 	}
 		else alive = false;
+	}
+	
+	/** grow the word by this percent of its original size
+	 **/
+	public void growM(float totalGrowthPercent){
+		float tempDiv = (elapsedTime/(nonFadeTime+fadeTime));
+		textSize = origTSize+((totalGrowthPercent*origTSize)*tempDiv);
+		
+		p.setTextSize(textSize);
 	}
 	
 	public void setX(int x){
@@ -67,5 +86,11 @@ public class Message {
 	}
 	public boolean isAlive(){
 		return alive;
+	}
+	public void triggerFade(){
+		nonFadeTime = 0;
+	}
+	public void setMAlpha(int alpha){
+		p.setAlpha(alpha);
 	}
 }

@@ -66,6 +66,8 @@ public interface Graphics {
 	public void drawCircOut(float cx,float cy,float radius,int color, int stroke, int alpha);
 
 	public void drawImage(Image Image, int x, int y, int alpha);
+	
+	public void drawImage(Image Image, int x, int y, Paint p);
 
 	public void drawPosTri(PosTriangle pt, int alph);
 

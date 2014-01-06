@@ -35,7 +35,6 @@ public class MainMenuScreen extends Screen {
 		menu.addFrame(Assets.menu7, 150);
 		Assets.theme = game.getAudio().createMusic("positheme3.mp3");
 		Assets.theme.setLooping(true);
-
 		loaded = false;
 		}
 
@@ -65,11 +64,24 @@ public class MainMenuScreen extends Screen {
 				//START GAME
 				Assets.click.play(100);
 				Assets.theme.stop();
-				game.setScreen(new Tutorial(game));
+				Assets.coug1 = g.newImage("coug1b.png", ImageFormat.RGB565);
+				Assets.coug2 = g.newImage("coug2b.png", ImageFormat.RGB565);
+				Assets.coug3 = g.newImage("coug3b.png", ImageFormat.RGB565);
+				Assets.coug4 = g.newImage("coug4b.png", ImageFormat.RGB565);
+				Assets.coug5 = g.newImage("coug5b.png", ImageFormat.RGB565);
+				Assets.mFace = g.newImage("face.png", ImageFormat.RGB565);
+				game.setScreen(new GameScreen(game));
 			}
 			if (event.x > game.getLoadWidth()/2 && event.y > game.getLoadHeight()*.79 && event.y < game.getLoadHeight()*.9 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
-				instr = 1;
 				Assets.click2.play(100);
+				Assets.coug1 = g.newImage("coug1b.png", ImageFormat.RGB565);
+				Assets.coug2 = g.newImage("coug2b.png", ImageFormat.RGB565);
+				Assets.coug3 = g.newImage("coug3b.png", ImageFormat.RGB565);
+				Assets.coug4 = g.newImage("coug4b.png", ImageFormat.RGB565);
+				Assets.coug5 = g.newImage("coug5b.png", ImageFormat.RGB565);
+				Assets.mFace = g.newImage("face.png", ImageFormat.RGB565);
+				game.setScreen(new Tutorial(game));
+				
 			}
 			
 			if (event.x > game.getLoadWidth()*.69 && event.y < game.getLoadHeight()*.21 && event.type == TouchEvent.TOUCH_UP && instr != 0 && loaded){

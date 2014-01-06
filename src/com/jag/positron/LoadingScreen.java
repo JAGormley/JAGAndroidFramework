@@ -44,8 +44,11 @@ public class LoadingScreen extends Screen {
 		//g.drawString("LOADING", 350, 500, null);
 		//Assets.block = g.newImage("PositronBlock.png", ImageFormat.RGB565);
 		//Assets.menu = g.newImage("menudr3(dr2).png", ImageFormat.ARGB8888);
+		
+		Assets.lock = g.newImage("lock.png", ImageFormat.RGB565);
 
 		//IMGS!!
+		
 		if (screenH > 1000){
 			Assets.loadScreen = g.newImage("LOADSCREEN.png", ImageFormat.ARGB8888);
 			g.drawImage(Assets.loadScreen, 0, 0);
@@ -63,8 +66,7 @@ public class LoadingScreen extends Screen {
 			Assets.pauseScreen = g.newImage("PAUSESCREEN.png", ImageFormat.RGB565);
 
 		}
-		else {
-			
+		else {			
 			Assets.loadScreen = g.newImage("LOADSCREENs.png", ImageFormat.RGB565);
 			g.drawImage(Assets.loadScreen, 0, 0);	
 			
@@ -93,7 +95,8 @@ public class LoadingScreen extends Screen {
 		//		Assets.instrPause = g.newImage("instrPAUSE2.png", ImageFormat.ARGB8888);
 
 		
-		
+		Assets.eagle = g.newImage("eagle.png", ImageFormat.ARGB8888);
+		Assets.eagleb = g.newImage("eagleb.png", ImageFormat.ARGB8888);
 		Assets.pos = g.newImage("pos1.png", ImageFormat.ARGB8888);
 		Assets.neg = g.newImage("neg2.png", ImageFormat.ARGB8888);				
 		Assets.alarm1 = g.newImage("alarm1b.png", ImageFormat.ARGB8888);
@@ -177,6 +180,8 @@ public class LoadingScreen extends Screen {
 		Assets.nbase33 = g.newImage("elecbuttonNEG33.png", ImageFormat.ARGB8888);
 		Assets.nbase34 = g.newImage("elecbuttonNEG34.png", ImageFormat.ARGB8888);
 		Assets.nbase35 = g.newImage("elecbuttonNEG35.png", ImageFormat.ARGB8888);
+		
+		
 		
 		//SOUNDS!
 		Assets.click = game.getAudio().createSound("lightning_strike.ogg");

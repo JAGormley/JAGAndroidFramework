@@ -250,8 +250,8 @@ public class AndroidGraphics implements Graphics {
 
 	@SuppressLint("NewApi")
 	@Override
-	public void drawImage(Image Image, int x, int y) {
-		canvas.drawBitmap(((AndroidImage)Image).bitmap, x, y, null);
+	public void drawImage(Image Image, int x, int y, Paint p) {
+		canvas.drawBitmap(((AndroidImage)Image).bitmap, x, y, p);
 	}
 	
 	@SuppressLint("NewApi")
@@ -322,7 +322,10 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawLine(x, y, x2, y2, p);	
 	}
 
-	
-
+	@SuppressLint("NewApi")
+	@Override
+	public void drawImage(Image Image, int x, int y) {
+		canvas.drawBitmap(((AndroidImage)Image).bitmap, x, y, null);
+	}
 
 }

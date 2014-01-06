@@ -27,18 +27,16 @@ public class Fader {
 		}
 		if (alive)
 		elapsedTime =  (SystemClock.elapsedRealtime() - startTime)/1000;
-//		System.out.println("elTime "+elapsedTime);
 	}
 
 	public float getStart() {
-//		System.out.println("start "+ (textStart-textRadius));
 		return textStart+textRadius - elapsedTime*textRadius*4;
 	}
 
 	public float getEnd() {
 		if (elapsedTime < fadeTime){
-//			System.out.println("end "+(textStart+textRadius - elapsedTime*textRadius*2/fadeTime	));
-			return textStart+textRadius*3 - elapsedTime*textRadius*4/fadeTime;			
+
+			return (float) (textStart+textRadius*3 - elapsedTime*textRadius*4/fadeTime);
 		}
 		else{			
 			alive = false;
