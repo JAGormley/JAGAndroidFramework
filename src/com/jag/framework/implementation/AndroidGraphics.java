@@ -58,7 +58,8 @@ public class AndroidGraphics implements Graphics {
 			config = Config.ARGB_8888;
 
 		Options options = new Options();
-		options.inPreferredConfig = config; 
+		options.inPreferredConfig = config;
+		options.inDither = false;
 //		if (fileName.contains("instr")){
 //			options.inSampleSize = 8;
 //		}
@@ -264,20 +265,33 @@ public class AndroidGraphics implements Graphics {
 
 
 	public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight){
-
-
 		srcRect.left = srcX;
 		srcRect.top = srcY;
 		srcRect.right = srcX + srcWidth;
 		srcRect.bottom = srcY + srcHeight;
-
-
+		
 		dstRect.left = x;
 		dstRect.top = y;
 		dstRect.right = x + width;
 		dstRect.bottom = y + height;  
 
 		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, null);       
+	}
+	
+	public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, int alpha){
+		srcRect.left = srcX;
+		srcRect.top = srcY;
+		srcRect.right = srcX + srcWidth;
+		srcRect.bottom = srcY + srcHeight;
+		
+		dstRect.left = x;
+		dstRect.top = y;
+		dstRect.right = x + width;
+		dstRect.bottom = y + height;  
+
+		paint = new Paint();
+		paint.setAlpha(alpha);
+		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, paint);       
 	}
 	
 	public void drawScaledImagewPaint(Image Image, int x, int y, int width, int height,

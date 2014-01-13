@@ -26,8 +26,10 @@ public class PosTimer {
 			currentTime = SystemClock.elapsedRealtime();
 			gapTime = currentTime - endTime;
 			breakTime += Math.round(gapTime/100)*100;
-		}	
-			elapsedTime = (currentTime - startTime - breakTime);	
+		}
+			elapsedTime = (currentTime - startTime - breakTime);
+			if (elapsedTime < 0)
+				elapsedTime = 0;
 		
 		if (elapsedTime > length){
 			trigger = true;
@@ -41,6 +43,8 @@ public class PosTimer {
 	}
 
 	public double getRemainingMillis(){
+		System.out.println("length: " + length);
+		System.out.println("eTime: " + elapsedTime);
 		return (length - elapsedTime);
 	}
 

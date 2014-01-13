@@ -69,7 +69,7 @@ public class MainMenuScreen extends Screen {
 				Assets.coug3 = g.newImage("coug3b.png", ImageFormat.RGB565);
 				Assets.coug4 = g.newImage("coug4b.png", ImageFormat.RGB565);
 				Assets.coug5 = g.newImage("coug5b.png", ImageFormat.RGB565);
-				Assets.mFace = g.newImage("face.png", ImageFormat.RGB565);
+				Assets.mFace = g.newImage("face2.gif", ImageFormat.RGB565);
 				game.setScreen(new GameScreen(game));
 			}
 			if (event.x > game.getLoadWidth()/2 && event.y > game.getLoadHeight()*.79 && event.y < game.getLoadHeight()*.9 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
@@ -79,7 +79,7 @@ public class MainMenuScreen extends Screen {
 				Assets.coug3 = g.newImage("coug3b.png", ImageFormat.RGB565);
 				Assets.coug4 = g.newImage("coug4b.png", ImageFormat.RGB565);
 				Assets.coug5 = g.newImage("coug5b.png", ImageFormat.RGB565);
-				Assets.mFace = g.newImage("face.png", ImageFormat.RGB565);
+				Assets.mFace = g.newImage("face2.gif", ImageFormat.ARGB4444);
 				game.setScreen(new Tutorial(game));
 				
 			}

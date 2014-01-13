@@ -61,7 +61,6 @@ public class LoadingScreen extends Screen {
 			Assets.menu6 = g.newImage("newMenu6.png", ImageFormat.RGB565);
 			Assets.menu7 = g.newImage("newMenu7.png", ImageFormat.RGB565);
 
-
 			Assets.rdscreen = g.newImage("RDSCREEN.png", ImageFormat.ARGB8888);
 			Assets.pauseScreen = g.newImage("PAUSESCREEN.png", ImageFormat.RGB565);
 

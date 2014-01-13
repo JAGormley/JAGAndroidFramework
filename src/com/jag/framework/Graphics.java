@@ -73,6 +73,9 @@ public interface Graphics {
 
 	void drawRect(int x, int y, int width, int height, int color, int alpha);
 
+	public void drawScaledImage(Image mFace, int i, int j, int sw, int sh,
+			int k, int l, int width, int height, int i2);
+
 
 	
 

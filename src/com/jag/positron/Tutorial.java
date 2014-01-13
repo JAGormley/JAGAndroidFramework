@@ -20,7 +20,7 @@ public class Tutorial extends GameScreen {
 		One, Two, Three, Four, Five;
 	}
 
-	TutState TState = TutState.Five;
+	TutState TState = TutState.Four;
 	public Message m;
 	public Message n;
 	PosTimer ptime;
@@ -120,7 +120,7 @@ public class Tutorial extends GameScreen {
 				if (topFreeze) {
 					touch = true;
 					scene.setLine(event.x);
-					fingery = event.y;
+					fingery = event.y;			
 					circleRad = 0;
 				}
 			}
@@ -460,7 +460,7 @@ public class Tutorial extends GameScreen {
 				&& TState != TutState.Four && TState != TutState.Five){
 
 			// Pieces
-			if ((randomInt < chanceOfNewPiece) && !recent && !topFreeze) {
+			if ((randomInt < chanceOfNewPiece) && !recent) {
 				Pieces p = new Pieces((randomInt2 + 1) * lane,
 						(int) Math.round(sh * .8), randomBool, this);
 				if (currentTG) {
@@ -734,17 +734,22 @@ public class Tutorial extends GameScreen {
 			int fingerx = scene.getLine();
 
 			if (topFreeze) {
-				if (!frenzy && TState != TutState.Four){
-					f = new Frenzy(sw, sh);
-					frenzy = true;
+				g.drawImage(Assets.mFace, 0, 0);
+				if(drawFace == 1){
+					g.drawImage(Assets.mFace, 0,0);
+				drawFace = 0;
 				}
-				g.drawRect(0, 0, g.getWidth() + 3, sh + 2, Color.GRAY,
-						f.getNumber() * 10);
+				else {
+					drawFace++;	
+					g.drawImage(Assets.mFace, 11, 11);
+				}
+				tLock.drawLock();
 				g.drawString(String.valueOf(score), sw / 2,
 						(int) Math.round(sh * .954), paint3);
 				g.drawString("high " + String.valueOf(postScore), sw / 2,
 						(int) Math.round(sh * .99), paint6);
 			}
+
 
 			Random randomGenerator = new Random();
 			int randomInt = randomGenerator.nextInt(6);
@@ -1026,9 +1031,9 @@ public class Tutorial extends GameScreen {
 					flashUpdate = 0;
 			}
 			if (tc != null) {
-//				g.drawCircBlue(tc.getX(), tc.getY(),
-//						(int) Math.round(sh * .075), Color.rgb(255, 215, 0), i);
-				
+				//				g.drawCircBlue(tc.getX(), tc.getY(),
+				//						(int) Math.round(sh * .075), Color.rgb(255, 215, 0), i);
+
 				g.drawImage(cougar.getImage(), tc.getX()-cougar.getImage().getWidth()/2, tc.getY()-cougar.getImage().getHeight()/2);	
 				cougar.update(10);
 			}
@@ -1256,7 +1261,7 @@ public class Tutorial extends GameScreen {
 			}
 
 			if (TState != TutState.One && TState != TutState.Two){
-				if (freeze) {
+				if (freeze || topFreeze) {
 					g.drawImage(elecBase.getImage(), (int) Math.round(sw * .76),
 							(int) Math.round(sh * .88));
 					g.drawImage(elecBase2.getImage(), (int) Math.round(sw * .08),
@@ -1687,13 +1692,13 @@ public class Tutorial extends GameScreen {
 				if (m == null){
 					m = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "NOW EVERYTHING!", .075f, g, Color.RED);
 				}
-				
+
 				if (m.isAlive())
 					m.drawMessage();
-				
+
 				if (ptime == null)
-					ptime = new PosTimer(500);								
-				
+					ptime = new PosTimer(500);
+
 				else if (ptime.getTrigger() && !freeze){
 					pieces.add(new Pieces((randomInt + 1) * lane,
 							(int) Math.round(sh * .8), randomBool, this));
@@ -1705,12 +1710,12 @@ public class Tutorial extends GameScreen {
 					recent = true;
 				}
 				if (ptime != null){
-				ptime.update();
-				
-				System.out.println(ptime.getRemainingMillis());
+					ptime.update();
+
+					System.out.println(ptime.getRemainingMillis());
 				}
-				
-//				System.out.println("freeze: " + freeze);
+
+				//				System.out.println("freeze: " + freeze);
 			}
 		}
 
