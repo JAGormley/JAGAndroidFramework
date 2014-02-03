@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 import com.jag.framework.Graphics;
 
@@ -15,6 +16,8 @@ public class TopLock {
 	List<Integer> third;
 	List<Integer> fourth;
 	private int totalPs;
+	private int killed;
+	private static int completePieces;
 
 	public TopLock (int laneWidth, Graphics g){
 		lWidth = laneWidth;
@@ -22,6 +25,8 @@ public class TopLock {
 		second = new ArrayList<Integer>();
 		third = new ArrayList<Integer>();
 		fourth = new ArrayList<Integer>();
+		
+		completePieces = 21;
 	}
 
 	public void drawLock() {
@@ -61,9 +66,19 @@ public class TopLock {
 	}
 
 	public boolean fullLanes(){
-		if (totalPs == 21)
+		if (totalPs == completePieces)
 			return true;
 		else return false;
+	}
+	
+	public boolean allKilled(){
+		if (killed == completePieces)
+			return true;
+		else return false;
+	}
+	
+	public void addKilled(){
+		killed++;
 	}
 
 	public void addPiece() {

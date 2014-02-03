@@ -18,6 +18,8 @@ public class PosTimer {
 		trigger = false;
 	}	
 
+	
+
 	public void update(){
 		long gapTime = 0;
 		if (startTime == 0)
@@ -43,11 +45,17 @@ public class PosTimer {
 	}
 
 	public double getRemainingMillis(){
-		System.out.println("length: " + length);
-		System.out.println("eTime: " + elapsedTime);
 		return (length - elapsedTime);
 	}
+	
+	public double getElapsedMillis(){
+		return elapsedTime;
+	}
 
+	public double getTotalMillis() {
+		return length;
+	}
+	
 	public boolean getTrigger(){
 		return trigger;
 	}

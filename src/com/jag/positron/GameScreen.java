@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Timer;
 
+import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Color;
@@ -133,6 +134,26 @@ public class GameScreen extends Screen {
 
 	public TopLock tLock;
 
+	protected PosTimer topFade;
+
+	protected PosTimer topFadeDeath;
+
+	protected int freezeScore;
+
+	protected Paint freezeScorePaint;
+
+	protected boolean topFreezeWin;
+
+	protected PosTimer topFadeFinal;
+
+	private Paint freezeScorePaint2;
+
+	private int lowerDist;
+
+	private Bitmap orangeCoug;
+
+	private Bitmap blueCoug;
+
 	// private PosTriangle posT;
 
 	public GameScreen(Game game) {
@@ -236,6 +257,20 @@ public class GameScreen extends Screen {
 		paint13.setTextAlign(Paint.Align.CENTER);
 		paint13.setAntiAlias(true);
 		paint13.setColor(Color.BLUE);
+
+		freezeScorePaint = new Paint();
+		freezeScorePaint.setTypeface(Assets.font);
+		freezeScorePaint.setTextSize(Math.round(sh * .6));
+		freezeScorePaint.setTextAlign(Paint.Align.CENTER);
+		freezeScorePaint.setAntiAlias(true);
+		freezeScorePaint.setColor(Color.CYAN);
+
+		freezeScorePaint2 = new Paint();
+		freezeScorePaint2.setTypeface(Assets.font);
+		freezeScorePaint2.setTextSize(Math.round(sh * .1));
+		freezeScorePaint2.setTextAlign(Paint.Align.CENTER);
+		freezeScorePaint2.setAntiAlias(true);
+		freezeScorePaint2.setColor(Color.CYAN);
 
 		lockPaint = new Paint();
 		lockPaint.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL));
@@ -401,13 +436,14 @@ public class GameScreen extends Screen {
 		//		topFreeze = true;
 
 		// FRENZY UPDATE
+		//		int fingerx = scene.getLine();
+		//		if (frenzy) {
+		//			f.update(this, fingerx, fingery);
+		//		}
+		//		if (!frenzy)
+		//			f = null;
 
-		int fingerx = scene.getLine();
-		if (frenzy) {
-			f.update(this, fingerx, fingery);
-		}
-		if (!frenzy)
-			f = null;
+
 
 		if ((touch == false) && circleRad < Math.round(sh * .066)) {
 			circleRad += Math.round(sh * .017);
@@ -633,7 +669,7 @@ public class GameScreen extends Screen {
 
 		// DELAY PIECES
 		if (topFreeze)
-			recentInterval = 25;
+			recentInterval = 20;
 		if (!freeze) {
 			timePassed += 1;
 			if ((timePassed % recentInterval) == 0) {
@@ -678,6 +714,8 @@ public class GameScreen extends Screen {
 				tcx = tc.x;
 				tcy = tc.y;
 				topFreeze = true;
+				recent = false;
+				pieces.clear();
 				tg = null;
 				pts.clear();
 				tc = null;
@@ -686,7 +724,7 @@ public class GameScreen extends Screen {
 				currentTC = false;
 
 			}
-
+			
 			if ((!touch) && (currentTC))
 				if ((Math.abs(tc.getY() - fingery) < Math.round(sh * .124))
 						&& (Math.abs(tc.getX() - scene.getLine()) < Math
@@ -778,6 +816,7 @@ public class GameScreen extends Screen {
 			pts.clear();
 		}
 
+
 		if (!freeze) {
 			Iterator<PosTriangle> it2 = pts.iterator();
 			while (it2.hasNext()) {
@@ -800,38 +839,52 @@ public class GameScreen extends Screen {
 			int pLane = (randomInt2 + 1) * lane;
 			Pieces p = null;
 
-
-
+			System.out.println("!TF");
 			if (topFreeze){
-				if (!tLock.fullLanes()){
-					tLock.addPiece();
-					pLane = checkLane(pLane);
-					p = new Pieces(pLane,
-							(int) Math.round(sh * .8), randomBool, this);
+				System.out.println("TF");
+				if (topFade == null){	
+					pieces.clear();
+					topFade = new PosTimer(4000);
+					//vvATTEMPT TO FIX EARLY TF PIECE
+//					topFade.update();
 				}
-				else topFreeze = false;
+				if (!topFade.getTrigger()){
+					timePassed = 0;
+					topFade.update();
+				}
+				else 
+					if (!tLock.fullLanes()){						
+						//						System.out.println("sizer: " + pieces.size());
+						pLane = checkLane(pLane);
+						p = new Pieces(pLane,
+								(int) Math.round(sh * .8), randomBool, this);
+						tLock.addPiece();
+						System.out.println("size"+pieces.size());
+					}
 			}
-
-			if (!topFreeze)
+			else
 				p = new Pieces(pLane,
 						(int) Math.round(sh * .8), randomBool, this);
 
 			if (currentTG) {
 				Assets.gridVoice.play(100);
 			}
-			p.wayback = false;
-			p.setSpeedX(p.getSpeedX() * level);
-			// System.out.println("yep");
-			if (p.getSpeedX() == tempPiece.getSpeedX())
-				getPieces().add(p);
+			//			System.out.println(p==null);
+			if (p != null){
+				p.wayback = false;
+				p.setSpeedX(p.getSpeedX() * level);
+				if ((p.getSpeedX() == tempPiece.getSpeedX()) || (topFreeze && topFade != null))
+					getPieces().add(p);
 
-			else
-				tempPiece = p;
-			exitCases = false;
-			newPiece = true;
-			freeze = false;
-			recent = true;
+				else
+					tempPiece = p;
+				exitCases = false;
+				newPiece = true;
+				freeze = false;
+				recent = true;
+			}
 		}
+
 
 		Iterator<Pieces> it = getPieces().iterator();
 		while (it.hasNext()) {
@@ -855,7 +908,7 @@ public class GameScreen extends Screen {
 				score = 0;
 				freeze = false;
 				wrongButton = false;
-				// recent = false;
+				recent = false;
 				scoreReset = true;
 				p.wayback = false;
 				setPieces(new ArrayList<Pieces>());
@@ -863,19 +916,19 @@ public class GameScreen extends Screen {
 				exitCases = true;
 				freezeDur = 0;
 				teeth = false;
-				// System.out.println("yes1");
+				//				 System.out.println("yes1");
 			}
 
 			else if (p.isVisible() && topFreeze && !freeze && p.wayback
 					&& !negPressed && !posPressed && !exitCases) {
 				p.setBackspeed((int) Math.round(sh * .0124));
 				p.updateback();
-				//				System.out.println("yes2");
+				//								System.out.println("yes2");
 			}
 
 			else if (p.isVisible() && !p.wayback && !freeze && currentTG
 					&& p.getY() > tg.getY() - tg.getSize() && !exitCases) {
-				System.out.println("yes3");
+				//				System.out.println("yes3");
 				p.setY((int) ((tg.getY() - tg.getSize()) - Math
 						.round(sh * .017)));
 				// if (currentTG){
@@ -904,7 +957,7 @@ public class GameScreen extends Screen {
 				p.update();
 				newPiece = false;
 
-				// System.out.println("yes4");
+				//				 System.out.println("yes4");
 			}
 
 			else if (p.wayback && negPressed && !exitCases) {
@@ -916,7 +969,9 @@ public class GameScreen extends Screen {
 						score -= 10 * scoreMult;
 					if (topFreeze){
 						tLock.weaken(pieces.get(0));
-						System.out.println(pieces.get(0).getX());
+						tLock.addKilled();
+						//						System.out.println(pieces.get(0).getX());
+						freezeScore++;
 					}
 					tcx = p.getX();
 					tcy = p.getY();
@@ -937,6 +992,8 @@ public class GameScreen extends Screen {
 					this.fail();
 					tLock = null;
 				}
+
+				//				 System.out.println("yes5");
 			} else if (p.wayback && posPressed) {
 
 				if (p.type) {
@@ -951,7 +1008,9 @@ public class GameScreen extends Screen {
 						score -= 10 * scoreMult;
 					if (topFreeze){
 						tLock.weaken(pieces.get(0));
-						System.out.println(pieces.get(0).getX());
+						tLock.addKilled();
+						//						System.out.println(pieces.get(0).getX());
+						freezeScore++;
 					}
 					tcx = p.getX();
 					tcy = p.getY();
@@ -966,15 +1025,22 @@ public class GameScreen extends Screen {
 					Assets.click.play(150);
 				}
 
-			} else if (p.isVisible() && p.wayback && !freeze
-					&& !exitCases && !newPiece) {
+			} 
+
+			else if (p.isVisible() && p.wayback && !freeze
+					&& !exitCases && !newPiece && !topFreeze) {
 				if (scoreMult <= 15)
 					p.setBackspeed(25);
 				if (scoreMult > 15)
 					p.setBackspeed(30);
 				p.updateback();
 				freeze = true;
-				// System.out.println("yes7");
+				//				 System.out.println("yes7");
+			}
+
+			else if (p.isVisible() && p.wayback && !freeze
+					&& !exitCases && !newPiece) {
+				//				 System.out.println("yes7abccc");
 			}
 
 			else if (p.isVisible() && freeze && !exitCases && p.wayback) {
@@ -984,7 +1050,7 @@ public class GameScreen extends Screen {
 					p.setBackspeed(30);
 				p.updateback();
 
-				// System.out.println("yes7b");
+				//				 System.out.println("yes7b");
 			}
 
 			else if (p.y < Math.round(sh * .008)) {
@@ -997,7 +1063,7 @@ public class GameScreen extends Screen {
 				it.remove();
 				freeze = false;
 				wrongButton = false;
-				// System.out.println("yes8");
+				//				 System.out.println("yes8");
 
 			}
 			// else if (p.y > 950&&p.wayback){
@@ -1012,7 +1078,7 @@ public class GameScreen extends Screen {
 					newHigh = true;
 				} else
 					tempyScore = score;
-				// System.out.println("yes10");
+				//				 System.out.println("yes10");
 				// tempyScore = score;
 				// System.out.println(score);
 				// System.out.println(tempyScore);
@@ -1036,10 +1102,68 @@ public class GameScreen extends Screen {
 				teeth = false;
 			}
 		}
+
+
+	}
+	/**
+	 * 
+	 * make sure this finishes before whatever's calling it
+	 */
+	protected void topFreezerWinner() {
+		Graphics g = game.getGraphics();
+		int start = sh/2;
+		int end = (int) Math.round(sh * .954);
+		double timePercent = 0;
+		System.out.println("FREEZER");
+		if (topFadeFinal == null)
+			topFadeFinal = new PosTimer(1200);
+		else{
+			if (!topFadeFinal.getTrigger()){
+				float textSize = 0;
+				float textSize2 = 0;
+
+				textSize = (float) ((freezeScorePaint.getTextSize()*topFadeFinal.getRemainingMillis())/topFadeFinal.getTotalMillis());
+				textSize2 = (float) ((freezeScorePaint2.getTextSize()*topFadeFinal.getRemainingMillis())/topFadeFinal.getTotalMillis());
+				timePercent = topFadeFinal.getElapsedMillis()/topFadeFinal.getTotalMillis();
+				lowerDist = (int) (start + (end-start)*timePercent);
+
+				freezeScorePaint.setTextSize((float) (textSize*1.2));
+				g.drawString(String.valueOf(freezeScore), sw/2, lowerDist, freezeScorePaint);
+				freezeScorePaint2.setTextSize((float) (textSize2*1.2));
+				if (level != 1)
+					g.drawString("x " + scoreMult*1.5, sw/2, lowerDist+(sh/20), freezeScorePaint2);
+				topFadeFinal.update();
+			}
+			else{
+				score += freezeScore*scoreMult*1.5;
+				topFreezeWin = false;
+				//				topFadeFinal = null;
+				lowerDist = 0;
+				freezeScore = 0;
+				resetFreezePaints();
+			}
+		}
 	}
 
-	private int checkLane(int lane) {
-		System.out.println("try: " + lane);
+
+	private void resetFreezePaints() {
+		freezeScorePaint = new Paint();
+		freezeScorePaint.setTypeface(Assets.font);
+		freezeScorePaint.setTextSize(Math.round(sh * .6));
+		freezeScorePaint.setTextAlign(Paint.Align.CENTER);
+		freezeScorePaint.setAntiAlias(true);
+		freezeScorePaint.setColor(Color.CYAN);
+
+		freezeScorePaint2 = new Paint();
+		freezeScorePaint2.setTypeface(Assets.font);
+		freezeScorePaint2.setTextSize(Math.round(sh * .1));
+		freezeScorePaint2.setTextAlign(Paint.Align.CENTER);
+		freezeScorePaint2.setAntiAlias(true);
+		freezeScorePaint2.setColor(Color.CYAN);	
+	}
+
+	protected int checkLane(int lane) {
+				System.out.println("try: " + lane);
 		int acc = 0;
 		for (int i = 0; i < pieces.size(); i++){
 			if (pieces.get(i).getX() == lane){
@@ -1048,15 +1172,13 @@ public class GameScreen extends Screen {
 		}
 		if (tLock.secondLanes().contains(lane)){
 			acc++;
-			System.out.println("second");
 		}
 		if (tLock.thirdLanes().contains(lane)){
 			acc ++;
-			System.out.println("third");
-			// if it gets to third, acc should be at least 2
 		}
-		System.out.println("acc :"+ acc);
-		//		System.out.println("lane :" + lane);
+		if (tLock.deadLanes().contains(lane)){
+			acc ++;
+		}
 		if (acc < 3)
 			return lane;
 		else {
@@ -1066,6 +1188,13 @@ public class GameScreen extends Screen {
 	}
 
 	public void fail(){
+		tempPiece = new Pieces(0, 0, true, this);
+		topFreezeWin = false;
+		tLock = null;
+		topFade = null;
+		lowerDist = 0;
+		freezeScore = 0;
+		resetFreezePaints();
 		freeze = false;
 		posPressed = false;
 		wrongButton = true;
@@ -1073,7 +1202,6 @@ public class GameScreen extends Screen {
 			postScore = score;
 			newHigh = true;
 		}
-		tLock = null;
 		tempyScore = score;
 		tc = null;
 		Assets.tcDrone.pause();
@@ -1088,7 +1216,7 @@ public class GameScreen extends Screen {
 		scoreReset = true;
 		score = 0;
 		freeze = false;
-		wrongButton = false;
+		wrongButton = false;		
 		exitCases = true;
 		teeth = false;
 	}
@@ -1149,33 +1277,73 @@ public class GameScreen extends Screen {
 		// Debug.startMethodTracing();
 		Graphics g = game.getGraphics();
 		getAlert().update(10);
-		// g.drawRect(0, sh, sw, sh/120, Color.BLACK);
-
 
 
 		// BOARD ELEMENTS / SCORE
 		if (state == GameState.Running) {
-			topFreeze = true;
+
+			//			topFreeze = true;
 
 			int fingerx = scene.getLine();
 
 			if (topFreeze) {
-				if (tLock == null)
+				if (tLock == null){
+//					pieces.clear();
 					tLock = new TopLock(lane, g);
+				}
 				Paint greyP = new Paint();
 				greyP.setTypeface(Assets.font);
 				greyP.setTextAlign(Paint.Align.CENTER);
 				greyP.setAntiAlias(true);
 				greyP.setColor(Color.GRAY);
 
-				if(drawFace == 1){
-					g.drawImage(Assets.mFace, 0,0);
-					drawFace = 0;
-				}
-				else {
-					drawFace++;	
-					g.drawImage(Assets.mFace, 11, 11);
-				}
+				if (topFade != null)
+					if (!topFade.getTrigger()){
+
+						int alpher = 0;
+						alpher = (int) ((255*topFade.getRemainingMillis()))/4000;
+						if(drawFace == 1){
+							g.drawImage(Assets.mFace, 0, 0, 255-alpher);
+							drawFace = 0;
+						}
+						else {
+							drawFace++;	
+							g.drawImage(Assets.mFace, 11, 11, 255-alpher);
+						}
+					}
+
+					else if (topFade != null && topFadeDeath == null){
+
+						if(drawFace == 1){
+							g.drawImage(Assets.mFace, 0,0);
+							drawFace = 0;
+						}
+						else {
+							drawFace++;	
+							g.drawImage(Assets.mFace, 11, 11);
+						}
+						freezeScorePaint.setAlpha(freezeScore*10);
+						g.drawString(String.valueOf(freezeScore), sw/2, sh/2, freezeScorePaint);
+					}
+					else if (topFadeDeath != null)
+						if (!topFadeDeath.getTrigger()){
+							if(drawFace == 1){
+								g.drawRect(0, 0, sw+10, sh+10, Color.MAGENTA, 150);
+								g.drawImage(Assets.mFaced, 0, 0, (int) ((topFadeDeath.getRemainingMillis())/10));
+								//								g.drawImage(Assets.mFaced, 0, 0);
+								drawFace = 0;
+							}
+							else {
+								drawFace++;	
+								g.drawRect(0, 0, sw+10, sh+10, Color.GREEN, 150);
+								g.drawImage(Assets.mFaced, 11, 11, (int) ((topFadeDeath.getRemainingMillis())/10));
+								//								g.drawImage(Assets.mFaced, 11, 11);
+							}
+							topFreezerWinner();
+							//							g.drawString(String.valueOf(freezeScore), sw/2, sh/2, freezeScorePaint);
+						}
+						else topFadeFinal = null;
+
 				tLock.drawLock();
 				greyP.setTextSize(Math.round(sh * .1));
 				g.drawString(String.valueOf(score), sw / 2,
@@ -1193,7 +1361,7 @@ public class GameScreen extends Screen {
 
 				if (!freeze && !topFreeze) {
 					baseGrowth = 0;
-				}
+				}			
 
 				if (touch == false) {
 
@@ -1343,14 +1511,13 @@ public class GameScreen extends Screen {
 				if (p.type == true){
 					g.drawImage(Assets.pos, p.x - Assets.pos.getWidth()/2,
 							p.y - Assets.pos.getHeight()/2);
-					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
+					//					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
 				}
 
 
 				if (p.type == false){
 					g.drawImage(Assets.neg, p.x - Assets.neg.getWidth()/2,
-							p.y - Assets.neg.getHeight()/2);
-					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
+							p.y - Assets.neg.getHeight()/2);					///					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
 				}
 
 				if (p.wayback) {
@@ -1368,6 +1535,7 @@ public class GameScreen extends Screen {
 					}
 				}
 			}
+			///SPEED OF PIECES, NUMBERS ON SCREEN, FAIL() NOT SHOWING...
 			if (i < 30) {
 				i += 2;
 			} else {
@@ -1379,62 +1547,21 @@ public class GameScreen extends Screen {
 			if (tc != null) {
 				//				g.drawCircBlue(tc.getX(), tc.getY(),
 				//						(int) Math.round(sh * .075), Color.rgb(255, 215, 0), i);
-
-				g.drawImage(cougar.getImage(), tc.getX()-cougar.getImage().getWidth()/2, tc.getY()-cougar.getImage().getHeight()/2);	
+				g.drawImage(cougar.getImage(), tc.getX()-cougar.getImage().getWidth()/2, tc.getY()-cougar.getImage().getHeight()/2, -1);	
 				cougar.update(10);
 			}
 
-			// FRENZY DRAW
-			//			if (f != null) {
-			//				int inner = 0;
-			//				int middle = 0;
-			//				int outer = 0;
-			//				int one = 60;
-			//				int two = 100;
-			//				int three = 140;
-			//				if (flashUpdate == 0){
-			//					inner = one;
-			//					middle = two;
-			//					outer = three;
-			//				}
-			//				else if (flashUpdate == 1){
-			//					inner = three;
-			//					middle = one;
-			//					outer = two;
-			//				}
-			//				else if (flashUpdate == 2){
-			//					inner = two;
-			//					middle = three;
-			//					outer = one;
-			//				}
-			//				// g.drawCircOut(fingerx, fingery, (int) Math.round(sh*.075),
-			//				// Color.BLUE, (int) Math.round(sh*.020), 75);
-			//				g.drawLine(f.getBottomBar() - f.getBbarSize(),
-			//						(int) Math.round(sh * .77),
-			//						f.getBottomBar() + f.getBbarSize(),
-			//						(int) Math.round(sh * .77), Color.BLUE, outer,
-			//						(int) Math.round(sh * .020));
-			//				g.drawCircOut(fingerx, (float) ((sh * .77)+(sw*.1)), (float) (((sw*.1) / 5) * 4),
-			//						Color.BLUE, 7, outer);
-			//				g.drawCircOut(fingerx, (float) ((sh * .77)+(sw*.1)), (float) (((sw*.1) / 5) * 3),
-			//						Color.BLUE, 7, middle);
-			//				g.drawCircOut(fingerx, (float) ((sh * .77)+(sw*.1)), (float) (((sw*.1) / 5) * 2),
-			//						Color.BLUE, 7, inner);
-			//				for (TimeCharge t : f.getFArray()) {
-			//					g.drawCircBlue(t.getX(), t.getY(),
-			//							(int) Math.round(sh * .015),
-			//							Color.rgb(255, 215, 0), i);
-			//				}
-			//
-			//			}
 			if (tcDeath) {
 				if (ballDuration < 20) {
-					g.drawCircFill(tcx, tcy, Math.round(sh * .083), Color.BLUE,
+					if (blueCoug == null)
+						blueCoug = cougar.getImage().getBitmap().copy(cougar.getImage().getBitmap().getConfig() ,true);					
+					g.drawImage(blueCoug, tcx-cougar.getImage().getWidth()/2, tcy-cougar.getImage().getHeight()/2, 
 							200 - ballDuration * 10);
 					ballDuration++;
 				} else {
 					tcDeath = false;
 					ballDuration = 0;
+					blueCoug = null;
 				}
 			}
 
@@ -1734,7 +1861,7 @@ public class GameScreen extends Screen {
 
 			// HEADER
 			if (topFreeze) {
-				if (!tLock.fullLanes()) {
+				if (!tLock.allKilled()) {
 					if (i < 30) {
 						i += 1;
 					} else {
@@ -1743,28 +1870,26 @@ public class GameScreen extends Screen {
 						if (flashUpdate == 3)
 							flashUpdate = 0;
 					}
-					//				paint8.setAlpha(f.getNumber() * 10);
-					//				g.drawRect2(-5, 0, g.getWidth() + 1, (int) f.getTopBar() + 1,
-					//						Color.rgb(255, 215, 0), paint8);					//
-					//				if (f.isBarShrink() && i != 0) {
-					//					g.drawRect(-5, (int) f.getTopBar(), g.getWidth() + 1, i,
-					//							Color.BLUE, 255 - (i * 7));
-					//					f.setBarShrink(false);
-					//				}					//
-					//				else
-					//					g.drawRect2(-5, (int) f.getTopBar(), g.getWidth() + 1, i,
-					//							Color.rgb(255, 215, 0), paint8);					//
-					//				g.drawCircOut((int) Math.round(sw * .5), 0, i * 50,
-					//						Color.YELLOW, 10, f.getNumber() * 10);
-
 					freezeDur++;
 				}
 				else {
-					topFreeze = false;
-					tLock = null;
-					freezeDur = 0;
-					i = 0;
-					getPieces().clear();
+					if (topFadeDeath == null){
+						topFadeDeath = new PosTimer(1500);
+					}
+					if (!topFadeDeath.getTrigger()){
+						topFadeDeath.update();
+					}
+					else {
+						topFreeze = false;
+						fingery = (float) (sh*.75);
+						topFade = null;
+						tLock = null;
+						freezeDur = 0;
+						topFadeDeath = null;
+						i = 0;
+						topFreezeWin = true;
+						getPieces().clear();
+					}
 				}
 			}
 

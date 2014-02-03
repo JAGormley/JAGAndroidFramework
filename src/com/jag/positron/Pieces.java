@@ -45,7 +45,7 @@ public class Pieces {
 	}
 
 	public void update(){
-		if (y < Assets.lock.getHeight())
+		if (gamescreen.getTopFreeze()&&y < Assets.lock.getHeight())
 			checkCollision();
 		else if (y < 0){
 			checkCollision();

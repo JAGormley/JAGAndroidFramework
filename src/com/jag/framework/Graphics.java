@@ -76,7 +76,9 @@ public interface Graphics {
 	public void drawScaledImage(Image mFace, int i, int j, int sw, int sh,
 			int k, int l, int width, int height, int i2);
 
+	public void changeCol(Bitmap b, int color);
 
+	void drawImage(Bitmap bit, int x, int y, int alph);
 	
 
 }

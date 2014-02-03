@@ -13,6 +13,8 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
@@ -22,6 +24,7 @@ import android.graphics.Typeface;
 import com.jag.framework.Graphics;
 import com.jag.framework.Image;
 import com.jag.framework.Graphics.ImageFormat;
+import com.jag.positron.Assets;
 import com.jag.positron.Fader;
 import com.jag.positron.PosTriangle;
 
@@ -44,7 +47,7 @@ public class AndroidGraphics implements Graphics {
 		this.paint3 = new Paint();
 		this.paint4 = new Paint();
 		this.paint5 = new Paint();
-	
+
 	}
 
 	@Override
@@ -60,9 +63,9 @@ public class AndroidGraphics implements Graphics {
 		Options options = new Options();
 		options.inPreferredConfig = config;
 		options.inDither = false;
-//		if (fileName.contains("instr")){
-//			options.inSampleSize = 8;
-//		}
+		//		if (fileName.contains("instr")){
+		//			options.inSampleSize = 8;
+		//		}
 
 		InputStream in = null;
 		Bitmap bitmap = null;
@@ -106,17 +109,28 @@ public class AndroidGraphics implements Graphics {
 		paint.setColor(color);
 		paint.setAlpha(alph);
 		paint.setStrokeWidth(stroke);
-		
+
 		canvas.drawLine(x, y, x2, y2, paint);
 	}
-	
+
+	public void changeCol(Bitmap b, int color){
+		int width = b.getWidth();
+		int height = b.getHeight();
+		int[] pixels = new int[width * height];
+		for (int i = 0; i < pixels.length; i++){
+			pixels[i] = color;
+		}		
+		b.setPixels(pixels, 0, width, 0, 0, width, height);
+	} 
+
+
 	@Override
 	public void drawPosTri(PosTriangle pt, int alph) {
-		
+
 		paint5.setColor(Color.MAGENTA);
 		paint5.setStyle(Style.FILL);
 		paint5.setAlpha(alph);
-		
+
 		canvas.drawPath(pt.getPath(), paint5);
 	}
 
@@ -125,22 +139,22 @@ public class AndroidGraphics implements Graphics {
 		paint.setColor(color);
 		paint.setStyle(Style.FILL);
 		canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
-		}
-	
+	}
+
 	@Override
 	public void drawRect(int x, int y, int width, int height, int color, int alpha) {
-		
+
 		paint.setColor(color);
 		paint.setStyle(Style.FILL);
 		paint.setAlpha(alpha);
 		canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
-		}
-	
+	}
+
 	@Override
 	public void drawRect2(int x, int y, int width, int height, int color, Paint paint) {
 		canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
-		}
-	
+	}
+
 	public void drawCircFill(float cx,float cy,float radius,int color, int alpha) {
 		paint3.setColor(color);
 		paint3.setStyle(Style.FILL);
@@ -148,9 +162,9 @@ public class AndroidGraphics implements Graphics {
 		paint3.setAlpha(alpha);
 		//paint3.setMaskFilter(new BlurMaskFilter(20, Blur.NORMAL));
 		canvas.drawCircle(cx, cy, radius, paint3);
-		
+
 	}
-	
+
 	public void drawCircFill(float cx,float cy,float radius,int color, int alpha, Paint p) {
 		p.setColor(color);
 		p.setStyle(Style.FILL);
@@ -158,9 +172,9 @@ public class AndroidGraphics implements Graphics {
 		p.setAlpha(alpha);
 		//paint3.setMaskFilter(new BlurMaskFilter(20, Blur.NORMAL));
 		canvas.drawCircle(cx, cy, radius, p);
-		
+
 	}
-	
+
 	public void drawCircBlue(float cx,float cy,float radius,int color, int alpha) {
 		paint4.setColor(color);
 		paint4.setStyle(Style.FILL);
@@ -169,9 +183,9 @@ public class AndroidGraphics implements Graphics {
 		paint4.setStrokeWidth(alpha);
 		//paint4.setMaskFilter(new BlurMaskFilter(50, Blur.OUTER));
 		canvas.drawCircle(cx, cy, radius, paint4);
-		
+
 	}
-	
+
 	public void drawCircOut(float cx,float cy,float radius,int color, int stroke) {
 		paint.setColor(color);
 		paint.setStyle(Style.STROKE);
@@ -179,7 +193,7 @@ public class AndroidGraphics implements Graphics {
 		paint.setAntiAlias(true);
 		canvas.drawCircle(cx, cy, radius, paint);		
 	}
-	
+
 	public void drawCircOut(float cx,float cy,float radius,int color, int stroke, int alpha) {
 		paint.setColor(color);
 		paint.setStyle(Style.STROKE);
@@ -188,7 +202,7 @@ public class AndroidGraphics implements Graphics {
 		paint.setAlpha(alpha);
 		canvas.drawCircle(cx, cy, radius, paint);		
 	}
-	
+
 	public void drawTransRect(int x, int y, int width, int height) {  
 		canvas.clipRect(x,y,width,height);
 
@@ -225,11 +239,11 @@ public class AndroidGraphics implements Graphics {
 	public void drawString(String text, int x, int y, Paint paint){
 		canvas.drawText(text, x, y, paint);
 	}
-	
+
 	@Override
 	public void drawString(String text, int x, int y, Paint p, Fader f) {
 		canvas.drawText(text, x, y, p);
-		
+
 	}
 
 
@@ -254,7 +268,7 @@ public class AndroidGraphics implements Graphics {
 	public void drawImage(Image Image, int x, int y, Paint p) {
 		canvas.drawBitmap(((AndroidImage)Image).bitmap, x, y, p);
 	}
-	
+
 	@SuppressLint("NewApi")
 	@Override
 	public void drawImage(Image Image, int x, int y, int alpha) {
@@ -269,7 +283,7 @@ public class AndroidGraphics implements Graphics {
 		srcRect.top = srcY;
 		srcRect.right = srcX + srcWidth;
 		srcRect.bottom = srcY + srcHeight;
-		
+
 		dstRect.left = x;
 		dstRect.top = y;
 		dstRect.right = x + width;
@@ -277,13 +291,13 @@ public class AndroidGraphics implements Graphics {
 
 		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, null);       
 	}
-	
+
 	public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, int alpha){
 		srcRect.left = srcX;
 		srcRect.top = srcY;
 		srcRect.right = srcX + srcWidth;
 		srcRect.bottom = srcY + srcHeight;
-		
+
 		dstRect.left = x;
 		dstRect.top = y;
 		dstRect.right = x + width;
@@ -293,7 +307,7 @@ public class AndroidGraphics implements Graphics {
 		paint.setAlpha(alpha);
 		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, paint);       
 	}
-	
+
 	public void drawScaledImagewPaint(Image Image, int x, int y, int width, int height,
 			int srcX, int srcY, int srcWidth, int srcHeight, Paint p){
 
@@ -332,7 +346,7 @@ public class AndroidGraphics implements Graphics {
 		p.setColor(color);
 		p.setAlpha(alph);
 		p.setStrokeWidth(stroke);
-		
+
 		canvas.drawLine(x, y, x2, y2, p);	
 	}
 
@@ -340,6 +354,19 @@ public class AndroidGraphics implements Graphics {
 	@Override
 	public void drawImage(Image Image, int x, int y) {
 		canvas.drawBitmap(((AndroidImage)Image).bitmap, x, y, null);
+	}
+
+	@SuppressLint("NewApi")
+	@Override
+	public void drawImage(Bitmap bit, int x, int y, int alph) {
+		Paint p = null;
+		ColorFilter filter = null;
+		p = new Paint(Color.BLUE); 
+		filter = new LightingColorFilter(Color.BLUE, 255); 		
+		p.setColorFilter(filter);	
+		p.setAlpha(alph);
+		canvas.drawBitmap(bit, x, y, p);
+
 	}
 
 }

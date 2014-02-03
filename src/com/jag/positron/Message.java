@@ -29,7 +29,17 @@ public class Message {
 	private float nonFadeTime;
 	private float origTSize;
 	private boolean firstUpdate;
-
+/**
+ * 
+ * @param x
+ * @param y
+ * @param nonFadeTime: in secs
+ * @param fadeTime: in secs
+ * @param text
+ * @param textSize: in pix
+ * @param g: main Graphics object 
+ * @param colour
+ */
 	public Message (int x, int y, float nonFadeTime, float fadeTime, String text, float textSize, Graphics g, int colour){
 		this.g = g;
 		this.text = text;
@@ -92,5 +102,8 @@ public class Message {
 	}
 	public void setMAlpha(int alpha){
 		p.setAlpha(alpha);
+	}
+	public String getText(){
+		return text;
 	}
 }

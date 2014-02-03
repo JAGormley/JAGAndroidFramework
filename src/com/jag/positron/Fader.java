@@ -12,6 +12,12 @@ public class Fader {
 	private boolean alive;
 	private boolean firstUpdate;
 	
+	/**
+	 * 
+	 * @param fadeTime: fade time in secs
+	 * @param textStart: width location
+	 * @param diameter: width
+	 */
 	public Fader (float fadeTime, int textStart, double diameter){
 		this.fadeTime = fadeTime;
 		this.textStart = textStart;
