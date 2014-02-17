@@ -15,10 +15,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 
 import com.jag.framework.Graphics;
@@ -205,6 +207,11 @@ public class AndroidGraphics implements Graphics {
 
 	public void drawTransRect(int x, int y, int width, int height) {  
 		canvas.clipRect(x,y,width,height);
+
+	}
+	
+	public void drawEllipse(int left, int top, int right, int bottom) {
+		canvas.drawOval(new RectF(left, top, right, bottom), paint);
 
 	}
 

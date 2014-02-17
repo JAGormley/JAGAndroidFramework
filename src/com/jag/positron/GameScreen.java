@@ -1523,8 +1523,8 @@ public class GameScreen extends Screen {
 					shake.drawAndUpdate();
 					int alph = shake.shakeMillisLeft()/2;
 					if (alph < 0) alph = 0;
-					g.drawCircOut(pointXs.get(position), 0, 350-alph, Color.MAGENTA,
-							(alph/10), alph-50);
+					g.drawCircOut(pointXs.get(position), 0, 150-(alph/2), Color.MAGENTA,
+							(alph/20), alph/2);
 					
 					if (shake.shakerIsDead()){
 						ss.remove();
