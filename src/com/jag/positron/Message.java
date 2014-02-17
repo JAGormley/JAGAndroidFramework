@@ -12,7 +12,7 @@ import com.jag.framework.Graphics;
 import com.jag.framework.implementation.AndroidGame;
 
 public class Message {
-	Fader f;
+	TextFader f;
 	Graphics g;
 	Paint p = new Paint();
 	String text;
@@ -57,7 +57,7 @@ public class Message {
 		p.setTextAlign(Paint.Align.CENTER);
 		p.setAntiAlias(true);	
 		p.setColor(colour);
-		this.f = new Fader (fadeTime, x, p.measureText(text)*AndroidGame.actualLoadWidth/800);
+		this.f = new TextFader (fadeTime, x, p.measureText(text)*AndroidGame.actualLoadWidth/800);
 		alive = true;
 	}
 	

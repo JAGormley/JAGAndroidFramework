@@ -65,28 +65,31 @@ public class GameScreen extends Screen {
 	lightningDuration, ballDuration, scoreMult, updateInterval, tcx,
 	tcy, i, newLevel, gridInt, baseGrowth, flashUpdate;
 
+	ArrayList<Integer> pointXs;
+	
 	float fingery, circleRad, j;
 	public Animation alert, magnet, elecBase, elecBase2;
-
+	
 	public Paint paint5, paint6;
 	public double level;
-
+	
 	public TimeCharge tc;
 	public TimeGrid tg;
 	public TimeGrid tgTemp;
-
+	public ArrayList<ShakeString> sStrings;
+	
 	public int lineDuration, scoreDeathDur, levelStart, postScore;
-
+	
 	public boolean currentTC, currentTG;
 	public boolean tcDeath;
 	public boolean tgDeath;
 	public boolean topFreeze;
 	public boolean newHigh;
-
+	
 	public int freezeDur;
 	public LinearGradient lg;
 	public LinearGradient lg2;
-
+	
 	public Paint paint7;
 	public Paint paint8;
 	public Paint paint9;
@@ -124,7 +127,7 @@ public class GameScreen extends Screen {
 
 	public boolean frenzy = false;
 
-	public ArrayList<Fader> faders;
+	public ArrayList<TextFader> faders;
 
 	public Animation cougar;
 
@@ -154,6 +157,8 @@ public class GameScreen extends Screen {
 
 	private Bitmap blueCoug;
 
+	
+
 	// private PosTriangle posT;
 
 	public GameScreen(Game game) {
@@ -169,7 +174,10 @@ public class GameScreen extends Screen {
 		screenwidth = game.getGraphics().getWidth();
 		setPieces(new ArrayList<Pieces>());
 		pts = new ArrayList<PosTriangle>();
-
+		sStrings = new ArrayList<ShakeString>();
+		
+		pointXs = new ArrayList<Integer>();		
+		
 		lane = sw / 8;
 		recent = true;
 
@@ -668,8 +676,14 @@ public class GameScreen extends Screen {
 		int chanceOfNewPiece = 8;
 
 		// DELAY PIECES
-		if (topFreeze)
-			recentInterval = 20;
+		if (topFreeze){
+			if (scoreMult == 10)
+				recentInterval = 17;
+			if (scoreMult == 15)
+				recentInterval = 14;
+			if (scoreMult > 15)
+				recentInterval = 10;
+		}
 		if (!freeze) {
 			timePassed += 1;
 			if ((timePassed % recentInterval) == 0) {
@@ -724,7 +738,7 @@ public class GameScreen extends Screen {
 				currentTC = false;
 
 			}
-			
+
 			if ((!touch) && (currentTC))
 				if ((Math.abs(tc.getY() - fingery) < Math.round(sh * .124))
 						&& (Math.abs(tc.getX() - scene.getLine()) < Math
@@ -839,14 +853,16 @@ public class GameScreen extends Screen {
 			int pLane = (randomInt2 + 1) * lane;
 			Pieces p = null;
 
-			System.out.println("!TF");
 			if (topFreeze){
-				System.out.println("TF");
+				if (tLock == null){
+					//					pieces.clear();
+					tLock = new TopLock(lane, game.getGraphics());
+				}
 				if (topFade == null){	
 					pieces.clear();
 					topFade = new PosTimer(4000);
 					//vvATTEMPT TO FIX EARLY TF PIECE
-//					topFade.update();
+					//					topFade.update();
 				}
 				if (!topFade.getTrigger()){
 					timePassed = 0;
@@ -898,6 +914,8 @@ public class GameScreen extends Screen {
 				} else
 					tempyScore = score;
 				tc = null;
+				topFade = null;
+				topFadeFinal = null;
 				// Assets.tcDrone.pause();
 				tLock = null;
 				tg = null;
@@ -921,7 +939,7 @@ public class GameScreen extends Screen {
 
 			else if (p.isVisible() && topFreeze && !freeze && p.wayback
 					&& !negPressed && !posPressed && !exitCases) {
-				p.setBackspeed((int) Math.round(sh * .0124));
+				p.setBackspeed((int) Math.round(sh * .0124));	
 				p.updateback();
 				//								System.out.println("yes2");
 			}
@@ -989,6 +1007,8 @@ public class GameScreen extends Screen {
 				}
 				if (!p.type) {
 					it.remove();
+					if (topFreeze)
+						fingery = (float) (sh*.75);
 					this.fail();
 					tLock = null;
 				}
@@ -998,6 +1018,8 @@ public class GameScreen extends Screen {
 
 				if (p.type) {
 					it.remove();
+					if (topFreeze)
+						fingery = (float) (sh*.75);
 					this.fail();
 					tLock = null;
 				}
@@ -1054,7 +1076,11 @@ public class GameScreen extends Screen {
 			}
 
 			else if (p.y < Math.round(sh * .008)) {
+				sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+scoreMult), 
+						sw / 2, (int) Math.round(sh * .954)));
+								
 				score += 1 * scoreMult;
+				pointXs.add(p.x);
 				if (p.type)
 					Assets.posPoint.play(20);
 				if (!p.type)
@@ -1114,7 +1140,6 @@ public class GameScreen extends Screen {
 		int start = sh/2;
 		int end = (int) Math.round(sh * .954);
 		double timePercent = 0;
-		System.out.println("FREEZER");
 		if (topFadeFinal == null)
 			topFadeFinal = new PosTimer(1200);
 		else{
@@ -1130,8 +1155,8 @@ public class GameScreen extends Screen {
 				freezeScorePaint.setTextSize((float) (textSize*1.2));
 				g.drawString(String.valueOf(freezeScore), sw/2, lowerDist, freezeScorePaint);
 				freezeScorePaint2.setTextSize((float) (textSize2*1.2));
-				if (level != 1)
-					g.drawString("x " + scoreMult*1.5, sw/2, lowerDist+(sh/20), freezeScorePaint2);
+				//				if (level != 1)
+				g.drawString("x " + scoreMult*1.5, sw/2, lowerDist+(sh/20), freezeScorePaint2);
 				topFadeFinal.update();
 			}
 			else{
@@ -1163,7 +1188,7 @@ public class GameScreen extends Screen {
 	}
 
 	protected int checkLane(int lane) {
-				System.out.println("try: " + lane);
+		System.out.println("try: " + lane);
 		int acc = 0;
 		for (int i = 0; i < pieces.size(); i++){
 			if (pieces.get(i).getX() == lane){
@@ -1192,6 +1217,8 @@ public class GameScreen extends Screen {
 		topFreezeWin = false;
 		tLock = null;
 		topFade = null;
+		topFadeDeath = null;
+		topFadeFinal = null;
 		lowerDist = 0;
 		freezeScore = 0;
 		resetFreezePaints();
@@ -1231,6 +1258,7 @@ public class GameScreen extends Screen {
 					&& event.x > Math.round(sw * .188)
 					&& event.x < Math.round(sw * .813)
 					&& event.y < Math.round(sh * .145)) {
+				touch = false;
 				state = GameState.Running;
 				if (topFreeze)
 					g.drawRect(0, 0, sw+1, sh+1, Color.GRAY);
@@ -1287,10 +1315,7 @@ public class GameScreen extends Screen {
 			int fingerx = scene.getLine();
 
 			if (topFreeze) {
-				if (tLock == null){
-//					pieces.clear();
-					tLock = new TopLock(lane, g);
-				}
+
 				Paint greyP = new Paint();
 				greyP.setTypeface(Assets.font);
 				greyP.setTextAlign(Paint.Align.CENTER);
@@ -1339,6 +1364,7 @@ public class GameScreen extends Screen {
 								g.drawImage(Assets.mFaced, 11, 11, (int) ((topFadeDeath.getRemainingMillis())/10));
 								//								g.drawImage(Assets.mFaced, 11, 11);
 							}
+							fingery = (float) (sh*.75);
 							topFreezerWinner();
 							//							g.drawString(String.valueOf(freezeScore), sw/2, sh/2, freezeScorePaint);
 						}
@@ -1400,11 +1426,12 @@ public class GameScreen extends Screen {
 			}
 
 			if (!scoreReset && !topFreeze) {
-
+				
 				g.drawString(String.valueOf(score), sw / 2,
 						(int) Math.round(sh * .954), paint3);
 				g.drawString("high " + String.valueOf(postScore), sw / 2,
 						(int) Math.round(sh * .988), paint6);
+				
 
 			}
 			if (scoreReset) {
@@ -1442,7 +1469,7 @@ public class GameScreen extends Screen {
 				}
 			}
 
-
+			
 			if (nextLevel && scoreMult > 1) {
 				if (levelStart < 70) {
 					paint5.setAlpha(255 - (levelStart * 3));
@@ -1487,7 +1514,28 @@ public class GameScreen extends Screen {
 			}
 
 			// SPRITES
-
+//			System.out.println("ssize: "+sStrings.size());
+			if (sStrings.size() != 0){
+				Iterator<ShakeString> ss = sStrings.iterator();
+				int position = 0;
+				while (ss.hasNext()) {
+					ShakeString shake = ss.next();
+					shake.drawAndUpdate();
+					int alph = shake.shakeMillisLeft()/2;
+					if (alph < 0) alph = 0;
+					g.drawCircOut(pointXs.get(position), 0, 350-alph, Color.MAGENTA,
+							(alph/10), alph-50);
+					
+					if (shake.shakerIsDead()){
+						ss.remove();
+						pointXs.remove(position);
+					}
+					else position++;					
+				}
+			}
+			
+			System.out.println(pointXs.toString());
+			
 			for (Pieces p : getPieces()) {
 
 				if (p.getSwitched() && !p.wayback) {
@@ -1731,26 +1779,26 @@ public class GameScreen extends Screen {
 
 			// LAUNCHERS
 			int launchCol = 0;
-			//			if (topFreeze)
-			//				launchCol = Color.RED;
-			if (!topFreeze){
+			if (topFreeze)
+				launchCol = Color.RED;
+			if (!topFreeze)
 				launchCol = Color.GRAY;
 
-				g.drawCircFill(lane, Math.round(sh * .83), 
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 2, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 3, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 4, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 5, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 6, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 7, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-			}
+			g.drawCircFill(lane, Math.round(sh * .83), 
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 2, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 3, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 4, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 5, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 6, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 7, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+
 
 			if (freeze || topFreeze) {
 				g.drawImage(elecBase.getImage(), (int) Math.round(sw * .76),
@@ -1817,6 +1865,9 @@ public class GameScreen extends Screen {
 					g.drawLine(lane * 7, (int) Math.round(sh * .81), killx,
 							killy + (int) Math.round(sw * .048), Color.BLUE,
 							200 - lightningDuration * 10, 12);
+					if (topFreeze)
+						g.drawLine(killx, Assets.lock.getHeight()/2, killx, (int) Math.round(sh * .81), 
+								Color.RED, 200 - lightningDuration * 10, 30);
 
 					g.drawCircFill(lane, (int) Math.round(sh * .83),
 							(int) Math.round(sw * .043), Color.BLUE,
@@ -1852,6 +1903,7 @@ public class GameScreen extends Screen {
 					if (lightningDuration == 1)
 						g.drawRect(0, 0, g.getWidth() + 1, g.getHeight() + 1,
 								Color.rgb(255, 215, 0));
+					
 					lightningDuration++;
 				} else {
 					lightning = false;

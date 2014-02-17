@@ -25,7 +25,7 @@ import com.jag.framework.Graphics;
 import com.jag.framework.Image;
 import com.jag.framework.Graphics.ImageFormat;
 import com.jag.positron.Assets;
-import com.jag.positron.Fader;
+import com.jag.positron.TextFader;
 import com.jag.positron.PosTriangle;
 
 public class AndroidGraphics implements Graphics {
@@ -241,7 +241,7 @@ public class AndroidGraphics implements Graphics {
 	}
 
 	@Override
-	public void drawString(String text, int x, int y, Paint p, Fader f) {
+	public void drawString(String text, int x, int y, Paint p, TextFader f) {
 		canvas.drawText(text, x, y, p);
 
 	}

@@ -21,7 +21,7 @@ public class Tutorial extends GameScreen {
 		One, Two, Three, Four, Five;
 	}
 
-	TutState TState = TutState.Five;
+	TutState TState = TutState.Four;
 	public Message m;
 	public Message n;
 	PosTimer ptime;
@@ -48,6 +48,7 @@ public class Tutorial extends GameScreen {
 		TwoB = false;
 		destroyCount = 0;
 		endAlpha = 0;
+		doneTut = false;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -100,7 +101,7 @@ public class Tutorial extends GameScreen {
 							&& (event.y > fingery - Math.round(sh * .083))) {
 				lock = false;
 				//TSTATE2||3||4
-				if (TState != TutState.Two && TState != TutState.Three && TState != TutState.Four){
+				if (TState != TutState.Two && TState != TutState.Three && TState != TutState.Four && !doneTut){
 					if (!topFreeze) {
 						if (score - scoreTemp < 0)
 							score = 0;
@@ -164,9 +165,10 @@ public class Tutorial extends GameScreen {
 			scoreMult = 1;
 			recentInterval = 30;
 			if (TState == TutState.Four)
-				recentInterval = 30;
+				recentInterval = 45;
+			// FOR TOPFREEZE:
 			if (TState == TutState.Five)
-				recentInterval = 30;
+				recentInterval = 45;
 			if (levelStart < 68) {
 				nextLevel = true;
 				level1 = false;
@@ -318,8 +320,8 @@ public class Tutorial extends GameScreen {
 
 		// timeCHARGE
 		if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
-				&& !currentTG || (!currentTC && tc == null && TState == TutState.Five)) {
-			if (200 > randomInt3 && !topFreeze) {
+				&& !currentTG || (!currentTC && tc == null && TState == TutState.Five) && !doneTut) {
+			if (75 > randomInt3 && !topFreeze) {
 				tc = new TimeCharge((randomInt2 + 1) * lane,
 						(int) Math.round(sh * .78), 5);
 				Assets.tcDrone.play();
@@ -337,7 +339,6 @@ public class Tutorial extends GameScreen {
 		}
 
 		if (tc != null && currentTC) {
-			System.out.println("tcu");
 			tc.update();
 
 			if (tc.getY() <= 0) {
@@ -347,12 +348,12 @@ public class Tutorial extends GameScreen {
 				if (TState == TutState.Four)
 					//					topped = true;
 					pieces.clear();
-				//				recent = false;
+				recent = false;
 				tg = null;
 				pts.clear();
 				tc = null;
 				currentTG = false;
-				Assets.tcDrone.stop();				
+				Assets.tcDrone.stop();	
 				currentTC = false;
 				if (TState == TutState.Four)
 					destroyCount++;
@@ -480,7 +481,13 @@ public class Tutorial extends GameScreen {
 					if (tLock == null){
 						pieces.clear();
 						tLock = new TopLock(lane, game.getGraphics());
+						for (int i = 0; i < 7; i++){
+							tLock.addPiece();
+							tLock.weaken(new Pieces(lane * (i + 1), (int) Math.round(sh * .8), true, this));							
+							tLock.addKilled();
+						}
 					}
+
 					if (topFade == null)
 						topFade = new PosTimer(4000);
 					if (!topFade.getTrigger()){
@@ -539,6 +546,7 @@ public class Tutorial extends GameScreen {
 				currentTG = false;
 				Assets.gridDrone.stop();
 				topFreeze = false;
+				fingery = (float) (sh*.75);
 				score = 0;
 				freeze = false;
 				wrongButton = false;
@@ -557,7 +565,7 @@ public class Tutorial extends GameScreen {
 			else if (p.isVisible() && topFreeze && !freeze && p.wayback
 					&& !negPressed && !posPressed && !exitCases) {
 				p.setBackspeed((int) Math.round(sh * .0124));
-				if (TState == TutState.Three && !TwoB)
+				if ((TState == TutState.Three && !TwoB) || TState == TutState.Five)
 					p.setBackspeed(10);
 				p.updateback();
 				//								System.out.println("yes2");
@@ -599,10 +607,10 @@ public class Tutorial extends GameScreen {
 			else if (p.wayback && negPressed && !exitCases) {
 
 				if (p.type) {
-					if (score - 10 * scoreMult < 0) {
-						score = 0;
-					} else if (!topFreeze)
-						score -= 10 * scoreMult;
+					//					if (score - 10 * scoreMult < 0) {
+					//						score = 0;
+					//					} else if (!topFreeze)
+					//						score -= 10 * scoreMult;
 					if (topFreeze){
 						tLock.weaken(pieces.get(0));
 						tLock.addKilled();
@@ -629,6 +637,8 @@ public class Tutorial extends GameScreen {
 				}
 				if (!p.type) {
 					it.remove();
+					if (topFreeze)
+						fingery = (float) (sh*.75);
 					this.fail();
 					tLock = null;
 					destroyCount = 0;
@@ -641,6 +651,8 @@ public class Tutorial extends GameScreen {
 
 				if (p.type) {
 					it.remove();
+					if (topFreeze)
+						fingery = (float) (sh*.75);
 					this.fail();
 					tLock = null;
 					freezeScore = 0;
@@ -651,10 +663,10 @@ public class Tutorial extends GameScreen {
 						destroyCount--;
 				}
 				if (!p.type) {
-					if (score - 10 * scoreMult < 0) {
-						score = 0;
-					} else if (!topFreeze)
-						score -= 10 * scoreMult;
+					//					if (score - 10 * scoreMult < 0) {
+					//						score = 0;
+					//					} else if (!topFreeze)
+					//						score -= 10 * scoreMult;
 					if (topFreeze){
 						tLock.weaken(pieces.get(0));
 						tLock.addKilled();
@@ -693,7 +705,7 @@ public class Tutorial extends GameScreen {
 					if (scoreMult <= 15)
 						if (TState != TutState.Three)
 							p.setBackspeed(25);
-					if (TState == TutState.Three && !TwoB)
+					if ((TState == TutState.Three && !TwoB) || TState == TutState.Five)
 						p.setBackspeed(10);
 					if (scoreMult > 15)
 						p.setBackspeed(30);
@@ -719,7 +731,7 @@ public class Tutorial extends GameScreen {
 				else{	
 					if (scoreMult <= 15)
 						p.setBackspeed(25);
-					if (TState == TutState.Three && !TwoB)
+					if ((TState == TutState.Three && !TwoB) || TState == TutState.Five)
 						p.setBackspeed(10);
 					if (scoreMult > 15)
 						p.setBackspeed(30);
@@ -732,6 +744,8 @@ public class Tutorial extends GameScreen {
 			}
 
 			else if (p.y < Math.round(sh * .008)) {
+				sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+scoreMult), 
+						sw / 2, (int) Math.round(sh * .954)));
 				score += 1 * scoreMult;
 				if (p.type)
 					Assets.posPoint.play(20);
@@ -791,6 +805,7 @@ public class Tutorial extends GameScreen {
 			int fingerx = scene.getLine();
 
 			if (topFreeze) {
+
 				Paint greyP = new Paint();
 				greyP.setTypeface(Assets.font);
 				greyP.setTextAlign(Paint.Align.CENTER);
@@ -843,7 +858,15 @@ public class Tutorial extends GameScreen {
 							//							g.drawString(String.valueOf(freezeScore), sw/2, sh/2, freezeScorePaint);
 						}
 						else topFadeFinal = null;
-
+				if (tLock == null){
+					pieces.clear();
+					tLock = new TopLock(lane, game.getGraphics());
+					for (int i = 0; i < 7; i++){
+						tLock.addPiece();
+						tLock.weaken(new Pieces(lane * (i + 1), (int) Math.round(sh * .8), true, this));							
+						tLock.addKilled();
+					}
+				}
 				tLock.drawLock();
 				greyP.setTextSize(Math.round(sh * .1));
 				g.drawString(String.valueOf(score), sw / 2,
@@ -905,7 +928,7 @@ public class Tutorial extends GameScreen {
 
 				//SCORE STUFF
 				if (TState != TutState.One && TState != TutState.Three){
-					if (TState != TutState.Two && TState != TutState.Four){
+					if (TState != TutState.Two && TState != TutState.Four && !doneTut){
 						g.drawString("-" + String.valueOf(scoreTemp), fingerx,
 								(int) fingery + (int) Math.round(sw * .019), paint4);
 
@@ -1024,6 +1047,16 @@ public class Tutorial extends GameScreen {
 				}
 			}
 			// SPRITES
+			if (sStrings.size() != 0){
+				Iterator<ShakeString> ss = sStrings.iterator();
+				while (ss.hasNext()) {
+					ShakeString shake = ss.next();
+					shake.drawAndUpdate();
+					if (shake.shakerIsDead())
+						ss.remove();						
+				}
+			}
+			
 			for (Pieces p : getPieces()) 
 			{
 
@@ -1306,23 +1339,24 @@ public class Tutorial extends GameScreen {
 			}
 			// LAUNCHERS
 			int launchCol = 0;
-			if (!topFreeze){
+			if (!topFreeze)
 				launchCol = Color.GRAY;
-				g.drawCircFill(lane, Math.round(sh * .83), 
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 2, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 3, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 4, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 5, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 6, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-				g.drawCircFill(lane * 7, Math.round(sh * .83),
-						Math.round(sw * .05), launchCol, 100);
-			}
+			else launchCol = Color.RED;
+			g.drawCircFill(lane, Math.round(sh * .83), 
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 2, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 3, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 4, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 5, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 6, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+			g.drawCircFill(lane * 7, Math.round(sh * .83),
+					Math.round(sw * .05), launchCol, 100);
+
 
 			if (TState != TutState.One && TState != TutState.Two){
 				if (freeze || topFreeze) {
@@ -1363,7 +1397,8 @@ public class Tutorial extends GameScreen {
 
 				// LIGHTNING
 				if (lightning) {
-					if (lightningDuration < 20) {
+					if (lightningDuration < 20) {			
+						
 
 						paint13.setAlpha(200 - lightningDuration * 10);
 						if (TState != TutState.Three)
@@ -1391,6 +1426,12 @@ public class Tutorial extends GameScreen {
 						g.drawLine(lane * 7, (int) Math.round(sh * .81), killx,
 								killy + (int) Math.round(sw * .048), Color.BLUE,
 								200 - lightningDuration * 10, 12);
+						if (topFreeze){
+							g.drawLine(killx, Assets.lock.getHeight()/2, killx, (int) Math.round(sh * .81), 
+									Color.RED, 200 - lightningDuration * 10, 30);
+							g.drawCircOut(killx, Assets.lock.getHeight()/2, lightningDuration*20, Color.RED, 
+									20, 200 - lightningDuration * 10);
+						}
 
 						g.drawCircFill(lane, (int) Math.round(sh * .83),
 								(int) Math.round(sw * .043), Color.BLUE,
@@ -1499,7 +1540,7 @@ public class Tutorial extends GameScreen {
 				if (n == null){
 					n = new Message(fingerx, (int) (fingery- (sh*.1)), 
 							100, 1f, "MOVE THIS!", .075f, g, Color.MAGENTA);
-					ptime = new PosTimer(3000); 
+					ptime = new PosTimer(2000); 
 					fingery = (float) (sh*.75);
 				}
 
@@ -1596,8 +1637,6 @@ public class Tutorial extends GameScreen {
 			}
 			// TSTATE THREE
 			if (TState == TutState.Three){
-				// THINGS: lock mover, neg on white // pos on black
-				// slow down the back speed
 				scene.setLine(sw/2);
 				if (destroyCount < 10){
 					int alp = destroyCount*20;
@@ -1685,7 +1724,7 @@ public class Tutorial extends GameScreen {
 				}
 			}
 
-			// TSTATE FOUR
+			//TSTATE FOUR
 			//altTSTATE4
 			if (TState == TutState.Four && topFade != null){
 				if (m == null) {
@@ -1693,11 +1732,18 @@ public class Tutorial extends GameScreen {
 							.075f, game.getGraphics(), Color.MAGENTA);
 				}
 				else if (m.getText().equals("UHOH..."))
-					m = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "I TOLD YOU!!!", 
+					m = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "I TOLD YOU!!!",
 							.075f, game.getGraphics(), Color.MAGENTA);
-				if (m.isAlive())
-					m.drawMessage();
-				else topped = true;
+				if (m.isAlive()){
+					m.drawMessage();					
+				}
+				else {
+					if ((getAlert().getImage() == Assets.alarm2)&&!topFade.getTrigger()) {
+						g.drawString("USE THE LAZERS", sw/2, (int)(sh*.8), painty);
+					}
+					getAlert().update(10);
+					topped = true;
+				}
 
 			}
 			else if (TState == TutState.Four && currentTC && destroyCount == 9 && !topped){
@@ -1792,6 +1838,7 @@ public class Tutorial extends GameScreen {
 					}
 					else{
 						TState = TutState.Five;
+						score = 0;
 						n = null;
 						m = null;
 						c = null;
@@ -1807,18 +1854,17 @@ public class Tutorial extends GameScreen {
 					painty.setTextSize(Math.round(sh * .6));
 					painty.setTextAlign(Paint.Align.CENTER);
 					painty.setAntiAlias(true);
-					painty.setColor(Color.CYAN);	
+					painty.setColor(Color.CYAN);
 				}
 				if (score < 25 && !doneTut){
 					if (score > 20){
 						int alp = (score-20)*50;
-						painty.setAlpha(alp);		
+						painty.setAlpha(alp);	
 						g.drawString(String.valueOf(score), sw/2, sh/2, painty);
 					}
 
 					if (ptime != null){
 						ptime.update();
-						System.out.println("ptime" + ptime.getRemainingMillis());
 					}
 					if (m == null && score < 25){
 						m = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "GET 25!!!", .1f, g, Color.RED);
@@ -1827,7 +1873,7 @@ public class Tutorial extends GameScreen {
 						m.drawMessage();
 
 					if (ptime == null)
-						ptime = new PosTimer(750);
+						ptime = new PosTimer(1000);
 
 					else if (ptime.getTrigger() && !freeze && (score + pieces.size()) < 25){
 						pieces.add(new Pieces((randomInt + 1) * lane,
@@ -1843,18 +1889,25 @@ public class Tutorial extends GameScreen {
 
 				else {
 					doneTut = true;
+					if (currentTC)
+						tcDeath = true;
 					if (n==null){
-						n = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "OK THAT'S EVERYTHING!", .055f, g, Color.MAGENTA);
+						n = new Message(sw/2, (int)(sh*.415) , 2f, 1f, "OK THAT'S EVERYTHING!", .055f, g, Color.MAGENTA);
 					}
-					else if (n.isAlive()){						
+					else if (n.isAlive()){
 						int alp = (int) ((score*10) - n.elapsedTime*100);
+						System.out.println("alp: " + alp);
+						if (alp > 250)
+							alp = 250;
+						if (alp < 0)
+							alp = 0;
 						painty.setAlpha(alp);
 						g.drawString(String.valueOf(score), sw/2, sh/2, painty);
 						n.drawMessage();
 						n.growM(.2f);
 					}
 					else if (c == null)
-						c = new Message(sw/2, (int)(sh*.415) , 1f, .5f, "(mostly...)", .075f, g, Color.MAGENTA);
+						c = new Message(sw/2, (int)(sh*.415) , 2f, 1f, "(mostly...)", .075f, g, Color.MAGENTA);
 					else if (c.isAlive()){
 						c.drawMessage();
 						c.growM(.2f);					
@@ -1872,7 +1925,6 @@ public class Tutorial extends GameScreen {
 				}
 			}
 		}
-
 
 		if (state == GameState.Ready)
 			drawReadyUI();

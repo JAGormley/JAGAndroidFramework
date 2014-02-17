@@ -83,7 +83,7 @@ public class TopLock {
 
 	public void addPiece() {
 		totalPs++;
-		System.out.println("totalPs :" + totalPs);
+//		System.out.println("totalPs :" + totalPs);
 		
 	}
 

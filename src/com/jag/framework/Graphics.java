@@ -1,7 +1,7 @@
 package com.jag.framework;
 
 
-import com.jag.positron.Fader;
+import com.jag.positron.TextFader;
 import com.jag.positron.PosTriangle;
 
 import android.graphics.Bitmap;
@@ -35,7 +35,7 @@ public interface Graphics {
 
 	void drawString(String text, int x, int y, Paint paint);
 	
-	void drawString(String text, int x, int y, Paint p, Fader f);
+	void drawString(String text, int x, int y, Paint p, TextFader f);
 
 	public int getWidth();
 
