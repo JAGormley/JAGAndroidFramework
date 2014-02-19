@@ -21,7 +21,7 @@ public class Tutorial extends GameScreen {
 		One, Two, Three, Four, Five;
 	}
 
-	TutState TState = TutState.Four;
+	TutState TState = TutState.One;
 	public Message m;
 	public Message n;
 	PosTimer ptime;
@@ -158,7 +158,7 @@ public class Tutorial extends GameScreen {
 		// CHECKS AND UPDAteS:
 
 		if (score < 50) {
-			if (level1) {
+			if (level1a) {
 				levelStart = 0;
 			}
 			level = 1;
@@ -171,7 +171,7 @@ public class Tutorial extends GameScreen {
 				recentInterval = 45;
 			if (levelStart < 68) {
 				nextLevel = true;
-				level1 = false;
+				level1a = false;
 			} else {
 				nextLevel = false;
 				level2 = true;
@@ -180,7 +180,7 @@ public class Tutorial extends GameScreen {
 		if ((score >= 50) && (score < 125)) {
 			if (level2) {
 				levelStart = 0;
-				level1 = true;
+				level1a = true;
 			}
 			level = 1.2;
 			scoreMult = 2;
@@ -747,6 +747,7 @@ public class Tutorial extends GameScreen {
 				sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+scoreMult), 
 						sw / 2, (int) Math.round(sh * .954)));
 				score += 1 * scoreMult;
+				pointXs.add(p.x);
 				if (p.type)
 					Assets.posPoint.play(20);
 				if (!p.type)
@@ -1049,11 +1050,20 @@ public class Tutorial extends GameScreen {
 			// SPRITES
 			if (sStrings.size() != 0){
 				Iterator<ShakeString> ss = sStrings.iterator();
+				int position = 0;
 				while (ss.hasNext()) {
 					ShakeString shake = ss.next();
 					shake.drawAndUpdate();
-					if (shake.shakerIsDead())
-						ss.remove();						
+					int alph = (shake.shakeMillisLeft()/2)-50;
+					if (alph < 0) alph = 0;
+					g.drawCircOut(pointXs.get(position), -15, 150-(alph/2), Color.MAGENTA,
+							(alph/20), alph/2);
+					
+					if (shake.shakerIsDead()){
+						ss.remove();
+						pointXs.remove(position);
+					}
+					else position++;					
 				}
 			}
 			
@@ -1427,7 +1437,7 @@ public class Tutorial extends GameScreen {
 								killy + (int) Math.round(sw * .048), Color.BLUE,
 								200 - lightningDuration * 10, 12);
 						if (topFreeze){
-							g.drawLine(killx, Assets.lock.getHeight()/2, killx, (int) Math.round(sh * .81), 
+							g.drawLine(killx, Assets.lock.getHeight()/2, killx, killy, 
 									Color.RED, 200 - lightningDuration * 10, 30);
 							g.drawCircOut(killx, Assets.lock.getHeight()/2, lightningDuration*20, Color.RED, 
 									20, 200 - lightningDuration * 10);

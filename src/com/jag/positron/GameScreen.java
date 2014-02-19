@@ -54,7 +54,7 @@ public class GameScreen extends Screen {
 	lightningLineImage;
 
 	boolean recent, freeze, touch, posPressed, negPressed, wrongButton,
-	lightning, lock, nextLevel, redRing, levelInA, levelInB, level1,
+	lightning, lock, nextLevel, redRing, levelInA, levelInB, level1a, level1b,
 	level2, level3, level4, level5, level6, level7, level8, scoreReset,
 	typePass;
 
@@ -66,30 +66,30 @@ public class GameScreen extends Screen {
 	tcy, i, newLevel, gridInt, baseGrowth, flashUpdate;
 
 	ArrayList<Integer> pointXs;
-	
+
 	float fingery, circleRad, j;
 	public Animation alert, magnet, elecBase, elecBase2;
-	
+
 	public Paint paint5, paint6;
 	public double level;
-	
+
 	public TimeCharge tc;
 	public TimeGrid tg;
 	public TimeGrid tgTemp;
 	public ArrayList<ShakeString> sStrings;
-	
+
 	public int lineDuration, scoreDeathDur, levelStart, postScore;
-	
+
 	public boolean currentTC, currentTG;
 	public boolean tcDeath;
 	public boolean tgDeath;
 	public boolean topFreeze;
 	public boolean newHigh;
-	
+
 	public int freezeDur;
 	public LinearGradient lg;
 	public LinearGradient lg2;
-	
+
 	public Paint paint7;
 	public Paint paint8;
 	public Paint paint9;
@@ -157,7 +157,7 @@ public class GameScreen extends Screen {
 
 	private Bitmap blueCoug;
 
-	
+
 
 	// private PosTriangle posT;
 
@@ -175,9 +175,9 @@ public class GameScreen extends Screen {
 		setPieces(new ArrayList<Pieces>());
 		pts = new ArrayList<PosTriangle>();
 		sStrings = new ArrayList<ShakeString>();
-		
+
 		pointXs = new ArrayList<Integer>();		
-		
+
 		lane = sw / 8;
 		recent = true;
 
@@ -396,14 +396,14 @@ public class GameScreen extends Screen {
 		tcy = 0;
 		ballDuration = 0;
 		i = 0;
-		level1 = true;
+		level1a = true;
 		teeth = false;
 
 		Assets.tcDrone.setLooping(true);
 		Assets.gridDrone.setLooping(true);
 
 		tempPiece = new Pieces(0, 0, true, this);
-		score = 1000;
+		score = 0;
 
 	}
 
@@ -534,30 +534,47 @@ public class GameScreen extends Screen {
 
 		// CHECKS AND UPDAteS:
 
-		if (score < 50) {
-			if (level1) {
+		if (score < 25) {
+			if (level1a) {
 				levelStart = 0;
 			}
 			level = 1;
 			scoreMult = 1;
-			recentInterval = 30;
+			recentInterval = 40;
 			if (levelStart < 68) {
 				nextLevel = true;
-				level1 = false;
+				level1a = false;
+			} else {
+				nextLevel = false;
+				level2 = true;
+			}
+		}
+
+		if (score >= 25 && score < 50) {
+			if (level1b) {
+				levelStart = 0;
+				level1a = true;
+			}
+			level = 1.1;
+			scoreMult = 2;
+			recentInterval = 32;
+			if (levelStart < 68) {
+				nextLevel = true;
+				level1b = false;
 			} else {
 				nextLevel = false;
 				level2 = true;
 
 			}
-
 		}
+
 		if ((score >= 50) && (score < 125)) {
 			if (level2) {
 				levelStart = 0;
-				level1 = true;
+				level1b = true;
 			}
 			level = 1.2;
-			scoreMult = 2;
+			scoreMult = 5;
 			recentInterval = 27;
 			if (levelStart < 68) {
 				nextLevel = true;
@@ -576,7 +593,7 @@ public class GameScreen extends Screen {
 				level = 1;
 			else
 				level = 1.4;
-			scoreMult = 5;
+			scoreMult = 10;
 			recentInterval = 24;
 			if (levelStart < 68) {
 				nextLevel = true;
@@ -595,7 +612,7 @@ public class GameScreen extends Screen {
 				level = 1;
 			else
 				level = 1.6;
-			scoreMult = 10;
+			scoreMult = 15;
 			recentInterval = 20;
 			if (levelStart < 68) {
 				nextLevel = true;
@@ -614,7 +631,7 @@ public class GameScreen extends Screen {
 				level = 1.1;
 			else
 				level = 1.8;
-			scoreMult = 15;
+			scoreMult = 20;
 			recentInterval = 17;
 
 			if (levelStart < 70) {
@@ -633,9 +650,9 @@ public class GameScreen extends Screen {
 			if (topFreeze)
 				level = 1.2;
 			else
-				level = 2;
+				level = 1.9;
 			scoreMult = 25;
-			recentInterval = 13;
+			recentInterval = 14;
 			if (levelStart < 70) {
 				nextLevel = true;
 				level6 = false;
@@ -1078,7 +1095,7 @@ public class GameScreen extends Screen {
 			else if (p.y < Math.round(sh * .008)) {
 				sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+scoreMult), 
 						sw / 2, (int) Math.round(sh * .954)));
-								
+
 				score += 1 * scoreMult;
 				pointXs.add(p.x);
 				if (p.type)
@@ -1426,12 +1443,12 @@ public class GameScreen extends Screen {
 			}
 
 			if (!scoreReset && !topFreeze) {
-				
+
 				g.drawString(String.valueOf(score), sw / 2,
 						(int) Math.round(sh * .954), paint3);
 				g.drawString("high " + String.valueOf(postScore), sw / 2,
 						(int) Math.round(sh * .988), paint6);
-				
+
 
 			}
 			if (scoreReset) {
@@ -1469,7 +1486,7 @@ public class GameScreen extends Screen {
 				}
 			}
 
-			
+
 			if (nextLevel && scoreMult > 1) {
 				if (levelStart < 70) {
 					paint5.setAlpha(255 - (levelStart * 3));
@@ -1514,18 +1531,18 @@ public class GameScreen extends Screen {
 			}
 
 			// SPRITES
-//			System.out.println("ssize: "+sStrings.size());
+			//			System.out.println("ssize: "+sStrings.size());
 			if (sStrings.size() != 0){
 				Iterator<ShakeString> ss = sStrings.iterator();
 				int position = 0;
 				while (ss.hasNext()) {
 					ShakeString shake = ss.next();
 					shake.drawAndUpdate();
-					int alph = shake.shakeMillisLeft()/2;
+					int alph = (shake.shakeMillisLeft()/2)-50;
 					if (alph < 0) alph = 0;
-					g.drawCircOut(pointXs.get(position), 0, 150-(alph/2), Color.MAGENTA,
+					g.drawCircOut(pointXs.get(position), -15, 150-(alph/2), Color.MAGENTA,
 							(alph/20), alph/2);
-					
+
 					if (shake.shakerIsDead()){
 						ss.remove();
 						pointXs.remove(position);
@@ -1533,9 +1550,9 @@ public class GameScreen extends Screen {
 					else position++;					
 				}
 			}
-			
+
 			System.out.println(pointXs.toString());
-			
+
 			for (Pieces p : getPieces()) {
 
 				if (p.getSwitched() && !p.wayback) {
@@ -1866,7 +1883,7 @@ public class GameScreen extends Screen {
 							killy + (int) Math.round(sw * .048), Color.BLUE,
 							200 - lightningDuration * 10, 12);
 					if (topFreeze)
-						g.drawLine(killx, Assets.lock.getHeight()/2, killx, (int) Math.round(sh * .81), 
+						g.drawLine(killx, Assets.lock.getHeight()/2, killx, killy,
 								Color.RED, 200 - lightningDuration * 10, 30);
 
 					g.drawCircFill(lane, (int) Math.round(sh * .83),
@@ -1903,7 +1920,7 @@ public class GameScreen extends Screen {
 					if (lightningDuration == 1)
 						g.drawRect(0, 0, g.getWidth() + 1, g.getHeight() + 1,
 								Color.rgb(255, 215, 0));
-					
+
 					lightningDuration++;
 				} else {
 					lightning = false;
