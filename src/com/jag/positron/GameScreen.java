@@ -534,7 +534,7 @@ public class GameScreen extends Screen {
 
 		// CHECKS AND UPDAteS:
 
-		if (score < 25) {
+		if (score < 35) {
 			if (level1a) {
 				levelStart = 0;
 			}
@@ -550,14 +550,14 @@ public class GameScreen extends Screen {
 			}
 		}
 
-		if (score >= 25 && score < 50) {
+		if (score >= 35 && score < 75) {
 			if (level1b) {
 				levelStart = 0;
 				level1a = true;
 			}
 			level = 1.1;
 			scoreMult = 2;
-			recentInterval = 32;
+			recentInterval = 36;
 			if (levelStart < 68) {
 				nextLevel = true;
 				level1b = false;
@@ -568,14 +568,14 @@ public class GameScreen extends Screen {
 			}
 		}
 
-		if ((score >= 50) && (score < 125)) {
+		if ((score >= 75) && (score < 175)) {
 			if (level2) {
 				levelStart = 0;
 				level1b = true;
 			}
 			level = 1.2;
 			scoreMult = 5;
-			recentInterval = 27;
+			recentInterval = 30;
 			if (levelStart < 68) {
 				nextLevel = true;
 				level2 = false;
@@ -584,7 +584,7 @@ public class GameScreen extends Screen {
 				level3 = true;
 			}
 		}
-		if ((score >= 125) && (score < 350)) {
+		if ((score >= 175) && (score < 500)) {
 			if (level3) {
 				levelStart = 0;
 				level2 = true;
@@ -594,7 +594,7 @@ public class GameScreen extends Screen {
 			else
 				level = 1.4;
 			scoreMult = 10;
-			recentInterval = 24;
+			recentInterval = 26;
 			if (levelStart < 68) {
 				nextLevel = true;
 				level3 = false;
@@ -603,7 +603,8 @@ public class GameScreen extends Screen {
 				level4 = true;
 			}
 		}
-		if ((score >= 350) && (score < 1200)) {
+		if ((score >= 500) && (score < 1350)) {
+			
 			if (level4) {
 				levelStart = 0;
 				level3 = true;
@@ -622,7 +623,7 @@ public class GameScreen extends Screen {
 				level5 = true;
 			}
 		}
-		if ((score >= 1200) && (score < 2400)) {
+		if ((score >= 1350) && (score < 2400)) {
 			if (level5) {
 				levelStart = 0;
 				level4 = true;
@@ -632,7 +633,7 @@ public class GameScreen extends Screen {
 			else
 				level = 1.8;
 			scoreMult = 20;
-			recentInterval = 17;
+			recentInterval = 15;
 
 			if (levelStart < 70) {
 				nextLevel = true;
@@ -728,7 +729,7 @@ public class GameScreen extends Screen {
 				currentTC = true;
 			}
 		}
-		if ((scoreMult >= 25) && !currentTC && tc == null) {
+		if ((scoreMult >= 20) && !currentTC && tc == null) {
 			if (400 > randomInt3 && !topFreeze) {
 				tc = new TimeCharge((randomInt2 + 1) * lane,
 						(int) Math.round(sh * .78), 5);
