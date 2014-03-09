@@ -403,7 +403,7 @@ public class GameScreen extends Screen {
 		Assets.gridDrone.setLooping(true);
 
 		tempPiece = new Pieces(0, 0, true, this);
-		score = 0;
+		score = 1000;
 
 	}
 
@@ -893,7 +893,7 @@ public class GameScreen extends Screen {
 						p = new Pieces(pLane,
 								(int) Math.round(sh * .8), randomBool, this);
 						tLock.addPiece();
-						System.out.println("size"+pieces.size());
+//						System.out.println("size"+pieces.size());
 					}
 			}
 			else
