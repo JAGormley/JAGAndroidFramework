@@ -26,6 +26,8 @@ public class Particle {
 	private int lane;
 	private float speedAdder;
 	public static boolean dead;
+	int deadx;
+	int deady;
 
 	/**
 	 * 
@@ -45,13 +47,15 @@ public class Particle {
 		this.heightMult = heightMult;
 		this.widthMult = widthMult;
 		speedAdder = 13f;
+		deadx = 0;
+		deady = 0;
 	}	
 
 	public void move(){
 		float sin = 0;
 		float cos = 0;
 		float offset = 2*size*widthMult;
-		
+
 		if (!charged){
 			sin = (float)Math.sin(speed)*size;
 			cos = (float)Math.cos(speed)*size*widthMult;
@@ -64,41 +68,49 @@ public class Particle {
 
 		speed += speedCounter*speedAdder;
 		if (speedAdder > 1)
-		speedAdder *= .85;
+			speedAdder *= .85;
 
-		// switch left/right
-		if (sin < 0) {
-			negSin = true;
-		}
-		if (negSin && sin > 0){
-			clockwise = !clockwise;
-			negSin = false;
+		if (!dead){
+			// switch left/right
+			if (sin < 0) {
+				negSin = true;
+			}
+			if (negSin && sin > 0){
+				clockwise = !clockwise;
+				negSin = false;
+			}
+
+			// right side of lemniscate:
+			if (clockwise){
+				if (sin > 0){
+					x = startx*cos;
+				}
+				else{
+					x = startx*-cos - offset;
+				}
+			}
+			// left side of lemniscate:
+			else {
+				if (sin > 0){
+					x = -startx*cos - offset;
+				}
+				else{
+					x = startx*cos ;
+				}
+			}
+			y = starty*sin*heightMult;
 		}
 
-		// right side of lemniscate:
-		if (clockwise){
-			if (sin > 0){
-				x = startx*cos;
-			}
-			else{
-				x = startx*-cos - offset;
-			}
-		}
-		// left side of lemniscate:
-		else {
-			if (sin > 0){
-				x = -startx*cos - offset;		
-			}
-			else{
-				x = startx*cos ;
-			}
-		}
-		y = starty*sin*heightMult;
-		
 		if (dead){
-			Random randy = new Random();
-			x += randy.nextInt(1200)-300;
-			y -= randy.nextInt(1200)-300;				
+			if (deadx == 0 && deady == 0){
+				Random randy = new Random();
+				deadx = 1;
+				deady = 1;
+			}
+			x += deadx;
+			y += deady;	
+			//			startx += randy.nextInt(1200)-300;
+			//			starty -= randy.nextInt(1200)-300;		
 		}
 
 		if (!charged){
@@ -134,9 +146,6 @@ public class Particle {
 		if (charged){
 			g.drawCircFill(x, y, 4, Color.MAGENTA, 255);
 		}
-		//		g.drawLine((int)x-6, (int)y, (int)x+6, (int)y, Color.BLUE, 255, 4);
-		//		g.drawLine((int)x, (int)y-6, (int)x, (int)y+6, Color.BLUE, 255, 4);
-		//		g.drawLine(g.getWidth()/2, 0, g.getWidth()/2, 1200, Color.GREEN, 255, 8);
 	}
 
 }
