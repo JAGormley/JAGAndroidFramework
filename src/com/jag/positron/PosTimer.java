@@ -16,9 +16,7 @@ public class PosTimer {
 	public PosTimer(double d){
 		this.length = d;
 		trigger = false;
-	}	
-
-	
+	}
 
 	public void update(){
 		long gapTime = 0;

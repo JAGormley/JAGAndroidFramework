@@ -810,7 +810,7 @@ public class Tutorial extends GameScreen {
 				Paint greyP = new Paint();
 				greyP.setTypeface(Assets.font);
 				greyP.setTextAlign(Paint.Align.CENTER);
-				greyP.setAntiAlias(true);
+//				grey//				greyP.//				greyP.setAntiAlias(true););
 				greyP.setColor(Color.GRAY);
 
 				if (topFade != null)
@@ -1099,7 +1099,7 @@ public class Tutorial extends GameScreen {
 						painty.setTypeface(Assets.font);
 						painty.setTextSize(Math.round(sh * .05));
 						painty.setTextAlign(Paint.Align.CENTER);
-						painty.setAntiAlias(true);
+//						painty.//				greyP.setAntiAlias(true);
 						painty.setColor(Color.MAGENTA);
 						if (p.x < scene.getLine()){							
 							g.drawString("yep", p.x, p.y+(int)Math.round(sh *.1), painty);
@@ -1128,7 +1128,7 @@ public class Tutorial extends GameScreen {
 						painty.setTypeface(Assets.font);
 						painty.setTextSize(Math.round(sh * .05));
 						painty.setTextAlign(Paint.Align.CENTER);
-						painty.setAntiAlias(true);
+						//				greyP.setAntiAlias(true);
 						painty.setColor(Color.MAGENTA);
 						if (p.x < scene.getLine()){							
 							g.drawString("nope", p.x, p.y+(int)Math.round(sh *.1), painty);
@@ -1597,7 +1597,7 @@ public class Tutorial extends GameScreen {
 							painty.setTypeface(Assets.font);
 							painty.setTextSize(Math.round(sh * .6));
 							painty.setTextAlign(Paint.Align.CENTER);
-							painty.setAntiAlias(true);
+							//				greyP.setAntiAlias(true);
 							painty.setColor(Color.CYAN);
 						}					
 						painty.setAlpha(score * 9);
@@ -1681,7 +1681,7 @@ public class Tutorial extends GameScreen {
 							painty.setTypeface(Assets.font);
 							painty.setTextSize(Math.round(sh * .6));
 							painty.setTextAlign(Paint.Align.CENTER);
-							painty.setAntiAlias(true);
+							//				greyP.setAntiAlias(true);
 							painty.setColor(Color.CYAN);
 						}
 					}
@@ -1772,7 +1772,7 @@ public class Tutorial extends GameScreen {
 				painty2.setTypeface(Assets.font);
 				painty2.setTextSize(Math.round(sh * .6));
 				painty2.setTextAlign(Paint.Align.CENTER);
-				painty2.setAntiAlias(true);
+				//				greyP.setAntiAlias(true);
 				painty2.setColor(Color.GREEN);
 				if (destroyCount < 10){
 					int alp = destroyCount*20;
@@ -1808,7 +1808,7 @@ public class Tutorial extends GameScreen {
 							painty.setTypeface(Assets.font);
 							painty.setTextSize(Math.round(sh * .075));
 							painty.setTextAlign(Paint.Align.CENTER);
-							painty.setAntiAlias(true);
+//							greyP.setAntiAlias(true);
 							painty.setColor(Color.MAGENTA);
 						}
 						else if (currentTC) {
@@ -1863,7 +1863,7 @@ public class Tutorial extends GameScreen {
 					painty.setTypeface(Assets.font);
 					painty.setTextSize(Math.round(sh * .6));
 					painty.setTextAlign(Paint.Align.CENTER);
-					painty.setAntiAlias(true);
+					//				greyP.setAntiAlias(true);
 					painty.setColor(Color.CYAN);
 				}
 				if (score < 25 && !doneTut){

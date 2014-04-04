@@ -12,7 +12,7 @@ public class Assets {
 	 basewhite,	 baseblack, lightningc, lightningb, lightninga, lightningd, flag, flags, bf1, bf2, bf3, bf4, alarm1, alarm2,
 	 elecbase1, elecbase2, elecbase3, elecbase4, elecbase5, elecbase6, elecbasea, elecbaseb, elecbasec, elecbased, elecbasee,
 	 elecbasef, grid, face, instr1,instr2,instr3,instr4,instr5,instr6,instr7,instr8, instr9, instrPause, pauseScreen, loadScreen, rdscreen,
-	 lock, mFace, mFaced,
+	 lock, mFace, mFaced, hadronOne, hadronTwo,
 	 
 	 // MENU
 	 menu1, 

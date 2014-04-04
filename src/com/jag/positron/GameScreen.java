@@ -16,6 +16,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.os.Debug;
 
 import com.jag.framework.Game;
 import com.jag.framework.Graphics;
@@ -37,6 +38,8 @@ public class GameScreen extends Screen {
 	public static Scene scene;
 	public static int screenheight;
 	public static int screenwidth;
+	public static Game thisGame;
+	public static int lane;
 
 	// screen h/w
 	int sh;
@@ -46,8 +49,10 @@ public class GameScreen extends Screen {
 	public ArrayList<PosTriangle> pts;
 	Queue<Integer> heights = new LinkedList<Integer>();
 
-	// lanes:
-	int lane;
+
+
+	public Particle pcl;
+
 
 	Paint paint, paint2, paint3, paint4;
 	Image fore, rings1, rings2, base1, base2, bolt, currentMagnet,
@@ -98,6 +103,8 @@ public class GameScreen extends Screen {
 	public Paint paint12;
 
 	public Frenzy f;
+
+	public Collider collider;
 
 	public int tempyScore;
 
@@ -172,14 +179,19 @@ public class GameScreen extends Screen {
 		scene = new Scene(sw / 2);
 		screenheight = game.getGraphics().getHeight();
 		screenwidth = game.getGraphics().getWidth();
+		thisGame = game;
 		setPieces(new ArrayList<Pieces>());
 		pts = new ArrayList<PosTriangle>();
 		sStrings = new ArrayList<ShakeString>();
 
-		pointXs = new ArrayList<Integer>();		
+
+
+		pointXs = new ArrayList<Integer>();
 
 		lane = sw / 8;
 		recent = true;
+
+		collider = Collider.getInstance();
 
 		lg = new LinearGradient(sh / 2, -(sh / 12), sh / 2,
 				(float) (sh * .033), Color.BLUE, Color.alpha(0),
@@ -191,7 +203,7 @@ public class GameScreen extends Screen {
 		paint = new Paint();
 		paint.setTextSize(Math.round(sh * .025));
 		paint.setTextAlign(Paint.Align.CENTER);
-		paint.setAntiAlias(true);
+		//		paint.setAntiAlias(true);
 		paint.setColor(Color.WHITE);
 
 		paint2 = new Paint();
@@ -203,35 +215,35 @@ public class GameScreen extends Screen {
 		paint3.setTypeface(Assets.font);
 		paint3.setTextSize(Math.round(sh * .1));
 		paint3.setTextAlign(Paint.Align.CENTER);
-		paint3.setAntiAlias(true);
-		paint3.setColor(Color.BLUE);
+		//		paint3.setAntiAlias(true);
+		paint3.setColor(Color.GRAY);
 
 		paint4 = new Paint();
 		paint4.setTypeface(Assets.font);
 		paint4.setTextSize(Math.round(sh * .035));
 		paint4.setTextAlign(Paint.Align.CENTER);
-		paint4.setAntiAlias(true);
+		//		paint4.setAntiAlias(true); 
 		paint4.setColor(Color.RED);
 
 		paint5 = new Paint();
 		paint5.setTypeface(Assets.font);
 		paint5.setTextSize(Math.round(sh * .15));
 		paint5.setTextAlign(Paint.Align.CENTER);
-		paint5.setAntiAlias(true);
+		//		paint5.setAntiAlias(true);
 		paint5.setColor(Color.RED);
 
 		paint6 = new Paint();
 		paint6.setTypeface(Assets.font);
 		paint6.setTextSize(Math.round(sh * .033));
 		paint6.setTextAlign(Paint.Align.CENTER);
-		paint6.setAntiAlias(true);
-		paint6.setColor(Color.BLUE);
+		//		paint6.setAntiAlias(true);
+		paint6.setColor(Color.GRAY);
 
 		paint7 = new Paint();
 		paint7.setTypeface(Assets.font);
 		paint7.setTextSize(Math.round(sh * .066));
 		paint7.setTextAlign(Paint.Align.CENTER);
-		paint7.setAntiAlias(true);
+		//		paint7.setAntiAlias(true);
 		paint7.setColor(Color.RED);
 
 		paint8 = new Paint();
@@ -249,35 +261,35 @@ public class GameScreen extends Screen {
 		paint11.setTypeface(Assets.font);
 		paint11.setTextSize(Math.round(sh * .05));
 		paint11.setTextAlign(Paint.Align.CENTER);
-		paint11.setAntiAlias(true);
+		//		paint11.setAntiAlias(true);
 		paint11.setColor(Color.RED);
 
 		paint12 = new Paint();
 		paint12.setTypeface(Assets.font);
 		paint12.setTextSize(Math.round(sh * .133));
 		paint12.setTextAlign(Paint.Align.CENTER);
-		paint12.setAntiAlias(true);
+		//		paint12.setAntiAlias(true);
 		paint12.setColor(Color.RED);
 
 		paint13 = new Paint();
 		paint13.setTypeface(Assets.font);
 		paint13.setTextSize(Math.round(sh * .036));
 		paint13.setTextAlign(Paint.Align.CENTER);
-		paint13.setAntiAlias(true);
+		//		paint13.setAntiAlias(true);
 		paint13.setColor(Color.BLUE);
 
 		freezeScorePaint = new Paint();
 		freezeScorePaint.setTypeface(Assets.font);
 		freezeScorePaint.setTextSize(Math.round(sh * .6));
 		freezeScorePaint.setTextAlign(Paint.Align.CENTER);
-		freezeScorePaint.setAntiAlias(true);
+		//		freezeScorePaint.setAntiAlias(true);
 		freezeScorePaint.setColor(Color.CYAN);
 
 		freezeScorePaint2 = new Paint();
 		freezeScorePaint2.setTypeface(Assets.font);
 		freezeScorePaint2.setTextSize(Math.round(sh * .1));
 		freezeScorePaint2.setTextAlign(Paint.Align.CENTER);
-		freezeScorePaint2.setAntiAlias(true);
+		//		freezeScorePaint2.setAntiAlias(true);
 		freezeScorePaint2.setColor(Color.CYAN);
 
 		lockPaint = new Paint();
@@ -346,42 +358,46 @@ public class GameScreen extends Screen {
 		elecBase2.addFrame(Assets.pbase35, 20);
 
 		elecBase = new Animation();
-		elecBase.addFrame(Assets.nbase0, 20);
-		elecBase.addFrame(Assets.nbase1, 20);
-		elecBase.addFrame(Assets.nbase2, 20);
-		elecBase.addFrame(Assets.nbase3, 20);
-		elecBase.addFrame(Assets.nbase4, 20);
-		elecBase.addFrame(Assets.nbase5, 20);
-		elecBase.addFrame(Assets.nbase6, 20);
-		elecBase.addFrame(Assets.nbase7, 20);
-		elecBase.addFrame(Assets.nbase8, 20);
-		elecBase.addFrame(Assets.nbase9, 20);
-		elecBase.addFrame(Assets.nbase10, 20);
-		elecBase.addFrame(Assets.nbase11, 20);
-		elecBase.addFrame(Assets.nbase12, 20);
-		elecBase.addFrame(Assets.nbase13, 20);
-		elecBase.addFrame(Assets.nbase14, 20);
-		elecBase.addFrame(Assets.nbase15, 20);
-		elecBase.addFrame(Assets.nbase16, 20);
-		elecBase.addFrame(Assets.nbase17, 20);
-		elecBase.addFrame(Assets.nbase18, 20);
-		elecBase.addFrame(Assets.nbase19, 20);
-		elecBase.addFrame(Assets.nbase20, 20);
-		elecBase.addFrame(Assets.nbase21, 20);
-		elecBase.addFrame(Assets.nbase22, 20);
-		elecBase.addFrame(Assets.nbase23, 20);
-		elecBase.addFrame(Assets.nbase24, 20);
-		elecBase.addFrame(Assets.nbase25, 20);
-		elecBase.addFrame(Assets.nbase26, 20);
-		elecBase.addFrame(Assets.nbase27, 20);
-		elecBase.addFrame(Assets.nbase28, 20);
-		elecBase.addFrame(Assets.nbase29, 20);
-		elecBase.addFrame(Assets.nbase30, 20);
-		elecBase.addFrame(Assets.nbase31, 20);
-		elecBase.addFrame(Assets.nbase32, 20);
-		elecBase.addFrame(Assets.nbase33, 20);
-		elecBase.addFrame(Assets.nbase34, 20);
 		elecBase.addFrame(Assets.nbase35, 20);
+		elecBase.addFrame(Assets.nbase34, 20);
+		elecBase.addFrame(Assets.nbase33, 20);
+		elecBase.addFrame(Assets.nbase32, 20);
+		elecBase.addFrame(Assets.nbase31, 20);
+		elecBase.addFrame(Assets.nbase30, 20);
+		elecBase.addFrame(Assets.nbase29, 20);
+		elecBase.addFrame(Assets.nbase28, 20);
+		elecBase.addFrame(Assets.nbase27, 20);
+		elecBase.addFrame(Assets.nbase26, 20);
+		elecBase.addFrame(Assets.nbase25, 20);
+		elecBase.addFrame(Assets.nbase24, 20);
+		elecBase.addFrame(Assets.nbase23, 20);
+		elecBase.addFrame(Assets.nbase22, 20);
+		elecBase.addFrame(Assets.nbase21, 20);
+		elecBase.addFrame(Assets.nbase21, 20);
+		elecBase.addFrame(Assets.nbase20, 20);
+		elecBase.addFrame(Assets.nbase19, 20);
+		elecBase.addFrame(Assets.nbase19, 20);
+		elecBase.addFrame(Assets.nbase18, 20);
+		elecBase.addFrame(Assets.nbase17, 20);
+		elecBase.addFrame(Assets.nbase16, 20);
+		elecBase.addFrame(Assets.nbase15, 20);
+		elecBase.addFrame(Assets.nbase14, 20);
+		elecBase.addFrame(Assets.nbase13, 20);
+		elecBase.addFrame(Assets.nbase12, 20);
+		elecBase.addFrame(Assets.nbase11, 20);
+		elecBase.addFrame(Assets.nbase10, 20);
+		elecBase.addFrame(Assets.nbase9, 20);
+		elecBase.addFrame(Assets.nbase8, 20);
+		elecBase.addFrame(Assets.nbase7, 20);
+		elecBase.addFrame(Assets.nbase6, 20);
+		elecBase.addFrame(Assets.nbase5, 20);
+		elecBase.addFrame(Assets.nbase4, 20);
+		elecBase.addFrame(Assets.nbase3, 20);
+		elecBase.addFrame(Assets.nbase2, 20);
+		elecBase.addFrame(Assets.nbase1, 20);
+		elecBase.addFrame(Assets.nbase0, 20);
+
+
 
 		nextLevel = false;
 		lock = false;
@@ -404,6 +420,8 @@ public class GameScreen extends Screen {
 
 		tempPiece = new Pieces(0, 0, true, this);
 		score = 1000;
+
+
 
 	}
 
@@ -437,6 +455,7 @@ public class GameScreen extends Screen {
 	}
 
 	public void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
+		//		Debug.startMethodTracing();
 		Assets.theme.stop();
 		// 1. All touch input is handled here:
 		int len = touchEvents.size();
@@ -604,7 +623,7 @@ public class GameScreen extends Screen {
 			}
 		}
 		if ((score >= 500) && (score < 1350)) {
-			
+
 			if (level4) {
 				levelStart = 0;
 				level3 = true;
@@ -867,7 +886,7 @@ public class GameScreen extends Screen {
 		}
 
 		// Pieces
-		if ((randomInt < chanceOfNewPiece) && !recent) {
+		if ((randomInt < chanceOfNewPiece) && !recent && !scoreReset) {
 			int pLane = (randomInt2 + 1) * lane;
 			Pieces p = null;
 
@@ -893,7 +912,7 @@ public class GameScreen extends Screen {
 						p = new Pieces(pLane,
 								(int) Math.round(sh * .8), randomBool, this);
 						tLock.addPiece();
-//						System.out.println("size"+pieces.size());
+						//						System.out.println("size"+pieces.size());
 					}
 			}
 			else
@@ -1075,6 +1094,7 @@ public class GameScreen extends Screen {
 					p.setBackspeed(30);
 				p.updateback();
 				freeze = true;
+				collider.checkCharged(p.x, scene.getLine());
 				//				 System.out.println("yes7");
 			}
 
@@ -1089,6 +1109,8 @@ public class GameScreen extends Screen {
 				if (scoreMult > 15)
 					p.setBackspeed(30);
 				p.updateback();
+				collider.checkCharged(p.x, scene.getLine());
+
 
 				//				 System.out.println("yes7b");
 			}
@@ -1194,19 +1216,19 @@ public class GameScreen extends Screen {
 		freezeScorePaint.setTypeface(Assets.font);
 		freezeScorePaint.setTextSize(Math.round(sh * .6));
 		freezeScorePaint.setTextAlign(Paint.Align.CENTER);
-		freezeScorePaint.setAntiAlias(true);
+		//		freezeScorePaint.setAntiAlias(true);
 		freezeScorePaint.setColor(Color.CYAN);
 
 		freezeScorePaint2 = new Paint();
 		freezeScorePaint2.setTypeface(Assets.font);
 		freezeScorePaint2.setTextSize(Math.round(sh * .1));
 		freezeScorePaint2.setTextAlign(Paint.Align.CENTER);
-		freezeScorePaint2.setAntiAlias(true);
-		freezeScorePaint2.setColor(Color.CYAN);	
+		//		freezeScorePaint2.setAntiAlias(true);
+		freezeScorePaint2.setColor(Color.CYAN);
 	}
 
 	protected int checkLane(int lane) {
-		System.out.println("try: " + lane);
+		//		System.out.println("try: " + lane);
 		int acc = 0;
 		for (int i = 0; i < pieces.size(); i++){
 			if (pieces.get(i).getX() == lane){
@@ -1231,6 +1253,8 @@ public class GameScreen extends Screen {
 	}
 
 	public void fail(){
+		collider.reset();
+		collider = Collider.getInstance();
 		tempPiece = new Pieces(0, 0, true, this);
 		topFreezeWin = false;
 		tLock = null;
@@ -1320,7 +1344,7 @@ public class GameScreen extends Screen {
 	@Override
 	public void paint(float deltaTime) {
 
-		// Debug.startMethodTracing();
+
 		Graphics g = game.getGraphics();
 		getAlert().update(10);
 
@@ -1337,7 +1361,7 @@ public class GameScreen extends Screen {
 				Paint greyP = new Paint();
 				greyP.setTypeface(Assets.font);
 				greyP.setTextAlign(Paint.Align.CENTER);
-				greyP.setAntiAlias(true);
+				//				greyP.setAntiAlias(true);
 				greyP.setColor(Color.GRAY);
 
 				if (topFade != null)
@@ -1400,9 +1424,15 @@ public class GameScreen extends Screen {
 
 			if (!topFreeze) {
 
-				g.drawRect(fingerx, 0, g.getWidth() + 3, sh + 5, Color.BLACK);
-				g.drawRect(0, 0, fingerx + 2, sh + 2, Color.WHITE);
-
+				if (scoreReset && scoreDeathDur < 5)
+					
+					g.drawImage(Assets.mFaced, 0, 0, scoreDeathDur*50);
+				
+				if (!scoreReset){
+					g.drawRect(fingerx, 0, g.getWidth() + 3, sh + 5, Color.BLACK);
+					g.drawRect(0, 0, fingerx + 2, sh + 2, Color.WHITE);
+				}
+				//				
 				if (!freeze && !topFreeze) {
 					baseGrowth = 0;
 				}			
@@ -1443,6 +1473,9 @@ public class GameScreen extends Screen {
 				}
 			}
 
+
+			collider.update();
+
 			if (!scoreReset && !topFreeze) {
 
 				g.drawString(String.valueOf(score), sw / 2,
@@ -1453,10 +1486,10 @@ public class GameScreen extends Screen {
 
 			}
 			if (scoreReset) {
-
+				collider.death();
 				paint3.setColor(Color.RED);
 				paint6.setColor(Color.RED);
-				if (scoreDeathDur < 40) {
+				if (scoreDeathDur < 60) {
 					paint11.setAlpha(255 - scoreDeathDur * 6);
 					paint12.setAlpha(255 - scoreDeathDur * 6);
 					if (newHigh) {
@@ -1479,9 +1512,13 @@ public class GameScreen extends Screen {
 					failCircle(g);
 					scoreDeathDur++;
 				} else {
+					if (collider.isSet()){
+						collider.reset();
+						collider = Collider.getInstance();
+					}
 					scoreReset = false;
-					paint3.setColor(Color.BLUE);
-					paint6.setColor(Color.BLUE);
+					paint3.setColor(Color.GRAY);
+					paint6.setColor(Color.GRAY);
 					scoreDeathDur = 0;
 					newHigh = false;
 				}
@@ -1552,7 +1589,7 @@ public class GameScreen extends Screen {
 				}
 			}
 
-			System.out.println(pointXs.toString());
+			//			System.out.println(pointXs.toString());
 
 			for (Pieces p : getPieces()) {
 
@@ -1801,30 +1838,23 @@ public class GameScreen extends Screen {
 				launchCol = Color.RED;
 			if (!topFreeze)
 				launchCol = Color.GRAY;
+			//			g.drawCircFill(lane, Math.round(sh * .83), 
+			//					Math.round(sw * .05), launchCol, 100);
+			//			g.drawCircFill(lane * 2, Math.round(sh * .83),
+			//					Math.round(sw * .05), launchCol, 100);
+			//			g.drawCircFill(lane * 3, Math.round(sh * .83),
+			//					Math.round(sw * .05), launchCol, 100);
+			//			g.drawCircFill(lane * 4, Math.round(sh * .83),
+			//					Math.round(sw * .05), launchCol, 100);
+			//			g.drawCircFill(lane * 5, Math.round(sh * .83),
+			//					Math.round(sw * .05), launchCol, 100);
+			//			g.drawCircFill(lane * 6, Math.round(sh * .83),
+			//					Math.round(sw * .05), launchCol, 100);
+			//			g.drawCircFill(lane * 7, Math.round(sh * .83),
+			//					Math.round(sw * .05), launchCol, 100);
 
-			g.drawCircFill(lane, Math.round(sh * .83), 
-					Math.round(sw * .05), launchCol, 100);
-			g.drawCircFill(lane * 2, Math.round(sh * .83),
-					Math.round(sw * .05), launchCol, 100);
-			g.drawCircFill(lane * 3, Math.round(sh * .83),
-					Math.round(sw * .05), launchCol, 100);
-			g.drawCircFill(lane * 4, Math.round(sh * .83),
-					Math.round(sw * .05), launchCol, 100);
-			g.drawCircFill(lane * 5, Math.round(sh * .83),
-					Math.round(sw * .05), launchCol, 100);
-			g.drawCircFill(lane * 6, Math.round(sh * .83),
-					Math.round(sw * .05), launchCol, 100);
-			g.drawCircFill(lane * 7, Math.round(sh * .83),
-					Math.round(sw * .05), launchCol, 100);
 
-
-			if (freeze || topFreeze) {
-				g.drawImage(elecBase.getImage(), (int) Math.round(sw * .76),
-						(int) Math.round(sh * .88));
-				g.drawImage(elecBase2.getImage(), (int) Math.round(sw * .08),
-						(int) Math.round(sh * .88));
-				elecBase.update(10);
-				elecBase2.update(10);
+			if (!topFreeze) {
 				if (baseGrowth <= Math.round(sw * .16))
 					baseGrowth += Math.round(sw * .043);
 
@@ -1834,24 +1864,32 @@ public class GameScreen extends Screen {
 				if (topFreeze)
 					buttonCol = Color.YELLOW;
 
-				g.drawCircOut(Math.round(sw * .163), Math.round(sh * .93),
-						baseGrowth + Math.round(sw * .006), buttonCol,
-						(int) Math.round(sw * .013), 140);
-				g.drawCircOut(Math.round(sw * .163), Math.round(sh * .93),
-						(baseGrowth / 5) * 4 + Math.round(sw * .006),
-						buttonCol, (int) Math.round(sw * .013), 140);
-				g.drawCircOut(Math.round(sw * .163), Math.round(sh * .93),
-						(baseGrowth / 5) * 3 + Math.round(sw * .006),
-						buttonCol, (int) Math.round(sw * .013), 140);
-				g.drawCircOut(Math.round(sw * .84), Math.round(sh * .93),
-						baseGrowth + Math.round(sw * .006), buttonCol,
-						(int) Math.round(sw * .013), 120);
-				g.drawCircOut(Math.round(sw * .84), Math.round(sh * .93),
-						(baseGrowth / 5) * 4 + Math.round(sw * .006),
-						buttonCol, (int) Math.round(sw * .013), 140);
-				g.drawCircOut(Math.round(sw * .84), Math.round(sh * .93),
-						(baseGrowth / 5) * 3 + Math.round(sw * .006),
-						buttonCol, (int) Math.round(sw * .013), 140);
+				//				g.drawCircOut(Math.round(sw * .163), Math.round(sh * .93),
+				//						baseGrowth + Math.round(sw * .006), buttonCol,
+				//						(int) Math.round(sw * .013), 140);
+				//				g.drawCircOut(Math.round(sw * .163), Math.round(sh * .93),
+				//						(baseGrowth / 5) * 4 + Math.round(sw * .006),
+				//						buttonCol, (int) Math.round(sw * .013), 140);
+				//				g.drawCircOut(Math.round(sw * .163), Math.round(sh * .93),
+				//						(baseGrowth / 5) * 3 + Math.round(sw * .006),
+				//						buttonCol, (int) Math.round(sw * .013), 140);
+				//				g.drawCircOut(Math.round(sw * .84), Math.round(sh * .93),
+				//						baseGrowth + Math.round(sw * .006), buttonCol,
+				//						(int) Math.round(sw * .013), 120);
+				//				g.drawCircOut(Math.round(sw * .84), Math.round(sh * .93),
+				//						(baseGrowth / 5) * 4 + Math.round(sw * .006),
+				//						buttonCol, (int) Math.round(sw * .013), 140);
+				//				g.drawCircOut(Math.round(sw * .84), Math.round(sh * .93),
+				//						(baseGrowth / 5) * 3 + Math.round(sw * .006),
+				//						buttonCol, (int) Math.round(sw * .013), 140);
+
+
+				//				g.drawImage(elecBase.getImage(), (int) Math.round(sw * .76),
+				//						(int) Math.round(sh * .88));
+				//				g.drawImage(elecBase2.getImage(), (int) Math.round(sw * .08),
+				//						(int) Math.round(sh * .88));
+				elecBase.update(10);
+				elecBase2.update(10);
 			}
 
 			// LIGHTNING
@@ -1985,6 +2023,8 @@ public class GameScreen extends Screen {
 			}
 		}
 
+
+
 		// draw the UI
 		if (state == GameState.Ready)
 			drawReadyUI();
@@ -1994,8 +2034,10 @@ public class GameScreen extends Screen {
 			drawPausedUI();
 		if (state == GameState.GameOver)
 			drawGameOverUI();
+		//		Debug.stopMethodTracing();
 
-		// Debug.stopMethodTracing();
+
+
 
 		// OLD JUNK
 		// //g.drawImage(back, 0, 0);
@@ -2020,12 +2062,13 @@ public class GameScreen extends Screen {
 	void failCircle(Graphics g){
 		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 60, Color.RED,
 				10, 255 - scoreDeathDur * 6);
-		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 68, Color.YELLOW,
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 68, Color.RED,
 				10, 255 - scoreDeathDur * 6);
-		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 52, Color.MAGENTA,
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 52, Color.RED,
 				10, 255 - scoreDeathDur * 6);
-		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 76, Color.GREEN,
+		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 76, Color.RED,
 				10, 255 - scoreDeathDur * 6);
+
 	}
 
 	private void nullify() {
@@ -2072,6 +2115,7 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void pause() {
+
 		if (state == GameState.Running)
 			System.gc();
 		Assets.tcDrone.pause();
@@ -2095,6 +2139,7 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void backButton() {
+
 		Assets.tcDrone.pause();
 		Assets.gridDrone.pause();
 		pause();

@@ -160,7 +160,7 @@ public class AndroidGraphics implements Graphics {
 	public void drawCircFill(float cx,float cy,float radius,int color, int alpha) {
 		paint3.setColor(color);
 		paint3.setStyle(Style.FILL);
-		paint3.setAntiAlias(true);
+//		paint3.setAntiAlias(true);
 		paint3.setAlpha(alpha);
 		//paint3.setMaskFilter(new BlurMaskFilter(20, Blur.NORMAL));
 		canvas.drawCircle(cx, cy, radius, paint3);
@@ -170,7 +170,7 @@ public class AndroidGraphics implements Graphics {
 	public void drawCircFill(float cx,float cy,float radius,int color, int alpha, Paint p) {
 		p.setColor(color);
 		p.setStyle(Style.FILL);
-		p.setAntiAlias(true);
+//		p.setAntiAlias(true);
 		p.setAlpha(alpha);
 		//paint3.setMaskFilter(new BlurMaskFilter(20, Blur.NORMAL));
 		canvas.drawCircle(cx, cy, radius, p);
@@ -180,7 +180,7 @@ public class AndroidGraphics implements Graphics {
 	public void drawCircBlue(float cx,float cy,float radius,int color, int alpha) {
 		paint4.setColor(color);
 		paint4.setStyle(Style.FILL);
-		paint4.setAntiAlias(true);
+//		paint4.setAntiAlias(true);
 		paint4.setStyle(Style.STROKE);
 		paint4.setStrokeWidth(alpha);
 		//paint4.setMaskFilter(new BlurMaskFilter(50, Blur.OUTER));
@@ -192,7 +192,7 @@ public class AndroidGraphics implements Graphics {
 		paint.setColor(color);
 		paint.setStyle(Style.STROKE);
 		paint.setStrokeWidth(stroke);
-		paint.setAntiAlias(true);
+//		paint.setAntiAlias(true);
 		canvas.drawCircle(cx, cy, radius, paint);		
 	}
 
@@ -200,7 +200,7 @@ public class AndroidGraphics implements Graphics {
 		paint.setColor(color);
 		paint.setStyle(Style.STROKE);
 		paint.setStrokeWidth(stroke);
-		paint.setAntiAlias(true);
+//		paint.setAntiAlias(true);
 		paint.setAlpha(alpha);
 		canvas.drawCircle(cx, cy, radius, paint);		
 	}

@@ -19,7 +19,7 @@
             android:layout_gravity="center"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="Positron"
-            android:scaleType="fitXY"
+            android:scaleType="center"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.NoBackground" >
             <intent-filter>

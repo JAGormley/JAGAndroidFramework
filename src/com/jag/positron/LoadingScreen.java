@@ -42,7 +42,7 @@ public class LoadingScreen extends Screen {
 		Graphics g = game.getGraphics();
 		
 		//g.drawString("LOADING", 350, 500, null);
-		//Assets.block = g.newImage("PositronBlock.png", ImageFormat.RGB565);
+		Assets.block = g.newImage("block.png", ImageFormat.RGB565);
 		//Assets.menu = g.newImage("menudr3(dr2).png", ImageFormat.ARGB8888);
 		
 		Assets.lock = g.newImage("lock.png", ImageFormat.RGB565);

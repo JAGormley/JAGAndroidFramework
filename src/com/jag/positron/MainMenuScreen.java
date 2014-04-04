@@ -19,11 +19,9 @@ public class MainMenuScreen extends Screen {
 	private Animation menu;
 	private boolean loaded;
 
-
-
 	public MainMenuScreen(Game game) {
 		super(game);
-		
+
 		Assets.loadScreen.getBitmap().recycle();
 		menu = new Animation();
 		menu.addFrame(Assets.menu1, 150);
@@ -36,7 +34,7 @@ public class MainMenuScreen extends Screen {
 		Assets.theme = game.getAudio().createMusic("positheme3.mp3");
 		Assets.theme.setLooping(true);
 		loaded = false;
-		}
+	}
 
 
 	@Override
@@ -70,7 +68,8 @@ public class MainMenuScreen extends Screen {
 				Assets.coug4 = g.newImage("coug4b.png", ImageFormat.RGB565);
 				Assets.coug5 = g.newImage("coug5b.png", ImageFormat.RGB565);
 				Assets.mFace = g.newImage("face2PIXX.gif", ImageFormat.RGB565);
-				Assets.mFaced	 = g.newImage("facedeathPIX2.gif", ImageFormat.RGB565);
+				Assets.mFaced	 = g.newImage("facedeathPIX3.gif", ImageFormat.RGB565);
+				Assets.hadronOne = g.newImage("hadron.png", ImageFormat.RGB565);
 				game.setScreen(new GameScreen(game));
 			}
 			if (event.x > game.getLoadWidth()/2 && event.y > game.getLoadHeight()*.79 && event.y < game.getLoadHeight()*.9 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
@@ -81,12 +80,12 @@ public class MainMenuScreen extends Screen {
 				Assets.coug4 = g.newImage("coug4b.png", ImageFormat.RGB565);
 				Assets.coug5 = g.newImage("coug5b.png", ImageFormat.RGB565);
 				Assets.mFace = g.newImage("face2PIXX.gif", ImageFormat.RGB565);
-				Assets.mFaced = g.newImage("facedeathPIX2.gif", ImageFormat.RGB565);
+				Assets.mFaced = g.newImage("facedeathPIX3.gif", ImageFormat.RGB565);
 				game.setScreen(new Tutorial(game));
-				
-				
+
+
 			}
-			
+
 			if (event.x > game.getLoadWidth()*.69 && event.y < game.getLoadHeight()*.21 && event.type == TouchEvent.TOUCH_UP && instr != 0 && loaded){
 				Assets.click2.play(100);
 				instr++;
@@ -153,7 +152,7 @@ public class MainMenuScreen extends Screen {
 			Assets.instr5 = g.newImage("instr5.png", ImageFormat.RGB565);
 			Assets.instr4.getBitmap().recycle();
 			if (Assets.instr6 != null)
-			Assets.instr6.getBitmap().recycle();
+				Assets.instr6.getBitmap().recycle();
 			g.drawImage(Assets.instr5, 0, 0);
 		}
 
@@ -161,7 +160,7 @@ public class MainMenuScreen extends Screen {
 			Assets.instr6 = g.newImage("instr6.png", ImageFormat.RGB565);
 			Assets.instr5.getBitmap().recycle();
 			if (Assets.instr7 != null)
-			Assets.instr7.getBitmap().recycle();
+				Assets.instr7.getBitmap().recycle();
 			g.drawImage(Assets.instr6, 0, 0);
 		}
 
@@ -169,7 +168,7 @@ public class MainMenuScreen extends Screen {
 			Assets.instr7 = g.newImage("instr7.png", ImageFormat.RGB565);
 			Assets.instr6.getBitmap().recycle();
 			if (Assets.instr8 != null)
-			Assets.instr8.getBitmap().recycle();
+				Assets.instr8.getBitmap().recycle();
 			g.drawImage(Assets.instr7, 0, 0);
 		}
 
@@ -177,7 +176,7 @@ public class MainMenuScreen extends Screen {
 			Assets.instr8 = g.newImage("instr8.png", ImageFormat.RGB565);
 			Assets.instr7.getBitmap().recycle();
 			if (Assets.instr9 != null)
-			Assets.instr9.getBitmap().recycle();
+				Assets.instr9.getBitmap().recycle();
 			g.drawImage(Assets.instr8, 0, 0);
 		}
 
@@ -185,7 +184,7 @@ public class MainMenuScreen extends Screen {
 			Assets.instr9 = g.newImage("instr9.png", ImageFormat.RGB565);
 			Assets.instr8.getBitmap().recycle();
 			if (Assets.instrPause != null)
-			Assets.instrPause.getBitmap().recycle();
+				Assets.instrPause.getBitmap().recycle();
 			g.drawImage(Assets.instr9, 0, 0);
 		}
 
@@ -225,6 +224,6 @@ public class MainMenuScreen extends Screen {
 		if (instr > 0){
 			Assets.click2.play(100);
 			instr--;
-			}
+		}
 	}
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>  <!-- flashplayer_archive_xml template (C) 2008-9 Ken Garson. v1/8/09 -->
+<archive offset="0:7:56" shareSafe="1" timestamps="0">
+   <audio url="rtmpt://rtmp.wfmu.org/cfx/st/mp4:BS/bs120117.mp4" />
+   <title>The Best Show on WFMU with Tom Scharpling from 1/17/2012</title>
+   <segments url="http://wfmu.org/playlists/shows/43531/starttimes.xml" />
+   <info url="http://wfmu.org/playlists/BS" />
+</archive>
+<!--Generated dynamically by <strong><a href="http://kenzodb.com/" style="text-decoration:none" target="_blank">KenzoDB</a></strong>, (C) 2000-2014 <a href="http://lastever.org/email" target="_blank">Ken Garson</a>-->
+<!-- flashplayer.php, written 6/30/07, (C) 2007-13 Ken Garson. v2/6/13 -->

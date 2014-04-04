@@ -11,6 +11,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.Display;
@@ -86,6 +87,7 @@ public abstract class AndroidGame extends Activity implements Game {
 
 		tf = Typeface.createFromAsset(getAssets(),"fonts/Exo-Bold.otf");
 		Assets.font = tf;
+//		Debug.startMethodTracing();
 	}
 
 	@Override
