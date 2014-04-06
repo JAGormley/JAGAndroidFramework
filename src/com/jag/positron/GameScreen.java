@@ -936,6 +936,8 @@ public class GameScreen extends Screen {
 
 			if (p.y >= p.getGenPoint() - Math.round(sh * .018) && topFreeze
 					&& p.wayback && !negPressed && !posPressed && !exitCases) {
+				killx = p.x;
+				killy = p.y;
 				if (postScore < score) {
 					postScore = score;
 					newHigh = true;
@@ -962,6 +964,7 @@ public class GameScreen extends Screen {
 				exitCases = true;
 				freezeDur = 0;
 				teeth = false;
+				
 				//				 System.out.println("yes1");
 			}
 
@@ -1029,6 +1032,8 @@ public class GameScreen extends Screen {
 					lightning = true;
 					killx = p.x;
 					killy = p.y;
+					System.out.println("x: "+p.x);
+					System.out.println("y: "+p.y);
 					lightning = true;
 					it.remove();
 
@@ -1120,7 +1125,7 @@ public class GameScreen extends Screen {
 				it.remove();
 				freeze = false;
 				wrongButton = false;
-				//				 System.out.println("yes8");
+								 System.out.println("yes8");
 
 			}
 			// else if (p.y > 950&&p.wayback){
@@ -1130,12 +1135,14 @@ public class GameScreen extends Screen {
 			// FINAL
 			else if (!exitCases
 					&& p.y >= p.getGenPoint() - Math.round(sh * .012)) {
+				killx = p.x;
+				killy = p.y;
 				if (postScore < score) {
 					postScore = score;
 					newHigh = true;
 				} else
 					tempyScore = score;
-				//				 System.out.println("yes10");
+								 System.out.println("yes10");
 				// tempyScore = score;
 				// System.out.println(score);
 				// System.out.println(tempyScore);
@@ -1415,7 +1422,7 @@ public class GameScreen extends Screen {
 
 			if (!topFreeze) {
 
-				if (scoreReset && scoreDeathDur < 5)
+				if (scoreReset && scoreDeathDur < 6)
 
 					g.drawImage(Assets.mFaced, 0, 0, scoreDeathDur*50);
 
@@ -1867,9 +1874,7 @@ public class GameScreen extends Screen {
 					g.drawLine(lane * 7, (int) Math.round(sh * .81), killx,
 							killy + (int) Math.round(sw * .048), Color.BLUE,
 							200 - lightningDuration * 10, 12);
-					if (topFreeze)
-						g.drawLine(killx, Assets.lock.getHeight()/2, killx, killy,
-								Color.RED, 200 - lightningDuration * 10, 30);
+					
 
 					g.drawCircFill(lane, (int) Math.round(sh * .83),
 							(int) Math.round(sw * .043), Color.BLUE,
@@ -1950,14 +1955,14 @@ public class GameScreen extends Screen {
 	}
 
 	void failCircle(Graphics g){
-		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 60, Color.RED,
-				10, 255 - scoreDeathDur * 6);
-		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 68, Color.RED,
-				10, 255 - scoreDeathDur * 6);
-		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 52, Color.RED,
-				10, 255 - scoreDeathDur * 6);
-		g.drawCircOut(sw/2, (int) Math.round(sh * .988), scoreDeathDur * 76, Color.RED,
-				10, 255 - scoreDeathDur * 6);
+		g.drawCircOut(killx, killy, scoreDeathDur * 60, Color.RED,
+				10, 121 - scoreDeathDur*2);
+		g.drawCircOut(killx, killy, scoreDeathDur * 68, Color.RED,
+				10, 121 - scoreDeathDur*2);
+		g.drawCircOut(killx, killy, scoreDeathDur * 52, Color.RED,
+				10, 121 - scoreDeathDur*2);
+		g.drawCircOut(killx, killy, scoreDeathDur * 76, Color.RED,
+				10, 121 - scoreDeathDur*2);
 
 	}
 

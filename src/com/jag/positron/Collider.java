@@ -45,7 +45,7 @@ public class Collider {
 		}
 		charged = true;
 	}
-
+	
 	public void checkCharged(int sprite, int line){
 		if (!set){
 			set = true;
@@ -73,6 +73,12 @@ public class Collider {
 				p.setDead();
 			}
 			pt.update();
+		}
+	}
+	
+	public void lazer(int x, int y){
+		for (Particle p: parts){
+			p.setLazer(x, y);
 		}
 	}
 

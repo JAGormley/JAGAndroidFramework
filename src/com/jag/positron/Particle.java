@@ -5,6 +5,7 @@ import java.util.Random;
 import com.jag.framework.Graphics;
 import com.jag.framework.Screen;
 
+
 import android.graphics.Color;
 import android.os.SystemClock;
 
@@ -28,6 +29,10 @@ public class Particle {
 	public static boolean dead;
 	int deadx;
 	int deady;
+	private boolean lazer;
+	private PosTimer pt;
+	private int spriteX;
+	private int spriteY;
 
 	/**
 	 * 
@@ -70,7 +75,7 @@ public class Particle {
 		if (speedAdder > 1)
 			speedAdder *= .85;
 
-		if (!dead){
+		if (!dead && !lazer){
 			// switch left/right
 			if (sin < 0) {
 				negSin = true;
@@ -98,22 +103,26 @@ public class Particle {
 					x = startx*cos ;
 				}
 			}
-			y = starty*sin*heightMult;
+			if (!charged)
+				y = starty*sin*heightMult;
+			else
+				y = starty*sin*heightMult-80;
 		}
 
 		if (dead){
 			if (deadx == 0 && deady == 0){
 				Random randy = new Random();
-				deadx = 1;
-				deady = 1;
+				deadx = randy.nextInt(80)-40;
+				deady = randy.nextInt(100)+25;
 			}
 			x += deadx;
-			y += deady;	
-			//			startx += randy.nextInt(1200)-300;
-			//			starty -= randy.nextInt(1200)-300;		
+			y -= deady;	
+		}
+		else if (lazer){
+			
 		}
 
-		if (!charged){
+		else if (!charged){
 			x += (g.getWidth()/4)*3;
 			y += (g.getHeight()/12)*11;
 			x -= 197.5 - size*widthMult;
@@ -123,8 +132,6 @@ public class Particle {
 			y += (g.getHeight()/12)*11;
 			//			x -= 197.5 - size*widthMult;
 		}
-
-
 	}
 
 	public void setLane(int lane){
@@ -138,6 +145,12 @@ public class Particle {
 	}
 	public void setDead(){
 		dead = true;
+	}
+	public void setLazer(int x, int y){
+		pt = new PosTimer(1000);
+		lazer = true;
+		spriteX = x;
+		spriteY = y;
 	}
 
 	public void draw(){
