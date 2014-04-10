@@ -190,7 +190,8 @@ public class GameScreen extends Screen {
 
 		lane = sw / 8;
 		recent = true;
-
+		collider = Collider.getInstance();
+		collider.reset();
 		collider = Collider.getInstance();
 
 		lg = new LinearGradient(sh / 2, -(sh / 12), sh / 2,
@@ -273,7 +274,7 @@ public class GameScreen extends Screen {
 		//		paint12.setAntiAlias(true);
 		paint12.setColor(Color.GRAY);
 		paint12.setShadowLayer(1, -5, -5, Color.MAGENTA);
-		
+
 		paint13 = new Paint();
 		paint13.setTypeface(Assets.font);
 		paint13.setTextSize(Math.round(sh * .036));
@@ -462,7 +463,7 @@ public class GameScreen extends Screen {
 		Assets.theme.stop();
 		// 1. All touch input is handled here:
 		int len = touchEvents.size();
-		
+
 		if ((touch == false) && circleRad < Math.round(sh * .066)) {
 			circleRad += Math.round(sh * .017);
 			lock = true;
@@ -964,7 +965,7 @@ public class GameScreen extends Screen {
 				exitCases = true;
 				freezeDur = 0;
 				teeth = false;
-				
+
 				//				 System.out.println("yes1");
 			}
 
@@ -1009,78 +1010,33 @@ public class GameScreen extends Screen {
 				//				 System.out.println("yes4");
 			}
 
-			else if (p.wayback && negPressed && !exitCases) {
+			else if (p.wayback && collider.isLazer() && !exitCases) {
 
-				if (p.type) {
-					if (score - 10 * scoreMult < 0) {
-						score = 0;
-					} else if (!topFreeze)
-						score -= 10 * scoreMult;
-					if (topFreeze){
-						tLock.weaken(pieces.get(0));
-						tLock.addKilled();
-						//						System.out.println(pieces.get(0).getX());
-						freezeScore++;
-					}
-					tcx = p.getX();
-					tcy = p.getY();
-					typePass = true;
-					lightningDuration = 0;
-					freeze = false;
-					negPressed = false;
-					Assets.click.play(150);
-					lightning = true;
-					killx = p.x;
-					killy = p.y;
-					System.out.println("x: "+p.x);
-					System.out.println("y: "+p.y);
-					lightning = true;
-					it.remove();
+				if (score - 10 * scoreMult < 0) {
+					score = 0;
+				} else
+					score -= 10 * scoreMult;
 
-				}
-				if (!p.type) {
-					it.remove();
-					if (topFreeze)
-						fingery = (float) (sh*.75);
-					this.fail();
-					tLock = null;
-				}
+				if (p.type)
+					typePass = true;	
+				else typePass = false;
 
-				//				 System.out.println("yes5");
-			} else if (p.wayback && posPressed) {
+				tcx = p.getX();
+				tcy = p.getY();			
 
-				if (p.type) {
-					it.remove();
-					if (topFreeze)
-						fingery = (float) (sh*.75);
-					this.fail();
-					tLock = null;
-				}
-				if (!p.type) {
-					if (score - 10 * scoreMult < 0) {
-						score = 0;
-					} else if (!topFreeze)
-						score -= 10 * scoreMult;
-					if (topFreeze){
-						tLock.weaken(pieces.get(0));
-						tLock.addKilled();
-						//						System.out.println(pieces.get(0).getX());
-						freezeScore++;
-					}
-					tcx = p.getX();
-					tcy = p.getY();
-					typePass = false;
-					lightningDuration = 0;
-					killx = p.x;
-					killy = p.y;
-					it.remove();
-					freeze = false;
-					posPressed = false;
-					lightning = true;
-					Assets.click.play(150);
-				}
+				lightningDuration = 0;
+				freeze = false;
+				negPressed = false;
+				Assets.click.play(150);
+				killx = p.x;
+				killy = p.y;
+				System.out.println("x: "+p.x);
+				System.out.println("y: "+p.y);
+				lightning = true;
+				it.remove();
 
-			} 
+			}
+
 
 			else if (p.isVisible() && p.wayback && !freeze
 					&& !exitCases && !newPiece && !topFreeze) {
@@ -1090,7 +1046,14 @@ public class GameScreen extends Screen {
 					p.setBackspeed(30);
 				p.updateback();
 				freeze = true;
-				collider.checkCharged(p.x, scene.getLine());
+
+				collider.checkCharged(p.x, p.y, scene.getLine());
+				if (collider.isLazer()){
+					killx = p.x;
+					killy = p.y;
+				}
+
+
 				//				 System.out.println("yes7");
 			}
 
@@ -1105,8 +1068,11 @@ public class GameScreen extends Screen {
 				if (scoreMult > 15)
 					p.setBackspeed(30);
 				p.updateback();
-				collider.checkCharged(p.x, scene.getLine());
-
+				collider.checkCharged(p.x, p.y, scene.getLine());
+				if (collider.isLazer()){
+					killx = p.x;
+					killy = p.y;
+				}
 
 				//				 System.out.println("yes7b");
 			}
@@ -1125,7 +1091,7 @@ public class GameScreen extends Screen {
 				it.remove();
 				freeze = false;
 				wrongButton = false;
-								 System.out.println("yes8");
+				//								 System.out.println("yes8");
 
 			}
 			// else if (p.y > 950&&p.wayback){
@@ -1142,7 +1108,7 @@ public class GameScreen extends Screen {
 					newHigh = true;
 				} else
 					tempyScore = score;
-								 System.out.println("yes10");
+												 System.out.println("yes10");
 				// tempyScore = score;
 				// System.out.println(score);
 				// System.out.println(tempyScore);
@@ -1471,7 +1437,6 @@ public class GameScreen extends Screen {
 				}
 			}
 
-
 			collider.update();
 
 			if (!scoreReset && !topFreeze) {
@@ -1480,9 +1445,8 @@ public class GameScreen extends Screen {
 						(int) Math.round(sh * .954), paint3);
 				g.drawString("high " + String.valueOf(postScore), sw / 2,
 						(int) Math.round(sh * .988), paint6);
-
-
 			}
+
 			if (scoreReset) {
 				collider.death();
 				paint3.setColor(Color.RED);
@@ -1522,7 +1486,6 @@ public class GameScreen extends Screen {
 					newHigh = false;
 				}
 			}
-
 
 			if (nextLevel && scoreMult > 1) {
 				if (levelStart < 70) {
@@ -1812,7 +1775,7 @@ public class GameScreen extends Screen {
 
 				}
 				if (posT.getSide())
-					if (posT.getX() < 700)	{					
+					if (posT.getX() < 700)	{			
 
 						g.drawImage(Assets.eagle, posT.getX() - Assets.eagle.getWidth()/2, 
 								posT.getHeight() - Assets.eagle.getHeight()/2, (posT.getX() / 3) - 247);
@@ -1846,65 +1809,70 @@ public class GameScreen extends Screen {
 			}
 
 			// LIGHTNING
-			if (lightning) {
+			//		System.out.println(collider.isLazer());
+			if (collider.isLazer() && !scoreReset) {
 				if (lightningDuration < 20) {
+					System.out.println("x: "+killx);
+					System.out.println("y: "+killy);
+
+					collider.checkCharged(killx, killy, scene.getLine());
 
 					paint13.setAlpha(200 - lightningDuration * 10);
 					g.drawString("-" + String.valueOf(10 * scoreMult), killx,
 							killy - (int) Math.round(sw * .019), paint13);
 
-					g.drawLine(lane, (int) Math.round(sh * .81), killx, killy
-							+ (int) Math.round(sw * .048), Color.BLUE,
-							200 - lightningDuration * 10, 12);
-					g.drawLine(lane * 2, (int) Math.round(sh * .81), killx,
-							killy + (int) Math.round(sw * .048), Color.BLUE,
-							200 - lightningDuration * 10, 12);
-					g.drawLine(lane * 3, (int) Math.round(sh * .81), killx,
-							killy + (int) Math.round(sw * .048), Color.BLUE,
-							200 - lightningDuration * 10, 12);
-					g.drawLine(lane * 4, (int) Math.round(sh * .81), killx,
-							killy + (int) Math.round(sw * .048), Color.BLUE,
-							200 - lightningDuration * 10, 12);
-					g.drawLine(lane * 5, (int) Math.round(sh * .81), killx,
-							killy + (int) Math.round(sw * .048), Color.BLUE,
-							200 - lightningDuration * 10, 12);
-					g.drawLine(lane * 6, (int) Math.round(sh * .81), killx,
-							killy + (int) Math.round(sw * .048), Color.BLUE,
-							200 - lightningDuration * 10, 12);
-					g.drawLine(lane * 7, (int) Math.round(sh * .81), killx,
-							killy + (int) Math.round(sw * .048), Color.BLUE,
-							200 - lightningDuration * 10, 12);
-					
+//									g.drawLine(lane, (int) Math.round(sh * .81), killx, killy
+//											+ (int) Math.round(sw * .048), Color.BLUE,
+//											200 - lightningDuration * 10, 12, paint11);
+//									g.drawLine(lane * 2, (int) Math.round(sh * .81), killx,
+//											killy + (int) Math.round(sw * .048), Color.BLUE,
+//											200 - lightningDuration * 10, 12, paint11);
+//									g.drawLine(lane * 3, (int) Math.round(sh * .81), killx,
+//											killy + (int) Math.round(sw * .048), Color.BLUE,
+//											200 - lightningDuration * 10, 12, paint11);
+//									g.drawLine(lane * 4, (int) Math.round(sh * .81), killx,
+//											killy + (int) Math.round(sw * .048), Color.BLUE,
+//											200 - lightningDuration * 10, 12, paint11);
+//									g.drawLine(lane * 5, (int) Math.round(sh * .81), killx,
+//											killy + (int) Math.round(sw * .048), Color.BLUE,
+//											200 - lightningDuration * 10, 12, paint11);
+//									g.drawLine(lane * 6, (int) Math.round(sh * .81), killx,
+//											killy + (int) Math.round(sw * .048), Color.BLUE,
+//											200 - lightningDuration * 10, 12, paint11);
+//									g.drawLine(lane * 7, (int) Math.round(sh * .81), killx,
+//											killy + (int) Math.round(sw * .048), Color.BLUE,
+//											200 - lightningDuration * 10, 12, paint11);
 
-					g.drawCircFill(lane, (int) Math.round(sh * .83),
-							(int) Math.round(sw * .043), Color.BLUE,
-							200 - lightningDuration * 10);
-					g.drawCircFill(lane * 2, (int) Math.round(sh * .83),
-							(int) Math.round(sw * .043), Color.BLUE,
-							200 - lightningDuration * 10);
-					g.drawCircFill(lane * 3, (int) Math.round(sh * .83),
-							(int) Math.round(sw * .043), Color.BLUE,
-							200 - lightningDuration * 10);
-					g.drawCircFill(lane * 4, (int) Math.round(sh * .83),
-							(int) Math.round(sw * .043), Color.BLUE,
-							200 - lightningDuration * 10);
-					g.drawCircFill(lane * 5, (int) Math.round(sh * .83),
-							(int) Math.round(sw * .043), Color.BLUE,
-							200 - lightningDuration * 10);
-					g.drawCircFill(lane * 6, (int) Math.round(sh * .83),
-							(int) Math.round(sw * .043), Color.BLUE,
-							200 - lightningDuration * 10);
-					g.drawCircFill(lane * 7, (int) Math.round(sh * .83),
-							(int) Math.round(sw * .043), Color.BLUE,
-							200 - lightningDuration * 10);
+
+					//				g.drawCircFill(lane, (int) Math.round(sh * .83),
+					//						(int) Math.round(sw * .043), Color.BLUE,
+					//						200 - lightningDuration * 10);
+					//				g.drawCircFill(lane * 2, (int) Math.round(sh * .83),
+					//						(int) Math.round(sw * .043), Color.BLUE,
+					//						200 - lightningDuration * 10);
+					//				g.drawCircFill(lane * 3, (int) Math.round(sh * .83),
+					//						(int) Math.round(sw * .043), Color.BLUE,
+					//						200 - lightningDuration * 10);
+					//				g.drawCircFill(lane * 4, (int) Math.round(sh * .83),
+					//						(int) Math.round(sw * .043), Color.BLUE,
+					//						200 - lightningDuration * 10);
+					//				g.drawCircFill(lane * 5, (int) Math.round(sh * .83),
+					//						(int) Math.round(sw * .043), Color.BLUE,
+					//						200 - lightningDuration * 10);
+					//				g.drawCircFill(lane * 6, (int) Math.round(sh * .83),
+					//						(int) Math.round(sw * .043), Color.BLUE,
+					//						200 - lightningDuration * 10);
+					//				g.drawCircFill(lane * 7, (int) Math.round(sh * .83),
+					//						(int) Math.round(sw * .043), Color.BLUE,
+					//						200 - lightningDuration * 10);
 
 					if (typePass)
 						g.drawImage(Assets.pos,
-								tcx - (int) Math.round(sw * .05), tcy,
+								killx - (int) Math.round(sw * .05), killy,
 								200 - lightningDuration * 10);
 					else
 						g.drawImage(Assets.neg,
-								tcx - (int) Math.round(sw * .05), tcy,
+								killx - (int) Math.round(sw * .05), killy,
 								200 - lightningDuration * 10);
 
 					if (lightningDuration == 1)
@@ -1915,6 +1883,10 @@ public class GameScreen extends Screen {
 				} else {
 					lightning = false;
 					lightningDuration = 0;
+					collider.reset();
+					collider = Collider.getInstance();
+					collider.setLazer(false);
+					System.out.println("here");
 				}
 			}
 

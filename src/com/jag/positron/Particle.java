@@ -119,7 +119,20 @@ public class Particle {
 			y -= deady;	
 		}
 		else if (lazer){
-			
+			Random randy = new Random();
+			double moveX;
+			double moveY;
+			int speeder = randy.nextInt(5);
+			if (x < spriteX){
+				moveX = (spriteX-x)/speeder;
+				x += moveX;				
+			}
+			else { 
+				moveX = (x-spriteX)/speeder;
+				x -= moveX;				
+			}
+			moveY = (y-spriteY)/speeder;
+			y -= moveY;
 		}
 
 		else if (!charged){
@@ -152,7 +165,7 @@ public class Particle {
 		spriteX = x;
 		spriteY = y;
 	}
-
+	
 	public void draw(){
 
 		g.drawCircFill(x, y, 7, Color.BLUE, 255);
@@ -160,6 +173,15 @@ public class Particle {
 			g.drawCircFill(x, y, 4, Color.MAGENTA, 255);
 		}
 	}
+	
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
 
 }
 

@@ -2,6 +2,7 @@ package com.jag.framework.implementation;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
 import android.content.res.AssetManager;
@@ -312,7 +313,7 @@ public class AndroidGraphics implements Graphics {
 
 		paint = new Paint();
 		paint.setAlpha(alpha);
-		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, paint);       
+		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, paint);   		
 	}
 
 	public void drawScaledImagewPaint(Image Image, int x, int y, int width, int height,
@@ -355,6 +356,36 @@ public class AndroidGraphics implements Graphics {
 		p.setStrokeWidth(stroke);
 
 		canvas.drawLine(x, y, x2, y2, p);	
+	}
+
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.jag.framework.Graphics#drawPath(java.util.ArrayList)
+	 * 
+	 * 2D array, inner arrays are coordinate pairs (2 integers max)
+	 */
+	
+	@Override
+	public void drawPath(ArrayList<ArrayList<Integer>> coords){
+		Path yepAth = new Path();
+		Paint newPaint = new Paint();
+		yepAth.moveTo(coords.get(0).get(0), coords.get(0).get(1));
+		
+		for (int i = 1 ; i < coords.size(); i++){			
+//			if (i == coords.size()-1)
+//				yepAth.setLastPoint(coords.get(i).get(0), coords.get(i).get(1));
+//			else 
+				yepAth.lineTo(coords.get(i).get(0), coords.get(i).get(1));				
+		}
+		
+		newPaint.setColor(Color.BLUE);
+		newPaint.setStrokeWidth(5);
+		newPaint.setAlpha(255);
+		newPaint.setStyle(Style.STROKE);
+		
+		canvas.drawPath(yepAth, newPaint);
+		
 	}
 
 	@SuppressLint("NewApi")

@@ -1,12 +1,16 @@
 package com.jag.framework;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.jag.positron.TextFader;
 import com.jag.positron.PosTriangle;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.opengl.ETC1;
 
 public interface Graphics {
@@ -20,6 +24,8 @@ public interface Graphics {
 
 	public void drawLine(int x, int y, int x2, int y2, int color, int alph, int stroke);
 	public void drawLine(int x, int y, int x2, int y2, int color, int alph, int stroke, Paint p);
+	
+	public void drawPath(ArrayList<ArrayList<Integer>> coords);
 
 	public void drawRect2(int x, int y, int width, int height, int color, Paint paint);
 	
@@ -70,6 +76,7 @@ public interface Graphics {
 	public void drawImage(Image Image, int x, int y, Paint p);
 
 	public void drawPosTri(PosTriangle pt, int alph);
+	
 
 	void drawRect(int x, int y, int width, int height, int color, int alpha);
 
