@@ -25,7 +25,7 @@ public interface Graphics {
 	public void drawLine(int x, int y, int x2, int y2, int color, int alph, int stroke);
 	public void drawLine(int x, int y, int x2, int y2, int color, int alph, int stroke, Paint p);
 	
-	public void drawPath(ArrayList<ArrayList<Integer>> coords);
+	public void drawPath(ArrayList<ArrayList<Integer>> coords, int points);
 
 	public void drawRect2(int x, int y, int width, int height, int color, Paint paint);
 	

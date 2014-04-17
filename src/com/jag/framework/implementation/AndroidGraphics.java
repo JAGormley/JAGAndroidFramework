@@ -161,7 +161,7 @@ public class AndroidGraphics implements Graphics {
 	public void drawCircFill(float cx,float cy,float radius,int color, int alpha) {
 		paint3.setColor(color);
 		paint3.setStyle(Style.FILL);
-//		paint3.setAntiAlias(true);
+		//		paint3.setAntiAlias(true);
 		paint3.setAlpha(alpha);
 		//paint3.setMaskFilter(new BlurMaskFilter(20, Blur.NORMAL));
 		canvas.drawCircle(cx, cy, radius, paint3);
@@ -171,7 +171,7 @@ public class AndroidGraphics implements Graphics {
 	public void drawCircFill(float cx,float cy,float radius,int color, int alpha, Paint p) {
 		p.setColor(color);
 		p.setStyle(Style.FILL);
-//		p.setAntiAlias(true);
+		//		p.setAntiAlias(true);
 		p.setAlpha(alpha);
 		//paint3.setMaskFilter(new BlurMaskFilter(20, Blur.NORMAL));
 		canvas.drawCircle(cx, cy, radius, p);
@@ -181,7 +181,7 @@ public class AndroidGraphics implements Graphics {
 	public void drawCircBlue(float cx,float cy,float radius,int color, int alpha) {
 		paint4.setColor(color);
 		paint4.setStyle(Style.FILL);
-//		paint4.setAntiAlias(true);
+		//		paint4.setAntiAlias(true);
 		paint4.setStyle(Style.STROKE);
 		paint4.setStrokeWidth(alpha);
 		//paint4.setMaskFilter(new BlurMaskFilter(50, Blur.OUTER));
@@ -193,7 +193,7 @@ public class AndroidGraphics implements Graphics {
 		paint.setColor(color);
 		paint.setStyle(Style.STROKE);
 		paint.setStrokeWidth(stroke);
-//		paint.setAntiAlias(true);
+		//		paint.setAntiAlias(true);
 		canvas.drawCircle(cx, cy, radius, paint);		
 	}
 
@@ -201,7 +201,7 @@ public class AndroidGraphics implements Graphics {
 		paint.setColor(color);
 		paint.setStyle(Style.STROKE);
 		paint.setStrokeWidth(stroke);
-//		paint.setAntiAlias(true);
+		//		paint.setAntiAlias(true);
 		paint.setAlpha(alpha);
 		canvas.drawCircle(cx, cy, radius, paint);		
 	}
@@ -210,7 +210,7 @@ public class AndroidGraphics implements Graphics {
 		canvas.clipRect(x,y,width,height);
 
 	}
-	
+
 	public void drawEllipse(int left, int top, int right, int bottom) {
 		canvas.drawOval(new RectF(left, top, right, bottom), paint);
 
@@ -358,34 +358,33 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawLine(x, y, x2, y2, p);	
 	}
 
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.jag.framework.Graphics#drawPath(java.util.ArrayList)
 	 * 
 	 * 2D array, inner arrays are coordinate pairs (2 integers max)
 	 */
-	
+
 	@Override
-	public void drawPath(ArrayList<ArrayList<Integer>> coords){
+	public void drawPath(ArrayList<ArrayList<Integer>> coords, int points){
 		Path yepAth = new Path();
 		Paint newPaint = new Paint();
 		yepAth.moveTo(coords.get(0).get(0), coords.get(0).get(1));
-		
-		for (int i = 1 ; i < coords.size(); i++){			
-//			if (i == coords.size()-1)
-//				yepAth.setLastPoint(coords.get(i).get(0), coords.get(i).get(1));
-//			else 
-				yepAth.lineTo(coords.get(i).get(0), coords.get(i).get(1));				
+
+		for (int i = 1 ; i < coords.size(); i++){
+			if ((i % points) == 0)
+				yepAth.moveTo(coords.get(i).get(0), coords.get(i).get(1));
+			yepAth.lineTo(coords.get(i).get(0), coords.get(i).get(1));
 		}
-		
-		newPaint.setColor(Color.BLUE);
-		newPaint.setStrokeWidth(5);
+
+		newPaint.setColor(Color.CYAN);
+		newPaint.setStrokeWidth(4);
 		newPaint.setAlpha(255);
 		newPaint.setStyle(Style.STROKE);
-		
+
 		canvas.drawPath(yepAth, newPaint);
-		
+
 	}
 
 	@SuppressLint("NewApi")

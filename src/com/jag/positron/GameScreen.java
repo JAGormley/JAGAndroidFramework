@@ -1030,13 +1030,11 @@ public class GameScreen extends Screen {
 				Assets.click.play(150);
 				killx = p.x;
 				killy = p.y;
-				System.out.println("x: "+p.x);
-				System.out.println("y: "+p.y);
+//				System.out.println("x: "+p.x);
+//				System.out.println("y: "+p.y);
 				lightning = true;
 				it.remove();
-
 			}
-
 
 			else if (p.isVisible() && p.wayback && !freeze
 					&& !exitCases && !newPiece && !topFreeze) {
@@ -1052,8 +1050,6 @@ public class GameScreen extends Screen {
 					killx = p.x;
 					killy = p.y;
 				}
-
-
 				//				 System.out.println("yes7");
 			}
 
@@ -1073,7 +1069,6 @@ public class GameScreen extends Screen {
 					killx = p.x;
 					killy = p.y;
 				}
-
 				//				 System.out.println("yes7b");
 			}
 
@@ -1108,7 +1103,7 @@ public class GameScreen extends Screen {
 					newHigh = true;
 				} else
 					tempyScore = score;
-												 System.out.println("yes10");
+//												 System.out.println("yes10");
 				// tempyScore = score;
 				// System.out.println(score);
 				// System.out.println(tempyScore);
@@ -1812,8 +1807,8 @@ public class GameScreen extends Screen {
 			//		System.out.println(collider.isLazer());
 			if (collider.isLazer() && !scoreReset) {
 				if (lightningDuration < 20) {
-					System.out.println("x: "+killx);
-					System.out.println("y: "+killy);
+//					System.out.println("x: "+killx);
+//					System.out.println("y: "+killy);
 
 					collider.checkCharged(killx, killy, scene.getLine());
 

@@ -7,6 +7,7 @@ import com.jag.framework.Screen;
 
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.SystemClock;
 
 public class Particle {
@@ -33,6 +34,7 @@ public class Particle {
 	private PosTimer pt;
 	private int spriteX;
 	private int spriteY;
+	private Paint painty;
 
 	/**
 	 * 
@@ -54,6 +56,8 @@ public class Particle {
 		speedAdder = 13f;
 		deadx = 0;
 		deady = 0;
+		painty = new Paint();
+
 	}	
 
 	public void move(){
@@ -117,22 +121,28 @@ public class Particle {
 			}
 			x += deadx;
 			y -= deady;	
+
 		}
 		else if (lazer){
-			Random randy = new Random();
-			double moveX;
-			double moveY;
-			int speeder = randy.nextInt(5);
-			if (x < spriteX){
-				moveX = (spriteX-x)/speeder;
-				x += moveX;				
-			}
-			else { 
-				moveX = (x-spriteX)/speeder;
-				x -= moveX;				
-			}
-			moveY = (y-spriteY)/speeder;
-			y -= moveY;
+			//			Random randy = new Random();
+			//			double moveX;
+			//			double moveY;
+			//			int speeder = randy.nextInt(5);
+			//			if (x < spriteX){
+			//				moveX = (spriteX-x)/speeder;
+			//				x += moveX;				
+			//			}
+			//			else { 
+			//				moveX = (x-spriteX)/speeder;
+			//				x -= moveX;				
+			//			}
+			//			moveY = (y-spriteY)/speeder;
+			//			y -= moveY;		
+			if (pt == null)
+				pt = new PosTimer(500);
+			
+			if (!pt.getTrigger())
+				pt.update();
 		}
 
 		else if (!charged){
@@ -160,20 +170,24 @@ public class Particle {
 		dead = true;
 	}
 	public void setLazer(int x, int y){
-		pt = new PosTimer(1000);
 		lazer = true;
 		spriteX = x;
 		spriteY = y;
 	}
-	
-	public void draw(){
 
-		g.drawCircFill(x, y, 7, Color.BLUE, 255);
+	public void draw(){
+		int fadester;
+		if (!lazer)
+		fadester = 255;
+		else
+		fadester = getFader();
+		
+		g.drawCircFill(x, y, 7, Color.BLUE, fadester);
 		if (charged){
-			g.drawCircFill(x, y, 4, Color.MAGENTA, 255);
+			g.drawCircFill(x, y, 4, Color.MAGENTA, fadester);
 		}
 	}
-	
+
 	public float getX() {
 		return x;
 	}
@@ -182,6 +196,9 @@ public class Particle {
 		return y;
 	}
 
+	public int getFader(){
+		return (int) (pt.getRemainingMillis()/2);
+	}
 
 }
 

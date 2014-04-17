@@ -17,9 +17,15 @@ public class Collider {
 	private PosTimer pt;
 	private boolean lazer;
 	private Bolt bolt;
-
+	private Graphics g;
+	private boolean chargeSwitch;
+	private int line;
+	ArrayList<Integer> lines;
+	private PosTimer timey;
 
 	private Collider(){
+		lines = new ArrayList<Integer>();
+		g = GameScreen.thisGame.getGraphics();
 		set = false;
 		charged = false;
 		lazer = false;
@@ -29,7 +35,8 @@ public class Collider {
 			float speed = rand.nextFloat()/10+.1f;
 			parts.add(new Particle(GameScreen.thisGame.getGraphics(), 25, speed, rand.nextFloat()*4	+.8f, rand.nextFloat()*7+4));
 		}
-		bolt = new Bolt(GameScreen.thisGame.getGraphics(), this);
+		bolt = new Bolt(g, this);
+		chargeSwitch = false;
 	}
 
 
@@ -38,6 +45,15 @@ public class Collider {
 			p.move();
 			p.draw();
 		}
+
+		if (chargeSwitch != charged){
+			pinkFlash();
+			chargeSwitch = charged;
+		}
+
+		if (charged && !lazer)
+			chargeLine(line);
+
 	}	
 
 	public void charge(){
@@ -54,9 +70,9 @@ public class Collider {
 		}
 		charged = true;
 	}
-	
+
 	public void checkCharged(int spriteX, int spriteY, int line){
-		Graphics g = GameScreen.thisGame.getGraphics();
+		this.line = line;
 		if (!set){
 			set = true;
 			if (line < spriteX)
@@ -66,25 +82,59 @@ public class Collider {
 				// line is right of sprite
 				initialSide = true;
 		}
-		if (!initialSide && line >= spriteX){
+		if (!initialSide && line >= spriteX){			
 			charge();
-			
+
 		}
-		if (initialSide && line < spriteX){
-			charge();
-			
+		if (initialSide && line < spriteX){			
+			charge();	
+
 		}
 
 		if (charged){
 			if (!initialSide && line < spriteX){
 				lazer = true;
 				lazer(spriteX, spriteY);
+
 			}
+
 			if (initialSide && line >= spriteX){
 				lazer = true;
 				lazer(spriteX, spriteY);
+
 			}
 		}
+	}
+
+	private void chargeLine(int line) {
+		if (timey == null)
+			timey = new PosTimer(200);
+		int spacer = 12;
+		
+		g.drawLine(line, -2, line, GameScreen.screenheight+5, Color.CYAN, 255, 6);
+		for (int i = 0 ; i < 3 ; i++){
+			lines.add(line);
+		}
+		
+		for (int i = 0 ; i < 3 ; i++){
+			if (line < lines.get(i)-spacer-(i*spacer)){
+				lines.set(i, line+spacer+(i*spacer));
+			}
+			if (line > lines.get(i)+spacer+(i*spacer)){
+				lines.set(i, line-spacer-(i*spacer));
+			}
+			int alpher = 150-(spacer*(i+1)*2);
+			
+			if (alpher < 0) alpher = 0;
+			
+			g.drawLine(lines.get(i), -2, lines.get(i), GameScreen.screenheight+5, 
+					Color.CYAN, alpher, 6-i);		
+		}
+	}
+
+	public void pinkFlash() {
+		g.drawRect(0, 0, GameScreen.screenwidth+5, 
+				GameScreen.screenheight+5, Color.MAGENTA, 175);
 	}
 
 	public void death(){
@@ -96,14 +146,13 @@ public class Collider {
 			}
 			pt.update();
 		}		
-		
 	}
-	
+
 	public void lazer(int x, int y){
 		for (Particle p: parts){
 			p.setLazer(x, y);
 		}
-		bolt.strike();
+		bolt.strike(x, y);
 	}
 
 	public boolean isLazer() {
@@ -113,11 +162,11 @@ public class Collider {
 	public void setLazer(boolean lazer) {
 		this.lazer = lazer;
 	}	
-	
+
 	public boolean isSet(){
 		return set;
 	}
-	
+
 	public ArrayList<Particle> getParticles(){
 		return parts;
 	}
