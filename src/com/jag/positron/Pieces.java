@@ -21,8 +21,10 @@ public class Pieces {
 	private boolean switched;
 	private int switchTimer = 25;
 	GameScreen gamescreen;
-
-
+	public PosTimer fadeTimer;
+	private Shaker shakey;
+	private int origX;
+	private int origY;
 
 
 	public Pieces(int startX, int startY, boolean inittype, GameScreen gameScreen2){
@@ -41,10 +43,32 @@ public class Pieces {
 		score = 0;
 		genPoint = (screenHeight/5)*4;
 		switched = false;
+		fadeTimer = new PosTimer(250);
+		shakey = new Shaker(250);
+		origX = startX;
+		origY = startY;
 
 	}
 
 	public void update(){
+		if (!fadeTimer.getTrigger()){
+			fadeTimer.update();
+			shakey.update();
+
+			if (shakey.getxShift()){
+				x = origX;
+				x += shakey.getShifter();
+				System.out.println("xshift: "+shakey.getShifter());
+			}
+			else {
+				y = origY;
+				y += shakey.getShifter();
+				System.out.println("yshift: "+shakey.getShifter());
+			}
+		}
+		else x = origX;	
+
+
 		if (gamescreen.getTopFreeze()&&y < Assets.lock.getHeight())
 			checkCollision();
 		else if (y < 0){
@@ -124,9 +148,17 @@ public class Pieces {
 			}
 		}
 	}
-	
-	
 
+
+	public boolean fadeIn(){
+		return !fadeTimer.getTrigger();
+	}
+
+	public int fadeTimer(){
+		if (fadeTimer.getRemainingMillis() > 0)
+			return (int) (fadeTimer.getRemainingMillis());
+		else return 0;
+	}
 
 	public int getX() {
 		return x;
@@ -162,20 +194,20 @@ public class Pieces {
 	public void setType(boolean type){
 		this.type = type;
 	}
-	
+
 	public void switchType(){
 		this.type = !type;
 		switched = true;
 	}
-	
+
 	public boolean getType() {
 		return type;
 	}
-	
+
 	public boolean getSwitched(){
 		return switched;
 	}
-	
+
 	public void resetSwitched(){
 		switched = false;
 	}
@@ -188,7 +220,7 @@ public class Pieces {
 	public int getGenPoint() {
 		return genPoint;
 	}
-	
+
 	public int getTimer(){
 		return switchTimer;
 	}
@@ -243,7 +275,7 @@ public class Pieces {
 		return true;
 	}
 
-	
+
 
 }
 

@@ -24,7 +24,7 @@ public class ShakeString {
 		this.g = g;
 		this.text = text;
 		this.x = x;
-		this.y = y;	
+		this.y = y;
 		mover = new ArrayList<Integer>();
 		timer = new PosTimer(510);
 
@@ -32,8 +32,19 @@ public class ShakeString {
 		textPaint.setTypeface(Assets.font);
 		textPaint.setTextSize(Math.round(g.getHeight() * .1));
 		textPaint.setTextAlign(Paint.Align.CENTER);
-		textPaint.setAntiAlias(true);
+//		textPaint.setAntiAlias(true);
 		textPaint.setColor(Color.MAGENTA);
+	}
+	
+	public ShakeString(Graphics g, String text, int x, int y, Paint txtPnt){
+		this.g = g;
+		this.text = text;
+		this.x = x;
+		this.y = y;
+		mover = new ArrayList<Integer>();
+		timer = new PosTimer(510);
+		
+		
 	}
 
 	public void drawAndUpdate(){
@@ -53,22 +64,22 @@ public class ShakeString {
 
 		switch (curInt){
 		//UP
-		case 0: 
+		case 1: 
 			shifter = (-1 * moveMag);
 			dir = true;
 			break;
 			//DOWN
-		case 1: 
+		case 2: 
 			shifter = ( 1 * moveMag);
 			dir = true;
 			break;	
 			//LEFT
-		case 2:
+		case 3:
 			shifter = (-1 * moveMag);
 			dir = false;
 			break;
 			//RIGHT
-		case 3:
+		case 4:
 			shifter = ( 1 * moveMag);
 			dir = false;
 			break;

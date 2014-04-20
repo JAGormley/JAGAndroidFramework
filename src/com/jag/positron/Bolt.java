@@ -3,6 +3,8 @@ package com.jag.positron;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.graphics.Color;
+
 import com.jag.framework.Graphics;
 
 public class Bolt {
@@ -10,53 +12,68 @@ public class Bolt {
 	private Collider collider;
 	private ArrayList<Particle> parts;	
 	private ArrayList<ArrayList<Integer>> points;
+	private PosTimer fadeTimer;
 
 	public Bolt(Graphics g, Collider collider){
-		this.g = g;		
+		this.g = g;
 		this.collider = collider;
 		this.parts = this.collider.getParticles();
 		points = new ArrayList<ArrayList<Integer>>();
+		fadeTimer = new PosTimer(500);
 	}
 
-	public void strike(int x, int y){		
-		Random randstrom = new Random();
-		
+	public void strike(int spriteX, int spriteY){		
+		Random randstrom = new Random();		
 
+		if (!fadeTimer.getTrigger())
+			fadeTimer.update();
+
+		if (points.size() == parts.size()*3)
+			points.clear();
+		
 		for (int i = 0; points.size() < parts.size()*3; i++){
 			ArrayList<Integer> point = new ArrayList<Integer>();
 			ArrayList<Integer> mPoint = new ArrayList<Integer>();
 			ArrayList<Integer> ePoint = new ArrayList<Integer>();
+			this.parts = this.collider.getParticles();
 			int partX = (int) parts.get(i).getX();
 			int partY = (int) parts.get(i).getY();
-
+//			System.out.println("partX: " +partX);
+//			System.out.println("partY: " +partY);
 
 			point.add(partX);
-			point.add(partY);			
+			point.add(partY);
 			points.add(point);
 
 			//			if (x < Math.abs((int) parts.get(i).getX()){
 			//			System.out.println("Abs X: "+Math.abs(partX - x));
 
-			for (int j = 0 ; j < 1 ; j++){
+			for (int j = 0 ; j < 2 ; j++){
 				mPoint = new ArrayList<Integer>();
-				int absMathX = Math.abs(partX - x);
-				int absMathY = Math.abs((partY-20) - (y+50)); 
+				int absMathX = Math.abs(partX - spriteX);
+				int absMathY = Math.abs((partY-20) - (spriteY+50)); 
 
-				if (x < partX)
-					mPoint.add(x + (randstrom.nextInt(absMathX)+1));				
+				if (spriteX < partX)
+					mPoint.add(spriteX + (randstrom.nextInt(absMathX)+1));				
 				else 
 					mPoint.add(partX + (randstrom.nextInt(absMathX+1)));
-				mPoint.add(y+50 + (randstrom.nextInt(absMathY+1)));	
+				mPoint.add(spriteY+50 + (randstrom.nextInt(absMathY+1)));	
 				points.add(mPoint);
 			}
 
-			ePoint.add(x);
-			ePoint.add(y);
+			ePoint.add(spriteX);
+			ePoint.add(spriteY);
 			points.add(ePoint);
 
 		}
-		g.drawPath(points, 3);
-		System.out.println("points: "+points.size());
+		int fadeAlph = (int) fadeTimer.getRemainingMillis();
+		if (fadeAlph < 0) fadeAlph = 0;
+		g.drawPath(points, 4, fadeAlph/2);
+		g.drawCircOut(spriteX, spriteY, (float) ((2000-fadeAlph*4)*1.5), Color.BLUE, fadeAlph/50, (fadeAlph-250)/5);
+		g.drawCircOut(spriteX, spriteY, (float) ((2000-fadeAlph*4)*1.55), Color.CYAN, fadeAlph/50, (fadeAlph-250)/5);
+		g.drawCircOut(spriteX, spriteY, (float) ((2000-fadeAlph*4)*1.6), Color.MAGENTA, fadeAlph/50, (fadeAlph-250)/5);
+//		System.out.println("points: "+points.toString());
+
 	}
 }
 

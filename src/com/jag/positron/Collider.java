@@ -92,17 +92,11 @@ public class Collider {
 		}
 
 		if (charged){
-			if (!initialSide && line < spriteX){
+			if (!initialSide && line < spriteX || initialSide && line >= spriteX)
 				lazer = true;
+
+			if (lazer)
 				lazer(spriteX, spriteY);
-
-			}
-
-			if (initialSide && line >= spriteX){
-				lazer = true;
-				lazer(spriteX, spriteY);
-
-			}
 		}
 	}
 
@@ -110,12 +104,12 @@ public class Collider {
 		if (timey == null)
 			timey = new PosTimer(200);
 		int spacer = 12;
-		
+
 		g.drawLine(line, -2, line, GameScreen.screenheight+5, Color.CYAN, 255, 6);
 		for (int i = 0 ; i < 3 ; i++){
 			lines.add(line);
 		}
-		
+
 		for (int i = 0 ; i < 3 ; i++){
 			if (line < lines.get(i)-spacer-(i*spacer)){
 				lines.set(i, line+spacer+(i*spacer));
@@ -124,9 +118,9 @@ public class Collider {
 				lines.set(i, line-spacer-(i*spacer));
 			}
 			int alpher = 150-(spacer*(i+1)*2);
-			
+
 			if (alpher < 0) alpher = 0;
-			
+
 			g.drawLine(lines.get(i), -2, lines.get(i), GameScreen.screenheight+5, 
 					Color.CYAN, alpher, 6-i);		
 		}
@@ -152,7 +146,7 @@ public class Collider {
 		for (Particle p: parts){
 			p.setLazer(x, y);
 		}
-		bolt.strike(x, y);
+		bolt.strike(x, y+Assets.neg.getHeight()/2);
 	}
 
 	public boolean isLazer() {

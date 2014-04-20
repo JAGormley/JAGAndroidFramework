@@ -36,6 +36,8 @@ public class Particle {
 	private int spriteY;
 	private Paint painty;
 
+
+
 	/**
 	 * 
 	 * @param g: Graphics object
@@ -57,6 +59,7 @@ public class Particle {
 		deadx = 0;
 		deady = 0;
 		painty = new Paint();
+
 
 	}	
 
@@ -123,24 +126,10 @@ public class Particle {
 			y -= deady;	
 
 		}
-		else if (lazer){
-			//			Random randy = new Random();
-			//			double moveX;
-			//			double moveY;
-			//			int speeder = randy.nextInt(5);
-			//			if (x < spriteX){
-			//				moveX = (spriteX-x)/speeder;
-			//				x += moveX;				
-			//			}
-			//			else { 
-			//				moveX = (x-spriteX)/speeder;
-			//				x -= moveX;				
-			//			}
-			//			moveY = (y-spriteY)/speeder;
-			//			y -= moveY;		
+		else if (lazer){	
 			if (pt == null)
 				pt = new PosTimer(500);
-			
+
 			if (!pt.getTrigger())
 				pt.update();
 		}
@@ -155,6 +144,27 @@ public class Particle {
 			y += (g.getHeight()/12)*11;
 			//			x -= 197.5 - size*widthMult;
 		}
+
+		// LAZER MOVER
+		if (pt != null)
+			if (pt.getRemainingMillis() < pt.getTotalMillis()/2){
+				//				System.out.println("partX: " + x);
+				//				System.out.println("partY: " + y);
+				Random randy = new Random();
+				double moveX;
+				double moveY;
+				int speeder = randy.nextInt(5)+1;
+				if (x < spriteX){
+					moveX = (spriteX-x)/speeder;
+					x += moveX;				
+				}
+				else { 
+					moveX = (x-spriteX)/speeder;
+					x -= moveX;				
+				}
+				moveY = (y-(spriteY+Assets.neg.getHeight()/2))/speeder;
+				y -= moveY;	
+			}
 	}
 
 	public void setLane(int lane){
@@ -175,16 +185,20 @@ public class Particle {
 		spriteY = y;
 	}
 
+	/// WORK ON TRACKING THE BOLT2
+
 	public void draw(){
 		int fadester;
 		if (!lazer)
-		fadester = 255;
+			fadester = 255;
 		else
-		fadester = getFader();
-		
-		g.drawCircFill(x, y, 7, Color.BLUE, fadester);
-		if (charged){
-			g.drawCircFill(x, y, 4, Color.MAGENTA, fadester);
+			fadester = getFader();
+
+		if (Math.abs(x-spriteX) > 1 && Math.abs(y-spriteY) > 1){
+			g.drawCircFill(x, y, 7, Color.BLUE, fadester);
+			if (charged){
+				g.drawCircFill(x, y, 4, Color.MAGENTA, fadester);
+			}
 		}
 	}
 
@@ -197,7 +211,10 @@ public class Particle {
 	}
 
 	public int getFader(){
-		return (int) (pt.getRemainingMillis()/2);
+		int faderster = (int) (pt.getRemainingMillis()/2);
+		if (faderster >= 0)
+			return faderster/2;
+		else return 0;
 	}
 
 }

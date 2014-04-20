@@ -3,6 +3,12 @@ package com.jag.positron;
 import android.os.SystemClock;
 import java.lang.Math;
 
+/**
+ * 
+ * @author jandrewgormley
+ * Timer counts down from initial provided value
+ */
+
 public class PosTimer {
 	long startTime = 0;
 	long elapsedTime = 0;

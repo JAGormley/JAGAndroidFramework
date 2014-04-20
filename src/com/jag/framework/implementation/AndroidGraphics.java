@@ -386,6 +386,26 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawPath(yepAth, newPaint);
 
 	}
+	
+	public void drawPath(ArrayList<ArrayList<Integer>> coords, int points, int alpha){
+		Path yepAth = new Path();
+		Paint newPaint = new Paint();
+		yepAth.moveTo(coords.get(0).get(0), coords.get(0).get(1));
+
+		for (int i = 1 ; i < coords.size(); i++){
+			if ((i % points) == 0)
+				yepAth.moveTo(coords.get(i).get(0), coords.get(i).get(1));
+			yepAth.lineTo(coords.get(i).get(0), coords.get(i).get(1));
+		}
+
+		newPaint.setColor(Color.CYAN);
+		newPaint.setStrokeWidth(4);
+		newPaint.setAlpha(255);
+		newPaint.setStyle(Style.STROKE);
+		newPaint.setAlpha(alpha);
+
+		canvas.drawPath(yepAth, newPaint);
+	}
 
 	@SuppressLint("NewApi")
 	@Override

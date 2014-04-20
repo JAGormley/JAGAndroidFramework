@@ -48,11 +48,8 @@ public class GameScreen extends Screen {
 	public ArrayList<Pieces> pieces;
 	public ArrayList<PosTriangle> pts;
 	Queue<Integer> heights = new LinkedList<Integer>();
-
-
-
+	
 	public Particle pcl;
-
 
 	Paint paint, paint2, paint3, paint4;
 	Image fore, rings1, rings2, base1, base2, bolt, currentMagnet,
@@ -82,6 +79,7 @@ public class GameScreen extends Screen {
 	public TimeGrid tg;
 	public TimeGrid tgTemp;
 	public ArrayList<ShakeString> sStrings;
+	public ArrayList<ShakeString> lStrings;
 
 	public int lineDuration, scoreDeathDur, levelStart, postScore;
 
@@ -183,6 +181,7 @@ public class GameScreen extends Screen {
 		setPieces(new ArrayList<Pieces>());
 		pts = new ArrayList<PosTriangle>();
 		sStrings = new ArrayList<ShakeString>();
+		lStrings = new ArrayList<ShakeString>();
 
 
 
@@ -231,8 +230,8 @@ public class GameScreen extends Screen {
 		paint5.setTextSize(Math.round(sh * .15));
 		paint5.setTextAlign(Paint.Align.CENTER);
 		//		paint5.setAntiAlias(true);
-		paint5.setColor(Color.RED);
-		paint5.setShadowLayer(1, -5, -5, Color.BLUE);
+		paint5.setColor(Color.MAGENTA);
+		paint5.setShadowLayer(1, -5, -5, Color.GRAY);
 
 		paint6 = new Paint();
 		paint6.setTypeface(Assets.font);
@@ -246,7 +245,8 @@ public class GameScreen extends Screen {
 		paint7.setTextSize(Math.round(sh * .066));
 		paint7.setTextAlign(Paint.Align.CENTER);
 		//		paint7.setAntiAlias(true);
-		paint7.setColor(Color.RED);
+		paint7.setColor(Color.MAGENTA);
+		paint7.setShadowLayer(1, -5, -5, Color.GRAY);
 
 		paint8 = new Paint();
 		paint8.setColor(Color.rgb(255, 215, 0));
@@ -277,7 +277,7 @@ public class GameScreen extends Screen {
 
 		paint13 = new Paint();
 		paint13.setTypeface(Assets.font);
-		paint13.setTextSize(Math.round(sh * .036));
+		paint13.setTextSize(Math.round(sh * .066));
 		paint13.setTextAlign(Paint.Align.CENTER);
 		//		paint13.setAntiAlias(true);
 		paint13.setColor(Color.BLUE);
@@ -454,12 +454,13 @@ public class GameScreen extends Screen {
 				game.getGraphics().clearScreen(Color.BLACK);
 				state = GameState.Running;
 				Assets.theme.stop();
+//				Debug.startMethodTracing();
 			}
 		}
 	}
 
 	public void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
-		//		Debug.startMethodTracing();
+				
 		Assets.theme.stop();
 		// 1. All touch input is handled here:
 		int len = touchEvents.size();
@@ -495,7 +496,7 @@ public class GameScreen extends Screen {
 					if (score - scoreTemp < 0)
 						score = 0;
 					else {
-						score -= scoreTemp;
+//						score -= scoreTemp;
 					}
 					if (scoreTemp != 0) {
 						scoreTempDraw = scoreTemp;
@@ -902,14 +903,14 @@ public class GameScreen extends Screen {
 						//						System.out.println("sizer: " + pieces.size());
 						pLane = checkLane(pLane);
 						p = new Pieces(pLane,
-								(int) Math.round(sh * .8), randomBool, this);
+								(int) Math.round(sh * .9), randomBool, this);
 						tLock.addPiece();
 						//						System.out.println("size"+pieces.size());
 					}
 			}
 			else
 				p = new Pieces(pLane,
-						(int) Math.round(sh * .8), randomBool, this);
+						(int) Math.round(sh * .9), randomBool, this);
 
 			if (currentTG) {
 				Assets.gridVoice.play(100);
@@ -1095,7 +1096,8 @@ public class GameScreen extends Screen {
 
 			// FINAL
 			else if (!exitCases
-					&& p.y >= p.getGenPoint() - Math.round(sh * .012)) {
+					&& p.y >= p.getGenPoint() - Math.round(sh * .012)
+					&& !p.fadeIn()) {
 				killx = p.x;
 				killy = p.y;
 				if (postScore < score) {
@@ -1103,7 +1105,7 @@ public class GameScreen extends Screen {
 					newHigh = true;
 				} else
 					tempyScore = score;
-//												 System.out.println("yes10");
+//						System.out.println("yes10");
 				// tempyScore = score;
 				// System.out.println(score);
 				// System.out.println(tempyScore);
@@ -1409,27 +1411,27 @@ public class GameScreen extends Screen {
 						if (circleRad > 80)
 							circleRad -= 1;
 					}
-					g.drawCircFill(fingerx, fingery, circleRad, Color.GRAY,
-							(int) Math.round(sh * .075));
+//					g.drawCircFill(fingerx, fingery, circleRad, Color.GRAY,
+//							(int) Math.round(sh * .075));
 					g.drawCircOut(fingerx, fingery, circleRad, Color.RED, 5, 150);
-					g.drawCircOut(fingerx, fingery, (circleRad / 5) * 4,
-							Color.RED, 5, 150);
-					g.drawCircOut(fingerx, fingery, (circleRad / 5) * 3,
-							Color.RED, 5, 150);
-					g.drawString("-" + String.valueOf(scoreTemp), fingerx,
-							(int) fingery + (int) Math.round(sw * .019), paint4);
+//					g.drawCircOut(fingerx, fingery, (circleRad / 5) * 4,
+//							Color.RED, 5, 150);
+//					g.drawCircOut(fingerx, fingery, (circleRad / 5) * 3,
+//							Color.RED, 5, 150);
+//					g.drawString("-" + String.valueOf(scoreTemp), fingerx,
+//							(int) fingery + (int) Math.round(sw * .019), paint4);
 				}
 
-				if (touch == true) {
-					if (drawTimer < 40) {
-						paint4.setAlpha(200 - drawTimer * 4);
-						g.drawString("-" + String.valueOf(scoreTempDraw),
-								sw / 2,
-								(int) (Math.round(sh * .788) - (drawTimer)),
-								paint4);
-						drawTimer += 1;
-					}
-				}
+//				if (touch == true) {
+//					if (drawTimer < 40) {
+//						paint4.setAlpha(200 - drawTimer * 4);
+//						g.drawString("-" + String.valueOf(scoreTempDraw),
+//								sw / 2,
+//								(int) (Math.round(sh * .788) - (drawTimer)),
+//								paint4);
+//						drawTimer += 1;
+//					}
+//				}
 			}
 
 			collider.update();
@@ -1570,14 +1572,15 @@ public class GameScreen extends Screen {
 				}
 				if (p.type == true){
 					g.drawImage(Assets.pos, p.x - Assets.pos.getWidth()/2,
-							p.y - Assets.pos.getHeight()/2);
+							p.y - Assets.pos.getHeight()/2, 255 - p.fadeTimer());
 					//					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
 				}
 
 
 				if (p.type == false){
 					g.drawImage(Assets.neg, p.x - Assets.neg.getWidth()/2,
-							p.y - Assets.neg.getHeight()/2);					///					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
+							p.y - Assets.neg.getHeight()/2, 255 - p.fadeTimer());
+//					System.out.println(p.fadeTimer());					///					g.drawCircFill(p.x, p.y, 10, Color.BLUE, 255);
 				}
 
 				if (p.wayback) {
@@ -1815,51 +1818,7 @@ public class GameScreen extends Screen {
 					paint13.setAlpha(200 - lightningDuration * 10);
 					g.drawString("-" + String.valueOf(10 * scoreMult), killx,
 							killy - (int) Math.round(sw * .019), paint13);
-
-//									g.drawLine(lane, (int) Math.round(sh * .81), killx, killy
-//											+ (int) Math.round(sw * .048), Color.BLUE,
-//											200 - lightningDuration * 10, 12, paint11);
-//									g.drawLine(lane * 2, (int) Math.round(sh * .81), killx,
-//											killy + (int) Math.round(sw * .048), Color.BLUE,
-//											200 - lightningDuration * 10, 12, paint11);
-//									g.drawLine(lane * 3, (int) Math.round(sh * .81), killx,
-//											killy + (int) Math.round(sw * .048), Color.BLUE,
-//											200 - lightningDuration * 10, 12, paint11);
-//									g.drawLine(lane * 4, (int) Math.round(sh * .81), killx,
-//											killy + (int) Math.round(sw * .048), Color.BLUE,
-//											200 - lightningDuration * 10, 12, paint11);
-//									g.drawLine(lane * 5, (int) Math.round(sh * .81), killx,
-//											killy + (int) Math.round(sw * .048), Color.BLUE,
-//											200 - lightningDuration * 10, 12, paint11);
-//									g.drawLine(lane * 6, (int) Math.round(sh * .81), killx,
-//											killy + (int) Math.round(sw * .048), Color.BLUE,
-//											200 - lightningDuration * 10, 12, paint11);
-//									g.drawLine(lane * 7, (int) Math.round(sh * .81), killx,
-//											killy + (int) Math.round(sw * .048), Color.BLUE,
-//											200 - lightningDuration * 10, 12, paint11);
-
-
-					//				g.drawCircFill(lane, (int) Math.round(sh * .83),
-					//						(int) Math.round(sw * .043), Color.BLUE,
-					//						200 - lightningDuration * 10);
-					//				g.drawCircFill(lane * 2, (int) Math.round(sh * .83),
-					//						(int) Math.round(sw * .043), Color.BLUE,
-					//						200 - lightningDuration * 10);
-					//				g.drawCircFill(lane * 3, (int) Math.round(sh * .83),
-					//						(int) Math.round(sw * .043), Color.BLUE,
-					//						200 - lightningDuration * 10);
-					//				g.drawCircFill(lane * 4, (int) Math.round(sh * .83),
-					//						(int) Math.round(sw * .043), Color.BLUE,
-					//						200 - lightningDuration * 10);
-					//				g.drawCircFill(lane * 5, (int) Math.round(sh * .83),
-					//						(int) Math.round(sw * .043), Color.BLUE,
-					//						200 - lightningDuration * 10);
-					//				g.drawCircFill(lane * 6, (int) Math.round(sh * .83),
-					//						(int) Math.round(sw * .043), Color.BLUE,
-					//						200 - lightningDuration * 10);
-					//				g.drawCircFill(lane * 7, (int) Math.round(sh * .83),
-					//						(int) Math.round(sw * .043), Color.BLUE,
-					//						200 - lightningDuration * 10);
+					
 
 					if (typePass)
 						g.drawImage(Assets.pos,
@@ -1881,7 +1840,7 @@ public class GameScreen extends Screen {
 					collider.reset();
 					collider = Collider.getInstance();
 					collider.setLazer(false);
-					System.out.println("here");
+//					System.out.println("here");
 				}
 			}
 
@@ -1917,7 +1876,7 @@ public class GameScreen extends Screen {
 			drawPausedUI();
 		if (state == GameState.GameOver)
 			drawGameOverUI();
-		//		Debug.stopMethodTracing();
+				
 
 	}
 
@@ -1946,7 +1905,7 @@ public class GameScreen extends Screen {
 		Assets.theme = null;
 		Assets.click = null;
 		// Call garbage collector to clean up memory.
-		System.gc();
+//		System.gc();
 	}
 
 	protected void drawReadyUI() {
@@ -1975,7 +1934,7 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void pause() {
-
+//		Debug.stopMethodTracing();
 		if (state == GameState.Running)
 			System.gc();
 		Assets.tcDrone.pause();

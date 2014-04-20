@@ -55,7 +55,7 @@ public class Message {
 		p.setTypeface(Assets.font);
 		p.setTextSize(Math.round(GameScreen.screenheight * textSize));
 		p.setTextAlign(Paint.Align.CENTER);
-		p.setAntiAlias(true);	
+//		p.setAntiAlias(true);	
 		p.setColor(colour);
 		this.f = new TextFader (fadeTime, x, p.measureText(text)*AndroidGame.actualLoadWidth/800);
 		alive = true;
