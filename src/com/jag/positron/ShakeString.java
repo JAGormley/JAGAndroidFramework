@@ -45,6 +45,10 @@ public class ShakeString {
 		timer = new PosTimer(510);
 		
 		
+//		txtPnt.setShadowLayer(radius, dx, dy, color)
+		textPaint = txtPnt;
+		textPaint.setColor(Color.CYAN);
+		
 	}
 
 	public void drawAndUpdate(){

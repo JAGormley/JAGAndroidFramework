@@ -483,7 +483,7 @@ public class Tutorial extends GameScreen {
 						tLock = new TopLock(lane, game.getGraphics());
 						for (int i = 0; i < 7; i++){
 							tLock.addPiece();
-							tLock.weaken(new Pieces(lane * (i + 1), (int) Math.round(sh * .8), true, this));							
+							tLock.weaken(new Pieces(lane * (i + 1), (int) Math.round(sh * .8), true, this, recentInterval));							
 							tLock.addKilled();
 						}
 					}
@@ -499,12 +499,12 @@ public class Tutorial extends GameScreen {
 							tLock.addPiece();
 							pLane = checkLane(pLane);
 							p = new Pieces(pLane,
-									(int) Math.round(sh * .8), randomBool, this);
+									(int) Math.round(sh * .8), randomBool, this, recentInterval);
 						}
 				}
 				else
 					p = new Pieces((randomInt2 + 1) * lane,
-							(int) Math.round(sh * .8), randomBool, this);
+							(int) Math.round(sh * .8), randomBool, this, recentInterval);
 				if (currentTG) {
 					Assets.gridVoice.play(100);
 				}
@@ -864,7 +864,7 @@ public class Tutorial extends GameScreen {
 					tLock = new TopLock(lane, game.getGraphics());
 					for (int i = 0; i < 7; i++){
 						tLock.addPiece();
-						tLock.weaken(new Pieces(lane * (i + 1), (int) Math.round(sh * .8), true, this));							
+						tLock.weaken(new Pieces(lane * (i + 1), (int) Math.round(sh * .8), true, this, recentInterval));							
 						tLock.addKilled();
 					}
 				}
@@ -1593,7 +1593,7 @@ public class Tutorial extends GameScreen {
 					if (score < 15){
 						if (pieces.size() == 0){
 							pieces.add(new Pieces((randomInt + 1) * lane,
-									(int) Math.round(sh * .8), randomBool, this));
+									(int) Math.round(sh * .8), randomBool, this, recentInterval));
 							painty.setTypeface(Assets.font);
 							painty.setTextSize(Math.round(sh * .6));
 							painty.setTextAlign(Paint.Align.CENTER);
@@ -1665,7 +1665,7 @@ public class Tutorial extends GameScreen {
 
 						if (pieces.size() == 0){
 							pieces.add(new Pieces((randomInt + 1) * lane,
-									(int) Math.round(sh * .8), randomBool, this));
+									(int) Math.round(sh * .8), randomBool, this, recentInterval));
 							if (!pieces.get(0).type){
 								pieces.get(0).x = lane*2;
 							}
@@ -1887,7 +1887,7 @@ public class Tutorial extends GameScreen {
 
 					else if (ptime.getTrigger() && !freeze && (score + pieces.size()) < 25){
 						pieces.add(new Pieces((randomInt + 1) * lane,
-								(int) Math.round(sh * .8), randomBool, this));
+								(int) Math.round(sh * .8), randomBool, this, recentInterval));
 
 						ptime = null;
 						freeze = false;

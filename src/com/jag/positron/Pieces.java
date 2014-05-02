@@ -27,7 +27,7 @@ public class Pieces {
 	private int origY;
 
 
-	public Pieces(int startX, int startY, boolean inittype, GameScreen gameScreen2){
+	public Pieces(int startX, int startY, boolean inittype, GameScreen gameScreen2, double recentInterval){
 		scene = GameScreen.getScene();
 		screenHeight = GameScreen.screenheight;
 		gamescreen = gameScreen2;
@@ -43,7 +43,7 @@ public class Pieces {
 		score = 0;
 		genPoint = (screenHeight/5)*4;
 		switched = false;
-		fadeTimer = new PosTimer(250);
+		fadeTimer = new PosTimer(recentInterval*4);
 		shakey = new Shaker(250);
 		origX = startX;
 		origY = startY;
@@ -56,14 +56,15 @@ public class Pieces {
 			shakey.update();
 
 			if (shakey.getxShift()){
+				type = !type;
 				x = origX;
 				x += shakey.getShifter();
-				System.out.println("xshift: "+shakey.getShifter());
+//				System.out.println("xshift: "+shakey.getShifter());
 			}
 			else {
-				y = origY;
+//				y = origY;
 				y += shakey.getShifter();
-				System.out.println("yshift: "+shakey.getShifter());
+//				System.out.println("yshift: "+shakey.getShifter());
 			}
 		}
 		else x = origX;	

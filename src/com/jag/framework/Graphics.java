@@ -87,7 +87,7 @@ public interface Graphics {
 
 	void drawImage(Bitmap bit, int x, int y, int alph);
 
-	public void drawPath(ArrayList<ArrayList<Integer>> points, int i, int alpha);
+	public void drawBoltPath(ArrayList<ArrayList<Integer>> points, int i, int alpha);
 	
 
 }

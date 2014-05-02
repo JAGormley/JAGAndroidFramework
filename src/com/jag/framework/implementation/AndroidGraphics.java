@@ -387,7 +387,7 @@ public class AndroidGraphics implements Graphics {
 
 	}
 	
-	public void drawPath(ArrayList<ArrayList<Integer>> coords, int points, int alpha){
+	public void drawBoltPath(ArrayList<ArrayList<Integer>> coords, int points, int alpha){
 		Path yepAth = new Path();
 		Paint newPaint = new Paint();
 		yepAth.moveTo(coords.get(0).get(0), coords.get(0).get(1));

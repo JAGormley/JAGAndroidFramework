@@ -25,13 +25,13 @@ public class Shaker {
 		//		this.y = y;	
 		mover = new ArrayList<Integer>();		
 		timer = new PosTimer(time);
-		moveMag = time/3;
+		moveMag = time/5;
 	}
 
 	public void update(){
 		//		yShift = false;
 		
-		moveMag = (int) (timer.getRemainingMillis()/3);
+		moveMag = (int) (timer.getRemainingMillis()/5);
 		shifter = 0;
 
 		//dir is move direction, f is horizontal, t is vertical
@@ -46,14 +46,14 @@ public class Shaker {
 		curInt = mover.get(0);
 
 		switch (curInt){
-		//UP
+			//UP
 		case 1: 
 			shifter = (-1 * moveMag);
 			dir = true;
 			break;
-			//DOWN
+			//DOWN (for sprite no down)
 		case 2: 
-			shifter = ( 1 * moveMag);
+			shifter = 0;
 			dir = true;
 			break;	
 			//LEFT
@@ -74,8 +74,8 @@ public class Shaker {
 		}
 		else xShift = true;
 		
-		System.out.println("x?: " + xShift);
-		System.out.println("moverList: "+mover.toString());
+//		System.out.println("x?: " + xShift);
+//		System.out.println("moverList: "+mover.toString());
 
 		mover.remove(0);	
 		
