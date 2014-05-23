@@ -4,6 +4,7 @@ package com.jag.framework;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.jag.positron.Coil;
 import com.jag.positron.TextFader;
 import com.jag.positron.PosTriangle;
 
@@ -11,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.opengl.ETC1;
 
 public interface Graphics {
@@ -38,6 +40,7 @@ public interface Graphics {
 			int srcX, int srcY, int srcWidth, int srcHeight, Paint p);
 
 	public void drawImage(Image Image, int x, int y);
+	public void drawColImage(Bitmap bit, int x, int y, int alph, int col, int i);
 
 	void drawString(String text, int x, int y, Paint paint);
 	
@@ -88,6 +91,8 @@ public interface Graphics {
 	void drawImage(Bitmap bit, int x, int y, int alph);
 
 	public void drawBoltPath(ArrayList<ArrayList<Integer>> points, int i, int alpha);
+
+	public void drawPointBoltPath(ArrayList<Coil.Point> points, int pointsPerBolt, int alpha);
 	
 
 }

@@ -64,8 +64,8 @@ public class Bolt {
 			ePoint.add(spriteX);
 			ePoint.add(spriteY);
 			points.add(ePoint);
-
 		}
+		
 		int fadeAlph = (int) fadeTimer.getRemainingMillis();
 		if (fadeAlph < 0) fadeAlph = 0;
 //		g.drawBoltPath(points, 4, fadeAlph/2);

@@ -20,6 +20,9 @@ public class Shaker {
 	private boolean xShift;
 	//	private boolean yShift;
 
+	/*
+	 * Time in millis
+	 */
 	public Shaker(int time){
 		//		this.x = x;
 		//		this.y = y;	

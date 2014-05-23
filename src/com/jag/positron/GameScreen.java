@@ -104,7 +104,7 @@ public class GameScreen extends Screen {
 
 	public Collider collider;
 
-	public CougarLock CLock;
+	public CougarLock cougL;
 
 	public int tempyScore;
 
@@ -405,7 +405,7 @@ public class GameScreen extends Screen {
 		elecBase.addFrame(Assets.nbase1, 20);
 		elecBase.addFrame(Assets.nbase0, 20);
 
-		CLock = new CougarLock(game.getGraphics(), cougar);
+		cougL = new CougarLock(game.getGraphics(), cougar);
 
 		nextLevel = false;
 		lock = false;
@@ -427,9 +427,7 @@ public class GameScreen extends Screen {
 		Assets.gridDrone.setLooping(true);
 
 		tempPiece = new Pieces(0, 0, true, this, recentInterval);
-		score = 1000;
-
-
+		score = 1500;
 
 	}
 
@@ -709,6 +707,7 @@ public class GameScreen extends Screen {
 		boolean randomBool = randomGenerator.nextBoolean();
 		int chanceOfNewPiece = 8;
 
+
 		// DELAY PIECES
 		if (topFreeze){
 			if (scoreMult == 10)
@@ -718,7 +717,7 @@ public class GameScreen extends Screen {
 			if (scoreMult > 15)
 				recentInterval = 10;
 		}
-		if (!freeze && !scoreReset) {
+		if (!freeze && !scoreReset && !cougL.getStartup()) {
 			timePassed += 1;
 			if ((timePassed % recentInterval) == 0) {
 				recent = false;
@@ -735,23 +734,25 @@ public class GameScreen extends Screen {
 		}
 
 		// timeCHARGE
-		if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
-				&& !currentTG) {
-			// if (!currentTC&&tc==null&&scoreMult==1){
-			if (100 > randomInt3 && !topFreeze) {
-				tc = new TimeCharge((randomInt2 + 1) * lane,
-						(int) Math.round(sh * .78), 5);
-				Assets.tcDrone.play();
-				currentTC = true;
+		if (!cougL.getActive()){
+			if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
+					&& !currentTG) {
+				// if (!currentTC&&tc==null&&scoreMult==1){
+				if (100 > randomInt3 && !topFreeze) {
+					tc = new TimeCharge((randomInt2 + 1) * lane,
+							(int) Math.round(sh * .78), 5);
+					Assets.tcDrone.play();
+					currentTC = true;
+				}
 			}
-		}
-		if ((scoreMult >= 20) && !currentTC && tc == null) {
-			if (400 > randomInt3 && !topFreeze) {
-				tc = new TimeCharge((randomInt2 + 1) * lane,
-						(int) Math.round(sh * .78), 5);
-				Assets.tcDrone.play();
-				currentTC = true;
-				tc.setSpeed(5);
+			if ((scoreMult >= 20) && !currentTC && tc == null) {
+				if (400 > randomInt3 && !topFreeze) {
+					tc = new TimeCharge((randomInt2 + 1) * lane,
+							(int) Math.round(sh * .78), 5);
+					Assets.tcDrone.play();
+					currentTC = true;
+					tc.setSpeed(5);
+				}
 			}
 		}
 
@@ -761,14 +762,16 @@ public class GameScreen extends Screen {
 			if (tc.getY() <= 0) {
 				tcx = tc.x;
 				tcy = tc.y;
-				CLock.setStartPos(tcx, tcy);
-				CLock.setStartup(true);
-				
+				cougL.setStartPos(tcx, tcy);
+				cougL.setStartup(true);
+//				System.out.println("here2");
+				cougL.setActive(true);
 				//				topFreeze = true;
-				recent = false;
-				pieces.clear();
+				recent = true;
+				//				recent = true;
+				//				pieces.clear();
 				tg = null;
-				pts.clear();
+				//				pts.clear();
 				tc = null;
 				currentTG = false;
 				Assets.tcDrone.stop();
@@ -869,7 +872,6 @@ public class GameScreen extends Screen {
 			pts.clear();
 		}
 
-
 		if (!freeze) {
 			Iterator<PosTriangle> it2 = pts.iterator();
 			while (it2.hasNext()) {
@@ -888,38 +890,21 @@ public class GameScreen extends Screen {
 		}
 
 		// Pieces
+
+		if (cougL.getStartup()){
+			cougL.update();
+		}
+
 		if ((randomInt < chanceOfNewPiece) && !recent && !scoreReset) {
 			int pLane = (randomInt2 + 1) * lane;
 			Pieces p = null;
 
-			if (topFreeze){
-				if (tLock == null){
-					//					pieces.clear();
-					tLock = new TopLock(lane, game.getGraphics());
-				}
-				if (topFade == null){	
-					pieces.clear();
-					topFade = new PosTimer(4000);
-					//vvATTEMPT TO FIX EARLY TF PIECE
-					//					topFade.update();
-				}
-				if (!topFade.getTrigger()){
-					timePassed = 0;
-					topFade.update();
-				}
-				else 
-					if (!tLock.fullLanes()){						
-						//						System.out.println("sizer: " + pieces.size());
-						pLane = checkLane(pLane);
-						p = new Pieces(pLane,
-								(int) Math.round(sh * .95), randomBool, this, recentInterval);
-						tLock.addPiece();
-						//						System.out.println("size"+pieces.size());
-					}
-			}
-			else
-				p = new Pieces(pLane,
-						(int) Math.round(sh * .9), randomBool, this, recentInterval);
+			if (cougL.getActive())
+				cougL.update();
+
+			p = new Pieces(pLane,
+					(int) Math.round(sh * .9), randomBool, this, recentInterval);
+
 
 			if (currentTG) {
 				Assets.gridVoice.play(100);
@@ -980,8 +965,10 @@ public class GameScreen extends Screen {
 			}
 
 			// COUGARLOCK
-			else if (CLock.getStartup()){
-				CLock.update();
+			else if (cougL.getStartup()){
+
+//				System.out.println("here");
+				recent = true;
 			}
 
 			else if (p.isVisible() && topFreeze && !freeze && p.wayback
@@ -1090,10 +1077,13 @@ public class GameScreen extends Screen {
 			}
 
 			else if (p.y < Math.round(sh * .008)) {
-				sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+scoreMult), 
-						sw / 2, (int) Math.round(sh * .954)));
+				cougL.setPointT();
+				if (!cougL.getActive()){
+					sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+scoreMult), 
+							sw / 2, (int) Math.round(sh * .954)));
 
-				score += 1 * scoreMult;
+					score += 1 * scoreMult;
+				}
 				pointXs.add(p.x);
 				if (p.type)
 					Assets.posPoint.play(20);
@@ -1103,7 +1093,7 @@ public class GameScreen extends Screen {
 				it.remove();
 				freeze = false;
 				wrongButton = false;
-				System.out.println("yes8");
+//				System.out.println("yes8");
 
 			}
 			// else if (p.y > 950&&p.wayback){
@@ -1443,10 +1433,10 @@ public class GameScreen extends Screen {
 
 			if (!scoreReset && !topFreeze) {
 
-				g.drawString(String.valueOf(score), sw / 2,
-						(int) Math.round(sh * .954), paint3);
-				g.drawString("high " + String.valueOf(postScore), sw / 2,
-						(int) Math.round(sh * .988), paint6);
+//				g.drawString(String.valueOf(score), sw / 2,
+//						(int) Math.round(sh * .954), paint3);
+//				g.drawString("high " + String.valueOf(postScore), sw / 2,
+//						(int) Math.round(sh * .988), paint6);
 			}
 
 			if (scoreReset) {
@@ -1469,10 +1459,10 @@ public class GameScreen extends Screen {
 								(int) Math.round(sh * .456)+slider, paint12);
 					}
 					if (!topFreeze){
-						g.drawString(String.valueOf(score), sw / 2,
-								(int) Math.round(sh * .954), paint3);
-						g.drawString("high " + String.valueOf(postScore),
-								sw / 2, (int) Math.round(sh * .988), paint6);
+//						g.drawString(String.valueOf(score), sw / 2,
+//								(int) Math.round(sh * .954), paint3);
+//						g.drawString("high " + String.valueOf(postScore),
+//								sw / 2, (int) Math.round(sh * .988), paint6);
 					}
 					failCircle(g);
 					scoreDeathDur++;
@@ -1861,10 +1851,10 @@ public class GameScreen extends Screen {
 			g.drawLine(0, (int)(j*.8), g.getWidth(), (int)(j*.8), Color.YELLOW, 255, 3, paint9);
 			g.drawLine(0, (int)j, g.getWidth(), (int)j, Color.YELLOW, 255, 3, paint9);
 			magnet.update(10);
-			
-			
+
+
 			//CLock
-			CLock.draw();
+			cougL.draw();
 
 		}
 

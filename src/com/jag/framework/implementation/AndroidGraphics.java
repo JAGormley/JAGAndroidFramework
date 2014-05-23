@@ -18,6 +18,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -28,6 +29,7 @@ import com.jag.framework.Graphics;
 import com.jag.framework.Image;
 import com.jag.framework.Graphics.ImageFormat;
 import com.jag.positron.Assets;
+import com.jag.positron.Coil;
 import com.jag.positron.TextFader;
 import com.jag.positron.PosTriangle;
 
@@ -125,7 +127,6 @@ public class AndroidGraphics implements Graphics {
 		}		
 		b.setPixels(pixels, 0, width, 0, 0, width, height);
 	} 
-
 
 	@Override
 	public void drawPosTri(PosTriangle pt, int alph) {
@@ -406,6 +407,27 @@ public class AndroidGraphics implements Graphics {
 
 		canvas.drawPath(yepAth, newPaint);
 	}
+	
+	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha){
+		Path yepAth = new Path();
+		Paint newPaint = new Paint();
+		yepAth.moveTo(points.get(0).x, points.get(0).y);
+
+		for (int i = 1 ; i < points.size(); i++){
+			if ((i % ptNum) == 0)
+				yepAth.moveTo(points.get(i).x, points.get(i).y);
+			yepAth.lineTo(points.get(i).x, points.get(i).y);
+		}
+
+		newPaint.setColor(Color.CYAN);
+		newPaint.setStrokeWidth(4);
+		newPaint.setAlpha(255);
+		newPaint.setStyle(Style.STROKE);
+		newPaint.setAlpha(alpha);
+
+		canvas.drawPath(yepAth, newPaint);
+		
+	}
 
 	@SuppressLint("NewApi")
 	@Override
@@ -415,11 +437,27 @@ public class AndroidGraphics implements Graphics {
 
 	@SuppressLint("NewApi")
 	@Override
+	/*
+	 * SETCOL
+	 * (non-Javadoc)
+	 * @see com.jag.framework.Graphics#drawImage(android.graphics.Bitmap, int, int, int)
+	 */
 	public void drawImage(Bitmap bit, int x, int y, int alph) {
 		Paint p = null;
 		ColorFilter filter = null;
 		p = new Paint(Color.BLUE); 
 		filter = new LightingColorFilter(Color.BLUE, 255); 		
+		p.setColorFilter(filter);	
+		p.setAlpha(alph);
+		canvas.drawBitmap(bit, x, y, p);
+
+	}
+	
+	public void drawColImage(Bitmap bit, int x, int y, int alph, int origCol, int replCol) {
+		Paint p = null;
+		ColorFilter filter = null;
+		p = new Paint(origCol);
+		filter = new LightingColorFilter(origCol, replCol); 	
 		p.setColorFilter(filter);	
 		p.setAlpha(alph);
 		canvas.drawBitmap(bit, x, y, p);

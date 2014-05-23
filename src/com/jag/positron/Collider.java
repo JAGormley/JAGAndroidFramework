@@ -17,6 +17,7 @@ public class Collider {
 	private PosTimer pt;
 	private boolean lazer;
 	private Bolt bolt;
+	private Coil coil;
 	private Graphics g;
 	private boolean chargeSwitch;
 	private int line;
@@ -36,15 +37,20 @@ public class Collider {
 			parts.add(new Particle(GameScreen.thisGame.getGraphics(), 25, speed, rand.nextFloat()*4	+.8f, rand.nextFloat()*7+4));
 		}
 		bolt = new Bolt(g, this);
+		coil = new Coil(g, this);
 		chargeSwitch = false;
 	}
 
 
 	public void update(){
+
+		//		coil.draw();
 		for (Particle p: parts){
-			p.move();
+			if (!CougarLock.starting)
+				p.move();
 			p.draw();
 		}
+		coil.updateAndDraw(charged);		
 
 		if (chargeSwitch != charged){
 			pinkFlash();

@@ -34,9 +34,6 @@ public class Particle {
 	private PosTimer pt;
 	private int spriteX;
 	private int spriteY;
-	private Paint painty;
-
-
 
 	/**
 	 * 
@@ -58,7 +55,6 @@ public class Particle {
 		speedAdder = 13f;
 		deadx = 0;
 		deady = 0;
-		painty = new Paint();
 
 
 	}	

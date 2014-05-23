@@ -59,12 +59,10 @@ public class Pieces {
 				type = !type;
 				x = origX;
 				x += shakey.getShifter();
-//				System.out.println("xshift: "+shakey.getShifter());
 			}
 			else {
 //				y = origY;
 				y += shakey.getShifter();
-//				System.out.println("yshift: "+shakey.getShifter());
 			}
 		}
 		else x = origX;	
