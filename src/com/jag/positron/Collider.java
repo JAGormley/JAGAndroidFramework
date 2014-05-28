@@ -23,6 +23,7 @@ public class Collider {
 	private int line;
 	ArrayList<Integer> lines;
 	private PosTimer timey;
+	private boolean death;
 
 	private Collider(){
 		lines = new ArrayList<Integer>();
@@ -41,16 +42,18 @@ public class Collider {
 		chargeSwitch = false;
 	}
 
-
 	public void update(){
-
+		if (charged)
+			coil.updateAndDraw(charged, lazer);
 		//		coil.draw();
 		for (Particle p: parts){
 			if (!CougarLock.starting)
 				p.move();
 			p.draw();
 		}
-		coil.updateAndDraw(charged);		
+		
+		if (!charged)
+			coil.updateAndDraw(charged, lazer);
 
 		if (chargeSwitch != charged){
 			pinkFlash();
@@ -88,13 +91,11 @@ public class Collider {
 				// line is right of sprite
 				initialSide = true;
 		}
-		if (!initialSide && line >= spriteX){			
+		if (!initialSide && line >= spriteX){
 			charge();
-
 		}
-		if (initialSide && line < spriteX){			
-			charge();	
-
+		if (initialSide && line < spriteX){
+			charge();
 		}
 
 		if (charged){
@@ -138,6 +139,7 @@ public class Collider {
 	}
 
 	public void death(){
+		death = true;
 		if (pt == null)
 			pt = new PosTimer(4000);
 		if (!pt.getTrigger()){
@@ -145,7 +147,12 @@ public class Collider {
 				p.setDead();
 			}
 			pt.update();
-		}		
+		}
+
+	}
+
+	public boolean getDeath(){
+		return death;
 	}
 
 	public void lazer(int x, int y){

@@ -22,7 +22,8 @@ public class Bolt {
 		fadeTimer = new PosTimer(500);
 	}
 
-	public void strike(int spriteX, int spriteY){		
+	public void strike(int spriteX, int spriteY){	
+		
 		Random randstrom = new Random();	
 
 		if (!fadeTimer.getTrigger())

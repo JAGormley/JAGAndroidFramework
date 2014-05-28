@@ -166,6 +166,8 @@ public class GameScreen extends Screen {
 
 	private int tempMult;
 
+	private boolean tracing;
+
 
 
 	// private PosTriangle posT;
@@ -187,7 +189,7 @@ public class GameScreen extends Screen {
 		sStrings = new ArrayList<ShakeString>();
 		lStrings = new ArrayList<ShakeString>();
 
-
+		tracing = false;
 
 		pointXs = new ArrayList<Integer>();
 
@@ -764,7 +766,7 @@ public class GameScreen extends Screen {
 				tcy = tc.y;
 				cougL.setStartPos(tcx, tcy);
 				cougL.setStartup(true);
-//				System.out.println("here2");
+				//				System.out.println("here2");
 				cougL.setActive(true);
 				//				topFreeze = true;
 				recent = true;
@@ -966,8 +968,7 @@ public class GameScreen extends Screen {
 
 			// COUGARLOCK
 			else if (cougL.getStartup()){
-
-//				System.out.println("here");
+				//				System.out.println("here");
 				recent = true;
 			}
 
@@ -1014,6 +1015,11 @@ public class GameScreen extends Screen {
 
 			else if (p.wayback && collider.isLazer() && !exitCases) {
 
+				//STARTTRACE
+				if (!tracing){
+					tracing = true;
+//					Debug.startMethodTracing();
+				}
 				tempMult = scoreMult;
 
 				if (score - 10 * scoreMult < 0) {
@@ -1042,6 +1048,7 @@ public class GameScreen extends Screen {
 
 			else if (p.isVisible() && p.wayback && !freeze
 					&& !exitCases && !newPiece && !topFreeze) {
+				
 				if (scoreMult <= 15)
 					p.setBackspeed(25);
 				if (scoreMult > 15)
@@ -1093,7 +1100,7 @@ public class GameScreen extends Screen {
 				it.remove();
 				freeze = false;
 				wrongButton = false;
-//				System.out.println("yes8");
+				//				System.out.println("yes8");
 
 			}
 			// else if (p.y > 950&&p.wayback){
@@ -1287,7 +1294,9 @@ public class GameScreen extends Screen {
 					&& event.x < Math.round(sw * .731)
 					&& event.y > Math.round(sh * .324)
 					&& event.y < Math.round(sh * .423)) {
-				// nullify();
+				//				nullify();
+				cougL = null;
+				collider.reset();
 				Assets.theme.stop();
 				Assets.click2.play(100);
 				game.setScreen(new MainMenuScreen(game));
@@ -1433,14 +1442,15 @@ public class GameScreen extends Screen {
 
 			if (!scoreReset && !topFreeze) {
 
-//				g.drawString(String.valueOf(score), sw / 2,
-//						(int) Math.round(sh * .954), paint3);
-//				g.drawString("high " + String.valueOf(postScore), sw / 2,
-//						(int) Math.round(sh * .988), paint6);
+				//				g.drawString(String.valueOf(score), sw / 2,
+				//						(int) Math.round(sh * .954), paint3);
+				//				g.drawString("high " + String.valueOf(postScore), sw / 2,
+				//						(int) Math.round(sh * .988), paint6);
 			}
 
 			if (scoreReset) {
 				collider.death();
+				cougL = new CougarLock(g, cougar);				
 				paint3.setColor(Color.RED);
 				paint6.setColor(Color.RED);
 				if (scoreDeathDur < 60) {
@@ -1459,10 +1469,10 @@ public class GameScreen extends Screen {
 								(int) Math.round(sh * .456)+slider, paint12);
 					}
 					if (!topFreeze){
-//						g.drawString(String.valueOf(score), sw / 2,
-//								(int) Math.round(sh * .954), paint3);
-//						g.drawString("high " + String.valueOf(postScore),
-//								sw / 2, (int) Math.round(sh * .988), paint6);
+						//						g.drawString(String.valueOf(score), sw / 2,
+						//								(int) Math.round(sh * .954), paint3);
+						//						g.drawString("high " + String.valueOf(postScore),
+						//								sw / 2, (int) Math.round(sh * .988), paint6);
 					}
 					failCircle(g);
 					scoreDeathDur++;
@@ -1888,6 +1898,7 @@ public class GameScreen extends Screen {
 
 		// Set all variables to null. You will be recreating them in the
 		// constructor.
+		System.out.println("here");
 		paint = null;
 		scene = null;
 		setPieces(null);
@@ -1896,6 +1907,9 @@ public class GameScreen extends Screen {
 		paint3 = null;
 		Assets.theme = null;
 		Assets.click = null;
+		collider = null;
+		//		cougL.setRunning(false);
+		cougL = null;
 		// Call garbage collector to clean up memory.
 		//		System.gc();
 	}
@@ -1926,7 +1940,7 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void pause() {
-		//		Debug.stopMethodTracing();
+		Debug.stopMethodTracing();
 		if (state == GameState.Running)
 			System.gc();
 		Assets.tcDrone.pause();

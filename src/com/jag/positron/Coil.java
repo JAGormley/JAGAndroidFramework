@@ -32,16 +32,17 @@ public class Coil {
 		this.parts = collider.getParticles();
 	}	
 
-	public void updateAndDraw(boolean charged){
+	public void updateAndDraw(boolean charged, boolean lazer){
 		this.parts = collider.getParticles();
-		
+
 		// !CHARGED NUMBER
 		if (strands.size() < 10 && !charged){
 			strands.add(new Strand());
 		}
 		// CHARGED NUMBER
-		else if (strands.size() < 20 && charged){
-			strands.add(new Strand());
+		else {
+			while (strands.size() < parts.size()/3 && charged)
+				strands.add(new Strand());
 		}
 
 
@@ -57,7 +58,7 @@ public class Coil {
 			// CHARGED
 			else s.update(charged);
 		}
-		draw(charged);
+		draw(charged, lazer);
 
 	}
 
@@ -69,18 +70,28 @@ public class Coil {
 	}
 
 
-	public void draw(boolean charged){
-		g.drawLine(sw/2, sh+5, sw/2, (int) Math.round(sh * .910), Color.GRAY, 255, 3);				
-		g.drawCircFill(sw/2, Math.round(sh * .910), 7, Color.CYAN, 255);				
+	public void draw(boolean charged, boolean lazer){
+		g.drawLine(sw/2, sh+5, sw/2, (int) Math.round(sh * .910), Color.GRAY, 255, 3);		
+		int headCol;
+		headCol = (lazer || CougarLock.running) ? Color.GRAY : Color.CYAN;
+		g.drawCircFill(sw/2, Math.round(sh * .910), 7, headCol, 255);
 
-		System.out.println(strands.size());
-		for (Strand s : strands){
-			
-			g.drawPointBoltPath(s.getPoints(), 2, 255);
-			if (!charged)
-			g.drawCircFill(s.outer.x, s.outer.y, 2, Color.MAGENTA, 200);
-		}
+		int boltAlph = charged ? 255 : 180;
+		Random randy = new Random();
 		
+		
+		for (Strand s : strands){			
+			int boltCol;
+			if (randy.nextInt(10) == 9) boltCol = Color.BLUE;
+			else if (randy.nextInt(10) == 8) boltCol = Color.MAGENTA;
+			else boltCol = Color.CYAN;
+			
+			if (!lazer && !collider.getDeath() && !CougarLock.running)
+			g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), boltAlph, boltCol);
+			if (!charged && !CougarLock.running)
+				g.drawCircFill(s.outer.x, s.outer.y, 2, Color.MAGENTA, 200);
+		}
+
 
 	}
 	public class Point{
@@ -103,13 +114,15 @@ public class Coil {
 		private double radian;
 		private PosTimer lifeTime;
 		private double mover;
-		
+		private int strandNum;
+
 
 		private Strand(){
 			points = new ArrayList<Point>();
 			outer = getOuter(radius, origin);
 			Random randTime = new Random();
 			lifeTime = new PosTimer(randTime.nextInt(1500)+150);
+			strandNum = strands.size();
 
 		}
 
@@ -123,31 +136,24 @@ public class Coil {
 			}
 			else {					
 				setPoints(2, 10, charged);
+				//				System.out.println(getChargedOuter().x);
 				points.add(getChargedOuter());
 
 			}
-
 		}
 
 		// PointsPerLine, LineLen (this is radius for !charged), 
 
-		private Point getChargedOuter() {
-			
-			int pointX = (int) parts.get(strands.size()).x;
-			int pointY = (int) parts.get(strands.size()).y;
-			
-			return new Point(pointX, pointY);
-		}
-
 		private void setPoints(int pointsPer, int lineLen, boolean charged) {
 			if (!charged)
 				lifeTime.update();
+
 			Random randstrom = new Random();
 
 			points.clear();
 
 			///FIRST POINT
-			Point point;					
+			Point point;	
 			point = new Point(origin.x, origin.y);
 			points.add(point);
 
@@ -163,23 +169,39 @@ public class Coil {
 
 				int neXtPoint = 0;
 				int neYtPoint = 0;
+				Point midPoint;
 
 				if (!charged){
 					neXtPoint = (int) (prevPoint.x + (radianPointSpacer * Math.cos(radian)) + xMult);
 					neYtPoint = (int) (prevPoint.y + (radianPointSpacer * Math.sin(radian)) + yMult);
 
-					Point midPoint = new Point(neXtPoint, neYtPoint);
+					midPoint = new Point(neXtPoint, neYtPoint);
 
-
-					//					System.out.println(boundsCheck(midPoint));
 					if (boundsCheck(midPoint))
 						points.add(midPoint);				
-					prevPoint = midPoint;
 				}
-				else {
+				
+				else {		
+					int absMathX = Math.abs(getChargedOuter().x - origin.x);
+					int absMathY = Math.abs(getChargedOuter().y - origin.y);
+
+					if (origin.x < getChargedOuter().x)
+						neXtPoint = origin.x + (randstrom.nextInt(absMathX)+1);		
+					else
+						neXtPoint = getChargedOuter().x + (randstrom.nextInt(absMathX+1));
+					neYtPoint = origin.y - (randstrom.nextInt(absMathY+1));	
 					
-					// DRAW POINTS ALONG LINE TO PartCoord
+//					double curRadian = 0;					
+//					
+//					neXtPoint = (int) (prevPoint.x + (radianPointSpacer * Math.cos(curRadian)) + xMult);
+//					neYtPoint = (int) (prevPoint.y + (radianPointSpacer * Math.sin(curRadian)) + yMult);
+					
+					
+					midPoint = new Point(neXtPoint, neYtPoint);
+					points.add(midPoint);				
+					
 				}
+				prevPoint = midPoint;
 			}
 
 		}
@@ -212,6 +234,16 @@ public class Coil {
 				mover = (double) randy.nextInt(4)-2;
 
 			}
+			return outerPoint;
+		}
+
+		private Point getChargedOuter() {
+
+			int pointX = (int) parts.get(strandNum).x;
+			int pointY = (int) parts.get(strandNum).y;
+
+			outerPoint = new Point(pointX, pointY);
+
 			return outerPoint;
 		}
 	}

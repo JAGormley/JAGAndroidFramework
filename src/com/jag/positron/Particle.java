@@ -184,14 +184,11 @@ public class Particle {
 	/// WORK ON TRACKING THE BOLT2
 
 	public void draw(){
-		int fadester;
-		if (!lazer)
-			fadester = 255;
-		else
-			fadester = getFader();
+		int fadester = lazer ? getFader() : 255;
 
-		if (Math.abs(x-spriteX) > 1 && Math.abs(y-spriteY) > 1){
-			g.drawCircFill(x, y, 7, Color.BLUE, fadester);
+		if (Math.abs(x-spriteX) > 1 && Math.abs(y-spriteY) > 1){			
+			int partCol = CougarLock.running ? Color.GRAY : Color.BLUE;
+			g.drawCircFill(x, y, 6, partCol, fadester);
 			if (charged){
 				g.drawCircFill(x, y, 4, Color.MAGENTA, fadester);
 			}

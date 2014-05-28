@@ -52,7 +52,6 @@ public class AndroidGraphics implements Graphics {
 		this.paint3 = new Paint();
 		this.paint4 = new Paint();
 		this.paint5 = new Paint();
-
 	}
 
 	@Override
@@ -408,7 +407,7 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawPath(yepAth, newPaint);
 	}
 	
-	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha){
+	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha, int color){
 		Path yepAth = new Path();
 		Paint newPaint = new Paint();
 		yepAth.moveTo(points.get(0).x, points.get(0).y);
@@ -419,7 +418,7 @@ public class AndroidGraphics implements Graphics {
 			yepAth.lineTo(points.get(i).x, points.get(i).y);
 		}
 
-		newPaint.setColor(Color.CYAN);
+		newPaint.setColor(color);
 		newPaint.setStrokeWidth(4);
 		newPaint.setAlpha(255);
 		newPaint.setStyle(Style.STROKE);

@@ -6,6 +6,7 @@ import java.util.List;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Debug;
 
 import com.jag.framework.Game;
 import com.jag.framework.Graphics;
@@ -70,6 +71,7 @@ public class MainMenuScreen extends Screen {
 				Assets.mFace = g.newImage("face2PIXX.gif", ImageFormat.RGB565);
 				Assets.mFaced	 = g.newImage("facedeathPIX3.gif", ImageFormat.RGB565);
 				Assets.hadronOne = g.newImage("hadron.png", ImageFormat.RGB565);
+//				Debug.startMethodTracing();
 				game.setScreen(new GameScreen(game));
 			}
 			if (event.x > game.getLoadWidth()/2 && event.y > game.getLoadHeight()*.79 && event.y < game.getLoadHeight()*.9 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		

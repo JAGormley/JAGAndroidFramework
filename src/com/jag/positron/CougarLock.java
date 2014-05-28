@@ -11,6 +11,7 @@ public class CougarLock {
 	public int startY;
 	private Animation coug;
 	public static boolean starting;
+	public static boolean running;
 	private boolean active;
 	private static final double ENDPOINTX = GameScreen.screenwidth/2;
 	private static final double ENDPOINTY = GameScreen.screenheight * .92;
@@ -22,6 +23,7 @@ public class CougarLock {
 	private boolean point;
 	private int growInc;
 	private boolean colored;
+	
 
 
 	public CougarLock (Graphics g, Animation cougar){
@@ -30,6 +32,7 @@ public class CougarLock {
 		startY = 0;
 		coug = cougar;
 		starting = false;
+		running = false;
 		cougShaker = new Shaker(300);
 		growInc = 0;
 	}
@@ -39,18 +42,15 @@ public class CougarLock {
 			startTimer = new PosTimer(2000);
 		if (getStartup()){
 			startUpdate();
-
 		}
 	}
 
 	public void draw(){
 		
-		
 		if (getStartup())	
 			startDraw();
 		else if (startTimer != null)
 			if (startTimer.getTrigger()){
-				//DELETE THIS:
 				
 				// COUGDRAW
 				if (!cougShaker.shakerIsDead() && point){
@@ -90,16 +90,20 @@ public class CougarLock {
 	public void setStartup(boolean setter){
 		starting = setter;
 	}
+	public void setRunning(boolean setter){
+		running = setter;
+	}
 
 	private void startUpdate(){
 		startTimer.update();
 		double progMult = startTimer.getElapsedMillis()/startTimer.getTotalMillis();
 		headPosY = progMult*distanceY + startY;
-		headPosX = progMult*distanceX + startX;		
+		headPosX = progMult*distanceX + startX;
 
-
-		if (startTimer.getTrigger())
+		if (startTimer.getTrigger()){
 			starting = false;
+			running = true;
+		}
 	}
 
 	private void startDraw() {
