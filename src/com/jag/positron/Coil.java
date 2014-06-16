@@ -14,12 +14,14 @@ public class Coil {
 	private Graphics g;
 	private Collider collider;
 	private ArrayList<Strand> strands;
+	private ArrayList<Strand> fadeStrands;
 	private Point origin;
 	boolean charged;
 	private int sw;
 	private int sh;
 	private int radius;
-	private int partNum = 0;
+	//	private int partNum = 0;
+	private boolean strandClear;
 
 	public Coil(Graphics g, Collider collider){
 		this.g = g;
@@ -30,21 +32,33 @@ public class Coil {
 		radius = 90;
 		origin = new Point(sw/2, (int) Math.round(sh * .910));
 		this.parts = collider.getParticles();
+		strandClear = false;
 	}	
 
 	public void updateAndDraw(boolean charged, boolean lazer){
 		this.parts = collider.getParticles();
 
+		if (!charged) strandClear = false;
 		// !CHARGED NUMBER
 		if (strands.size() < 10 && !charged){
 			strands.add(new Strand());
 		}
+
 		// CHARGED NUMBER
 		else {
-			while (strands.size() < parts.size()/3 && charged)
-				strands.add(new Strand());
-		}
+			if (!strandClear && charged) {
+				strands.clear();
+				strandClear = true;
+			}
 
+			//SET SIZE OF CHARGED STRANDARRAY
+			while (strands.size() < 1 && charged){
+				//				System.out.println("strands: "+ strands.size());
+				strands.add(new Strand());
+//				strandClear = false;
+			}
+			//						System.out.println(strands.size());
+		}
 
 		Iterator<Strand> it = strands.iterator();
 		while (it.hasNext()) {
@@ -56,7 +70,12 @@ public class Coil {
 				else it.remove();
 			}
 			// CHARGED
-			else s.update(charged);
+			else {
+				//				if (strands.size() < 5)
+				if (!s.chargedLifetime.getTrigger())
+					s.update(charged);
+				else it.remove();
+			}			
 		}
 		draw(charged, lazer);
 
@@ -69,28 +88,36 @@ public class Coil {
 		return (xCheck + yCheck) < Math.pow(radius,2);
 	}
 
-
 	public void draw(boolean charged, boolean lazer){
 		g.drawLine(sw/2, sh+5, sw/2, (int) Math.round(sh * .910), Color.GRAY, 255, 3);		
-		int headCol;
-		headCol = (lazer || CougarLock.running) ? Color.GRAY : Color.CYAN;
-		g.drawCircFill(sw/2, Math.round(sh * .910), 7, headCol, 255);
 
-		int boltAlph = charged ? 255 : 180;
-		Random randy = new Random();
-		
-		
-		for (Strand s : strands){			
-			int boltCol;
-			if (randy.nextInt(10) == 9) boltCol = Color.BLUE;
-			else if (randy.nextInt(10) == 8) boltCol = Color.MAGENTA;
-			else boltCol = Color.CYAN;
-			
-			if (!lazer && !collider.getDeath() && !CougarLock.running)
-			g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), boltAlph, boltCol);
+		//		Random randy = new Random();
+
+		int boltAlph = charged ? 180 : 230;
+
+		for (Strand s : strands){
+			int boltCol = Color.CYAN;
+
+			if (charged){
+				//				if (randy.nextInt(10) == 9) boltCol = Color.MAGENTA;
+				//				if (charged && randy.nextInt(100) < 10) boltAlph = 0;
+				//				else if (randy.nextInt(10) == 8) boltCol = Color.MAGENTA;
+//				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), 150, Color.BLUE, 15, true);
+			}
+
+			if (!lazer && !collider.getDeath() && !CougarLock.running){		
+				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), 100, Color.BLUE, 7, charged);
+				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), boltAlph, boltCol, 4, charged);
+				
+
+			}
 			if (!charged && !CougarLock.running)
 				g.drawCircFill(s.outer.x, s.outer.y, 2, Color.MAGENTA, 200);
 		}
+
+		int headCol;
+		headCol = (lazer || CougarLock.running) ? Color.GRAY : Color.CYAN;
+		g.drawCircFill(sw/2, Math.round(sh * .910), 7, headCol, 255);
 
 
 	}
@@ -109,67 +136,79 @@ public class Coil {
 
 		private ArrayList<Point> points;
 		Point outer;
+		Point chargedOuter;
 
 		private Point outerPoint;
 		private double radian;
 		private PosTimer lifeTime;
 		private double mover;
+		//		private int strandNum;
 		private int strandNum;
+		private PosTimer chargedLifetime;
 
 
 		private Strand(){
 			points = new ArrayList<Point>();
 			outer = getOuter(radius, origin);
+			chargedOuter = getChargedOuter();
 			Random randTime = new Random();
 			lifeTime = new PosTimer(randTime.nextInt(1500)+150);
-			strandNum = strands.size();
+			chargedLifetime = new PosTimer(randTime.nextInt(400)+50);
+			//			strandNum = strands.size();
 
 		}
 
 		public void update(boolean charged){
-
+			
 			// NOT CHARGED:
 			if (!charged){
+				//				System.out.println("falseCalls");
 				setPoints(10, radius, charged);
 				slideOuter();
-				points.add(outer);
+				points.add(outer);	
 			}
-			else {					
-				setPoints(2, 10, charged);
-				//				System.out.println(getChargedOuter().x);
-				points.add(getChargedOuter());
-
+			else {
+				//				System.out.println("setCall");
+				setPoints(8, 7, charged);				
+				//				points.add(chargedOuter);
+				//				points.add(new Point(400, 400));
 			}
 		}
 
 		// PointsPerLine, LineLen (this is radius for !charged), 
-
 		private void setPoints(int pointsPer, int lineLen, boolean charged) {
 			if (!charged)
 				lifeTime.update();
+			else chargedLifetime.update();
 
 			Random randstrom = new Random();
 
-			points.clear();
+			if (!charged)
+				points.clear();
 
-			///FIRST POINT
-			Point point;	
-			point = new Point(origin.x, origin.y);
-			points.add(point);
+			// FIRST POINT
+			Point point;
+			if (points.size() == 0){
+				point = new Point(origin.x, origin.y);
+				points.add(point);
+			}
+			//			if (charged)
+			//				System.out.println("1st: "+point.x+"    "+point.y);
 
 			Point prevPoint = origin;
 			int mulTensity = 20;
 			int pointsPerLine = pointsPer;
-			int radianPointSpacer = lineLen/pointsPerLine;
+			int radianPointSpacer = lineLen/pointsPerLine;	
 
-			for (int j = 0 ; j < pointsPerLine ; j++){
+			for (int j = 0 ; j < pointsPerLine ; j++){			
 
 				int xMult = randstrom.nextInt(mulTensity) - (mulTensity/2);
 				int yMult = randstrom.nextInt(mulTensity) - (mulTensity/2);
 
 				int neXtPoint = 0;
 				int neYtPoint = 0;
-				Point midPoint;
+				Point midPoint = null;
+
 
 				if (!charged){
 					neXtPoint = (int) (prevPoint.x + (radianPointSpacer * Math.cos(radian)) + xMult);
@@ -180,27 +219,27 @@ public class Coil {
 					if (boundsCheck(midPoint))
 						points.add(midPoint);				
 				}
-				
-				else {		
-					int absMathX = Math.abs(getChargedOuter().x - origin.x);
-					int absMathY = Math.abs(getChargedOuter().y - origin.y);
 
-					if (origin.x < getChargedOuter().x)
-						neXtPoint = origin.x + (randstrom.nextInt(absMathX)+1);		
-					else
-						neXtPoint = getChargedOuter().x + (randstrom.nextInt(absMathX+1));
-					neYtPoint = origin.y - (randstrom.nextInt(absMathY+1));	
-					
-//					double curRadian = 0;					
-//					
-//					neXtPoint = (int) (prevPoint.x + (radianPointSpacer * Math.cos(curRadian)) + xMult);
-//					neYtPoint = (int) (prevPoint.y + (radianPointSpacer * Math.sin(curRadian)) + yMult);
-					
-					
+				else if (points.size() < pointsPerLine){					
+					// calculate slope using getOuter/origin, apply the shift along the line at each point, set the end.
+					int xSlope = getChargedOuter().x - origin.x;
+					xSlope = (xSlope == 0) ? 1 : xSlope	;
+					int ySlope = getChargedOuter().y - origin.y;
+					ySlope = (ySlope == 0) ? 1 : ySlope;					
+					neXtPoint = (int) (origin.x + (j+1)*(xSlope/pointsPerLine) + xMult*2);
+					neYtPoint = (int) (origin.y + (j+1)*(ySlope/pointsPerLine) - Math.abs(yMult));
+
 					midPoint = new Point(neXtPoint, neYtPoint);
-					points.add(midPoint);				
-					
+
+ 					if (midPoint.y > getChargedOuter().y){
+						points.add(midPoint);
+//						System.out.println(j+": " + midPoint.x + "   "+midPoint.y);
+						/// LOOPS BACK TO 0 AND ADDS POINT FOR SOME REASON
+					}
+//					else j--;
+
 				}
+
 				prevPoint = midPoint;
 			}
 
@@ -217,12 +256,16 @@ public class Coil {
 			outer.y = (int) ((float)(radius * Math.sin(radian)) + origin.y);
 		}
 
+		/**
+		 * This will give the correct outer point for a strand while it's moving
+		 * @return
+		 */
 		private Point getOuter(float radius, Point origin) {
 			Random random = new Random();
 			float angleInDegrees = random.nextInt(360);
 
-			// Convert degrees to radians, set point coords     
-			int x = (int) ((float)(radius * Math.cos(angleInDegrees * Math.PI / 180F)) + origin.x);	
+			// Convert degrees to radians, set point coords
+			int x = (int) ((float)(radius * Math.cos(angleInDegrees * Math.PI / 180F)) + origin.x);
 			int y = (int) ((float)(radius * Math.sin(angleInDegrees * Math.PI / 180F)) + origin.y);
 			if (outerPoint == null){
 
@@ -237,16 +280,24 @@ public class Coil {
 			return outerPoint;
 		}
 
+		
 		private Point getChargedOuter() {
-
-			int pointX = (int) parts.get(strandNum).x;
-			int pointY = (int) parts.get(strandNum).y;
+//			if (strandNum == 0){
+				Random randy = new Random();
+				strandNum = randy.nextInt(parts.size());
+				strandNum = (strandNum == 0) ? 1 : strandNum;
+//			}
+//
+//			int pointX = (int) parts.get(strandNum-1).x;
+//			int pointY = (int) parts.get(strandNum-1).y;
+			
+			int pointX = randy.nextInt(GameScreen.screenwidth);
+			int pointY = randy.nextInt(50)+900;
 
 			outerPoint = new Point(pointX, pointY);
 
 			return outerPoint;
+//			return new Point(400, 0);
 		}
 	}
 }
-
-// States: charged/notCharged 

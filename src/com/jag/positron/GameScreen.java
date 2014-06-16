@@ -1633,6 +1633,7 @@ public class GameScreen extends Screen {
 							255 - gridPieceCount * 25);
 
 					gridPieceCount++;
+					
 				} else {
 					gridPieceCount = 0;
 					newGridPiece = false;

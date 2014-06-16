@@ -92,7 +92,7 @@ public interface Graphics {
 
 	public void drawBoltPath(ArrayList<ArrayList<Integer>> points, int i, int alpha);
 
-	public void drawPointBoltPath(ArrayList<Coil.Point> points, int pointsPerBolt, int alpha, int color);
+	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha, int color, int strokeWidth, boolean charged);
 	
 
 }

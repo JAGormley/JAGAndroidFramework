@@ -30,6 +30,7 @@ import com.jag.framework.Image;
 import com.jag.framework.Graphics.ImageFormat;
 import com.jag.positron.Assets;
 import com.jag.positron.Coil;
+import com.jag.positron.GameScreen;
 import com.jag.positron.TextFader;
 import com.jag.positron.PosTriangle;
 
@@ -41,6 +42,8 @@ public class AndroidGraphics implements Graphics {
 	Paint paint, paint2, paint3, paint4, paint5;
 	Rect srcRect = new Rect();
 	Rect dstRect = new Rect();
+	LinearGradient lg;
+	LinearGradient lg2;
 
 
 	public AndroidGraphics(AssetManager assets, Bitmap frameBuffer) {
@@ -52,6 +55,12 @@ public class AndroidGraphics implements Graphics {
 		this.paint3 = new Paint();
 		this.paint4 = new Paint();
 		this.paint5 = new Paint();
+		this.lg = new LinearGradient(400, 1100, 400,
+				750, Color.CYAN, Color.alpha(0),
+				android.graphics.Shader.TileMode.CLAMP);
+		this.lg2 = new LinearGradient(400, 1600, 400,
+				1000, Color.MAGENTA, Color.alpha(0),
+				android.graphics.Shader.TileMode.CLAMP);
 	}
 
 	@Override
@@ -407,7 +416,7 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawPath(yepAth, newPaint);
 	}
 	
-	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha, int color){
+	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha, int color, int strokeWidth, boolean charged){
 		Path yepAth = new Path();
 		Paint newPaint = new Paint();
 		yepAth.moveTo(points.get(0).x, points.get(0).y);
@@ -417,16 +426,23 @@ public class AndroidGraphics implements Graphics {
 				yepAth.moveTo(points.get(i).x, points.get(i).y);
 			yepAth.lineTo(points.get(i).x, points.get(i).y);
 		}
-
+				
 		newPaint.setColor(color);
-		newPaint.setStrokeWidth(4);
-		newPaint.setAlpha(255);
+		newPaint.setStrokeWidth(strokeWidth);
 		newPaint.setStyle(Style.STROKE);
-		newPaint.setAlpha(alpha);
+//		newPaint.setAlpha(alpha);
+		
+		if (charged){
+			newPaint.setShader(lg);
+			if (strokeWidth > 4)
+				newPaint.setShader(lg2);
+		}
+		else newPaint.setShader(null);
 
 		canvas.drawPath(yepAth, newPaint);
 		
-	}
+	}	
+	
 
 	@SuppressLint("NewApi")
 	@Override
