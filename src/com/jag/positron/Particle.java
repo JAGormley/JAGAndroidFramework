@@ -186,7 +186,7 @@ public class Particle {
 	public void draw(){
 		int fadester = lazer ? getFader() : 255;
 
-		if (Math.abs(x-spriteX) > 1 && Math.abs(y-spriteY) > 1){			
+		if (Math.abs(x-spriteX) > 1 && Math.abs(y-spriteY) > 1){		
 			int partCol = CougarLock.running ? Color.GRAY : Color.BLUE;
 			g.drawCircFill(x, y, 6, partCol, fadester);
 			if (charged){

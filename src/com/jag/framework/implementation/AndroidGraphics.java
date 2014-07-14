@@ -56,10 +56,10 @@ public class AndroidGraphics implements Graphics {
 		this.paint4 = new Paint();
 		this.paint5 = new Paint();
 		this.lg = new LinearGradient(400, 1100, 400,
-				750, Color.CYAN, Color.alpha(0),
+				950, Color.argb(100, 0, 255, 255), Color.alpha(0),
 				android.graphics.Shader.TileMode.CLAMP);
-		this.lg2 = new LinearGradient(400, 1600, 400,
-				1000, Color.MAGENTA, Color.alpha(0),
+		this.lg2 = new LinearGradient(400, 1100, 400,
+				950, Color.argb(70, 0, 0, 255), Color.alpha(0),
 				android.graphics.Shader.TileMode.CLAMP);
 	}
 
@@ -425,6 +425,9 @@ public class AndroidGraphics implements Graphics {
 			if ((i % ptNum) == 0)
 				yepAth.moveTo(points.get(i).x, points.get(i).y);
 			yepAth.lineTo(points.get(i).x, points.get(i).y);
+			if (charged){
+//				drawCircFill(points.get(i).x, points.get(i).y, 4, Color.YELLOW, 255);				
+			}			
 		}
 				
 		newPaint.setColor(color);
@@ -432,13 +435,24 @@ public class AndroidGraphics implements Graphics {
 		newPaint.setStyle(Style.STROKE);
 //		newPaint.setAlpha(alpha);
 		
-		if (charged){
-			newPaint.setShader(lg);
-			if (strokeWidth > 4)
+		if (charged){			
+//			System.out.println(alpha);
+			this.lg = new LinearGradient(400, 1100, 400,
+					950, Color.argb(alpha, 0, 255, 255), Color.alpha(0),
+					android.graphics.Shader.TileMode.CLAMP);
+			newPaint.setShader(lg);			
+			
+			// for backgroundline
+			if (strokeWidth > 4){				
+				this.lg2 = new LinearGradient(400, 1100, 400,
+						950, Color.argb((int) (alpha/1.3), 0, 0, 255), Color.alpha(0),
+						android.graphics.Shader.TileMode.CLAMP);
 				newPaint.setShader(lg2);
+			}
 		}
 		else newPaint.setShader(null);
-
+		
+//		drawLine(400, 0, 400, 1200, color, Color.CYAN, 20, newPaint);
 		canvas.drawPath(yepAth, newPaint);
 		
 	}	

@@ -160,6 +160,8 @@ public class Collider {
 			p.setLazer(x, y);
 		}
 		bolt.strike(x, y+Assets.neg.getHeight()/2);
+		coil.setStrike(x,y);
+		
 	}
 
 	public boolean isLazer() {

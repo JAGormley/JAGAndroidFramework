@@ -40,7 +40,8 @@ public interface Graphics {
 			int srcX, int srcY, int srcWidth, int srcHeight, Paint p);
 
 	public void drawImage(Image Image, int x, int y);
-	public void drawColImage(Bitmap bit, int x, int y, int alph, int col, int i);
+
+	public void drawColImage(Bitmap bit, int x, int y, int alph, int origCol, int replCol);
 
 	void drawString(String text, int x, int y, Paint paint);
 	
@@ -83,8 +84,7 @@ public interface Graphics {
 
 	void drawRect(int x, int y, int width, int height, int color, int alpha);
 
-	public void drawScaledImage(Image mFace, int i, int j, int sw, int sh,
-			int k, int l, int width, int height, int i2);
+	public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, int alpha);
 
 	public void changeCol(Bitmap b, int color);
 

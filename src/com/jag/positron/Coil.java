@@ -22,6 +22,13 @@ public class Coil {
 	private int radius;
 	//	private int partNum = 0;
 	private boolean strandClear;
+	private PosTimer nextChargedBolt;
+	private PosTimer nextChargedBolt2;
+	Random rand;
+	private double skullTiplyer;
+	private boolean strike;
+	//	private Object strandNum;
+	private Point strikePoint;
 
 	public Coil(Graphics g, Collider collider){
 		this.g = g;
@@ -33,11 +40,25 @@ public class Coil {
 		origin = new Point(sw/2, (int) Math.round(sh * .910));
 		this.parts = collider.getParticles();
 		strandClear = false;
+		rand = new Random();
+		nextChargedBolt = new PosTimer(rand.nextInt(10));
+		nextChargedBolt2 = new PosTimer(rand.nextInt(800));
+		skullTiplyer = 1.5;
 	}	
 
 	public void updateAndDraw(boolean charged, boolean lazer){
-		this.parts = collider.getParticles();
+		nextChargedBolt.update();
+		nextChargedBolt2.update();
 
+		//		(headLoc = (charged) ?  : Math.round(sh * .910);)
+
+		if (charged){
+			//			origin.y = (int) (Math.round(sh * .910)+((sh+5)-Math.round(sh * .910))/2);
+			origin.y = (int) Math.round(sh * .930);
+		}
+		else origin.y = (int) Math.round(sh * .910); 
+
+		this.parts = collider.getParticles();
 		if (!charged) strandClear = false;
 		// !CHARGED NUMBER
 		if (strands.size() < 10 && !charged){
@@ -52,12 +73,18 @@ public class Coil {
 			}
 
 			//SET SIZE OF CHARGED STRANDARRAY
-			while (strands.size() < 1 && charged){
+			while (strands.size() < 5 && charged && nextChargedBolt.getTrigger()){
 				//				System.out.println("strands: "+ strands.size());
 				strands.add(new Strand());
-//				strandClear = false;
+				nextChargedBolt = new PosTimer(rand.nextInt(300));
+				//				strandClear = false;
 			}
-			//						System.out.println(strands.size());
+			while (strands.size() < 5 && charged && nextChargedBolt2.getTrigger()){
+				//				System.out.println("strands: "+ strands.size());
+				strands.add(new Strand());
+				nextChargedBolt2 = new PosTimer(rand.nextInt(800));
+				//				strandClear = false;
+			}
 		}
 
 		Iterator<Strand> it = strands.iterator();
@@ -78,7 +105,6 @@ public class Coil {
 			}			
 		}
 		draw(charged, lazer);
-
 	}
 
 	private boolean boundsCheck(Point midPoint) {
@@ -89,37 +115,58 @@ public class Coil {
 	}
 
 	public void draw(boolean charged, boolean lazer){
-		g.drawLine(sw/2, sh+5, sw/2, (int) Math.round(sh * .910), Color.GRAY, 255, 3);		
+		if (!charged)
+			g.drawLine(sw/2, sh+5, sw/2, (int) Math.round(sh * .910), Color.GRAY, 255, 3);		
 
 		//		Random randy = new Random();
 
 		int boltAlph = charged ? 180 : 230;
 
 		for (Strand s : strands){
-			int boltCol = Color.CYAN;
+			int boltCol = Color.CYAN;		
 
-			if (charged){
-				//				if (randy.nextInt(10) == 9) boltCol = Color.MAGENTA;
-				//				if (charged && randy.nextInt(100) < 10) boltAlph = 0;
-				//				else if (randy.nextInt(10) == 8) boltCol = Color.MAGENTA;
-//				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), 150, Color.BLUE, 15, true);
-			}
-
-			if (!lazer && !collider.getDeath() && !CougarLock.running){		
-				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), 100, Color.BLUE, 7, charged);
+			if (!lazer && !collider.getDeath() && !CougarLock.running){
+				if (charged)
+					boltAlph = (int)(255*(s.chargedLifetime.getRemainingMillis()/s.chargedLifetime.getTotalMillis()));
+				boltAlph = (boltAlph<0) ? 0 : boltAlph;
+				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), boltAlph, Color.BLUE, 7, charged);
 				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), boltAlph, boltCol, 4, charged);
-				
-
 			}
 			if (!charged && !CougarLock.running)
 				g.drawCircFill(s.outer.x, s.outer.y, 2, Color.MAGENTA, 200);
 		}
 
-		int headCol;
-		headCol = (lazer || CougarLock.running) ? Color.GRAY : Color.CYAN;
-		g.drawCircFill(sw/2, Math.round(sh * .910), 7, headCol, 255);
+		int skw = Assets.skull.getWidth();
+		int skh = Assets.skull.getHeight();
+		double skullShrinkMult = .3;
+		PosTimer glassFader = new PosTimer(1000);
 
 
+		if (!charged){
+			if (skullTiplyer > .25)
+				skullTiplyer-=skullShrinkMult;
+			if (skullTiplyer < .25)
+				skullTiplyer = .25;
+			//			skullTiplyer = .25;
+			//			g.drawCircFill(sw/2, headLoc, headSize, headCol, 255);			
+			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2), (int) (origin.y - skh*skullTiplyer/2), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
+		}
+		else if (lazer){
+			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/7)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
+
+			skw = Assets.coolSkull.getWidth();
+			skh = Assets.coolSkull.getHeight();			
+			int boltTimer = (int) Bolt.fadeTimer.getRemainingMillis();
+			int bAlpha = (boltTimer < Bolt.fadeTimer.getTotalMillis()/2) ? boltTimer-50 : 255;
+			g.drawScaledImage(Assets.coolSkull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/7)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh, bAlpha);
+		}
+		else {
+			if (skullTiplyer < 1.6)
+				skullTiplyer+=skullShrinkMult;
+			if (skullTiplyer > 1.6)
+				skullTiplyer = 1.6;
+			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/7)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
+		}
 	}
 	public class Point{
 		public int x;
@@ -132,8 +179,6 @@ public class Coil {
 
 	public class Strand{
 
-		// FINISH THIS CLASS
-
 		private ArrayList<Point> points;
 		Point outer;
 		Point chargedOuter;
@@ -143,44 +188,45 @@ public class Coil {
 		private PosTimer lifeTime;
 		private double mover;
 		//		private int strandNum;
-		private int strandNum;
 		private PosTimer chargedLifetime;
+		private double degs;
+		private double chargedRadius;
+		private int strandNum;
+		private Point boltOrigin;
+
 
 
 		private Strand(){
 			points = new ArrayList<Point>();
 			outer = getOuter(radius, origin);
-			chargedOuter = getChargedOuter();
+			degs = getChargedRadian(origin);
 			Random randTime = new Random();
 			lifeTime = new PosTimer(randTime.nextInt(1500)+150);
-			chargedLifetime = new PosTimer(randTime.nextInt(400)+50);
-			//			strandNum = strands.size();
-
+			chargedLifetime = new PosTimer(150);
+			strike = false;
 		}
 
 		public void update(boolean charged){
-			
+
 			// NOT CHARGED:
 			if (!charged){
-				//				System.out.println("falseCalls");
 				setPoints(10, radius, charged);
 				slideOuter();
 				points.add(outer);	
 			}
 			else {
-				//				System.out.println("setCall");
-				setPoints(8, 7, charged);				
-				//				points.add(chargedOuter);
-				//				points.add(new Point(400, 400));
+				setPoints(8, radius*3, charged);				
 			}
 		}
 
 		// PointsPerLine, LineLen (this is radius for !charged), 
 		private void setPoints(int pointsPer, int lineLen, boolean charged) {
+			// SKULL BOLT ORIGIN TEST
+			//			if (points.size() > 0)
+			//				g.drawCircFill(points.get(0).x, points.get(0).y, 5, Color.YELLOW, 255);
 			if (!charged)
 				lifeTime.update();
 			else chargedLifetime.update();
-
 			Random randstrom = new Random();
 
 			if (!charged)
@@ -189,18 +235,21 @@ public class Coil {
 			// FIRST POINT
 			Point point;
 			if (points.size() == 0){
-				point = new Point(origin.x, origin.y);
+				if (strike)
+					point = getBoltOrigin();
+				else if (charged)
+					point = skullPoint((int)(Assets.skull.getWidth()*skullTiplyer/1.85));
+				else point = new Point(origin.x, origin.y);
 				points.add(point);
 			}
-			//			if (charged)
-			//				System.out.println("1st: "+point.x+"    "+point.y);
 
 			Point prevPoint = origin;
-			int mulTensity = 20;
+			int mulTensity = (charged) ? 150 : 20;
 			int pointsPerLine = pointsPer;
-			int radianPointSpacer = lineLen/pointsPerLine;	
+			int radianPointSpacer = lineLen/pointsPerLine;
+			boolean dir = randstrom.nextBoolean();
 
-			for (int j = 0 ; j < pointsPerLine ; j++){			
+			for (int j = 0 ; j < pointsPerLine ; j++){				
 
 				int xMult = randstrom.nextInt(mulTensity) - (mulTensity/2);
 				int yMult = randstrom.nextInt(mulTensity) - (mulTensity/2);
@@ -220,26 +269,24 @@ public class Coil {
 						points.add(midPoint);				
 				}
 
-				else if (points.size() < pointsPerLine){					
-					// calculate slope using getOuter/origin, apply the shift along the line at each point, set the end.
-					int xSlope = getChargedOuter().x - origin.x;
-					xSlope = (xSlope == 0) ? 1 : xSlope	;
-					int ySlope = getChargedOuter().y - origin.y;
-					ySlope = (ySlope == 0) ? 1 : ySlope;					
-					neXtPoint = (int) (origin.x + (j+1)*(xSlope/pointsPerLine) + xMult*2);
-					neYtPoint = (int) (origin.y + (j+1)*(ySlope/pointsPerLine) - Math.abs(yMult));
+				else if (points.size() < pointsPerLine){
+					xMult = randstrom.nextInt(mulTensity);
+					if (!dir){
+						xMult = -xMult;
+						dir = !dir;
+					}
+					else dir = !dir;
+					yMult = randstrom.nextInt(mulTensity)/3;
+					//					System.out.println(xMult);
+
+					if (strike)
+						degs = getBoltRadian();
+					neXtPoint = (int) (prevPoint.x + (radianPointSpacer * Math.cos(degs) + xMult));
+					neYtPoint = (int) (prevPoint.y + (radianPointSpacer * Math.sin(degs)));
 
 					midPoint = new Point(neXtPoint, neYtPoint);
-
- 					if (midPoint.y > getChargedOuter().y){
-						points.add(midPoint);
-//						System.out.println(j+": " + midPoint.x + "   "+midPoint.y);
-						/// LOOPS BACK TO 0 AND ADDS POINT FOR SOME REASON
-					}
-//					else j--;
-
+					points.add(midPoint);
 				}
-
 				prevPoint = midPoint;
 			}
 
@@ -280,24 +327,52 @@ public class Coil {
 			return outerPoint;
 		}
 
-		
-		private Point getChargedOuter() {
-//			if (strandNum == 0){
-				Random randy = new Random();
-				strandNum = randy.nextInt(parts.size());
-				strandNum = (strandNum == 0) ? 1 : strandNum;
-//			}
-//
-//			int pointX = (int) parts.get(strandNum-1).x;
-//			int pointY = (int) parts.get(strandNum-1).y;
-			
-			int pointX = randy.nextInt(GameScreen.screenwidth);
-			int pointY = randy.nextInt(50)+900;
+		private double getChargedRadian(Point origin) {			
+			Random randy = new Random();
+			//			strandNum = randy.nextInt(parts.size());
+			//			strandNum = (strandNum == 0) ? 1 : strandNum;
 
+			int pointX = randy.nextInt(GameScreen.screenwidth);	
+			int pointY = randy.nextInt(50)+950;
 			outerPoint = new Point(pointX, pointY);
 
-			return outerPoint;
-//			return new Point(400, 0);
+			double deg = Math.atan2(outerPoint.y-origin.y, outerPoint.x-origin.x);
+
+			//			chargedRadius = Math.sqrt(Math.pow(Math.abs(outerPoint.x-origin.x), 2) + Math.pow(outerPoint.y-origin.y, 2));
+			//			System.out.println("deg: "+ deg);
+			return deg;
 		}
+		private double getBoltRadian() {	
+			Random randy = new Random();
+
+			double deg = Math.atan2(boltOrigin.y-strikePoint.y, boltOrigin.x-strikePoint.x);
+			return deg;
+		}
+
+		private Point getBoltOrigin(){
+			Random randy = new Random();
+			strandNum = randy.nextInt(parts.size());
+			int pointX = (int) parts.get(strandNum).x;	
+			int pointY = (int) parts.get(strandNum).y;
+
+			boltOrigin = new Point(pointX, pointY);
+			return boltOrigin;
+		}
+	}
+
+	private Point skullPoint(int radius) {
+		Random random = new Random();
+		float angleInDegrees = random.nextInt(180)+180;
+
+		// Convert degrees to radians, set point coords
+		int x = (int) ((float)(radius * Math.cos(angleInDegrees * Math.PI / 180F)) + origin.x);
+		int y = (int) ((float)(radius * Math.sin(angleInDegrees * Math.PI / 180F)) + origin.y);
+
+		return new Point(x, y);
+	}
+	public void setStrike(int x, int y)
+	{
+		strike = true;		
+		strikePoint = new Point(x, y);
 	}
 }

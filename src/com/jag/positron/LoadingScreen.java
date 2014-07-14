@@ -100,6 +100,9 @@ public class LoadingScreen extends Screen {
 		Assets.neg = g.newImage("neg2.png", ImageFormat.ARGB8888);				
 		Assets.alarm1 = g.newImage("alarm1b.png", ImageFormat.ARGB8888);
 		Assets.alarm2 = g.newImage("alarm2b.png", ImageFormat.ARGB8888);
+		
+		Assets.skull = g.newImage("skull.png", ImageFormat.ARGB8888);
+		Assets.coolSkull = g.newImage("skullopen.png", ImageFormat.ARGB8888);
 //
 		
 		//PBASE
