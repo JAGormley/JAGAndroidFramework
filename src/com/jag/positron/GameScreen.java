@@ -1096,7 +1096,7 @@ public class GameScreen extends Screen {
 						Assets.negPoint.play(40);
 				}
 				else {
-					cLock.addCougShot(p);
+//					cLock.addCougShot(p);
 				}
 				pointXs.add(p.x);
 				it.remove();

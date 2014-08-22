@@ -30,9 +30,7 @@ public class CougarLock {
 	private boolean colored;
 	private int sw;
 	private int sh;
-	private ArrayList<Point> shotPoints;
-	private ArrayList<PosTimer> shotTimer;
-	private ArrayList<Point> initialPlaces;
+	
 	
 
 
@@ -45,8 +43,6 @@ public class CougarLock {
 		running = false;
 		cougShaker = new Shaker(300);
 		growInc = 0;
-		shotPoints = new ArrayList<Point>();
-		shotTimer = new ArrayList<PosTimer>();
 		sw = GameScreen.screenwidth;
 		sh = GameScreen.screenheight;
 	}
@@ -57,31 +53,16 @@ public class CougarLock {
 		if (getStartup()){
 			startUpdate();
 		}
-		for (int i = 0 ; i < shotPoints.size() ; i++){
-			if (shotTimer.size() < shotPoints.size()){
-				shotTimer.add(new PosTimer(500));
-				initialPlaces.add(new Point(shotPoints.get(i).x, shotPoints.get(i).y));
-			}
-			shotTimer.get(i).update();
-			
-			int xPlace = shotPoints.get(i).x-sw/2;
-			shotPoints.get(i).y += 1;
-			shotPoints.get(i).x += 0;
-		}
 	}
 
-	// SHOTPOINTS DRAW CHOPPY, UPDATE/DRAW NOT CALLED FLUIDLY
 	public void draw(){
-		for (int i = 0 ; i < shotPoints.size() ; i++){
-			g.drawImage(Assets.pos, shotPoints.get(i).x, shotPoints.get(i).y);			
-		}
 		if (getStartup())	
 			startDraw();
 		else if (startTimer != null) {
 			if (startTimer.getTrigger()){
 				
 				// COUGDRAW				
-				if (!cougShaker.shakerIsDead() && point){
+				if (!cougShaker.shakerIsDead()){
 					cougShaker.update();					
 					if (cougShaker.getxShift())
 						g.drawColImage(coug.getImage().getBitmap(), (int)ENDPOINTX-(coug.getImage().getWidth()/2+cougShaker.getShifter()), 
@@ -173,7 +154,4 @@ public class CougarLock {
 		point = true;
 	}
 
-	public void addCougShot(Pieces p) {
-		shotPoints.add(new Point(p.x, p.y));
-	}
 }
