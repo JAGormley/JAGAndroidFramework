@@ -55,7 +55,9 @@ public class Assets {
 	    public static Typeface font;
 
 		public static Image eagle;
-		public static Image eagleb;	   	
+		public static Image eagleb;
+
+		public static Image smallSkull;	   	
 	    
 	    public static void load(PosInit posInit) {
 //	        theme = posInit.getAudio().createMusic("positheme3.mp3");

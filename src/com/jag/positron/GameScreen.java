@@ -17,6 +17,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.os.Debug;
+import android.os.SystemClock;
 
 import com.jag.framework.Game;
 import com.jag.framework.Graphics;
@@ -104,7 +105,7 @@ public class GameScreen extends Screen {
 
 	public Collider collider;
 
-	public CougarLock cougL;
+	public CougarLock cLock;
 
 	public int tempyScore;
 
@@ -407,7 +408,7 @@ public class GameScreen extends Screen {
 		elecBase.addFrame(Assets.nbase1, 20);
 		elecBase.addFrame(Assets.nbase0, 20);
 
-		cougL = new CougarLock(game.getGraphics(), cougar);
+		cLock = new CougarLock(game.getGraphics(), cougar);
 
 		nextLevel = false;
 		lock = false;
@@ -719,7 +720,7 @@ public class GameScreen extends Screen {
 			if (scoreMult > 15)
 				recentInterval = 10;
 		}
-		if (!freeze && !scoreReset && !cougL.getStartup()) {
+		if (!freeze && !scoreReset && !cLock.getStartup()) {
 			timePassed += 1;
 			if ((timePassed % recentInterval) == 0) {
 				recent = false;
@@ -736,7 +737,7 @@ public class GameScreen extends Screen {
 		}
 
 		// timeCHARGE
-		if (!cougL.getActive()){
+		if (!cLock.getActive()){
 			if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
 					&& !currentTG) {
 				// if (!currentTC&&tc==null&&scoreMult==1){
@@ -764,10 +765,10 @@ public class GameScreen extends Screen {
 			if (tc.getY() <= 0) {
 				tcx = tc.x;
 				tcy = tc.y;
-				cougL.setStartPos(tcx, tcy);
-				cougL.setStartup(true);
+				cLock.setStartPos(tcx, tcy);
+				cLock.setStartup(true);
 				//				System.out.println("here2");
-				cougL.setActive(true);
+				cLock.setActive(true);
 				//				topFreeze = true;
 				recent = true;
 				//				recent = true;
@@ -893,16 +894,15 @@ public class GameScreen extends Screen {
 
 		// Pieces
 
-		if (cougL.getStartup()){
-			cougL.update();
+		if (cLock.getStartup()){
+			cLock.update();
 		}
+		if (cLock.getActive())
+			cLock.update();
 
 		if ((randomInt < chanceOfNewPiece) && !recent && !scoreReset) {
 			int pLane = (randomInt2 + 1) * lane;
 			Pieces p = null;
-
-			if (cougL.getActive())
-				cougL.update();
 
 			p = new Pieces(pLane,
 					(int) Math.round(sh * .9), randomBool, this, recentInterval);
@@ -967,7 +967,7 @@ public class GameScreen extends Screen {
 			}
 
 			// COUGARLOCK
-			else if (cougL.getStartup()){
+			else if (cLock.getStartup()){
 				//				System.out.println("here");
 				recent = true;
 			}
@@ -1084,23 +1084,24 @@ public class GameScreen extends Screen {
 			}
 
 			else if (p.y < Math.round(sh * .008)) {
-				cougL.setPointT();
-				if (!cougL.getActive()){
+				cLock.setPointT();
+				if (!cLock.getActive()){
 					sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+scoreMult), 
 							sw / 2, (int) Math.round(sh * .954)));
 
 					score += 1 * scoreMult;
+					if (p.type)
+						Assets.posPoint.play(20);
+					if (!p.type)
+						Assets.negPoint.play(40);
+				}
+				else {
+					cLock.addCougShot(p);
 				}
 				pointXs.add(p.x);
-				if (p.type)
-					Assets.posPoint.play(20);
-				if (!p.type)
-					Assets.negPoint.play(40);
-
 				it.remove();
 				freeze = false;
 				wrongButton = false;
-				//				System.out.println("yes8");
 
 			}
 			// else if (p.y > 950&&p.wayback){
@@ -1295,7 +1296,7 @@ public class GameScreen extends Screen {
 					&& event.y > Math.round(sh * .324)
 					&& event.y < Math.round(sh * .423)) {
 				//				nullify();
-				cougL = null;
+				cLock = null;
 				collider.reset();
 				Assets.theme.stop();
 				Assets.click2.play(100);
@@ -1450,7 +1451,7 @@ public class GameScreen extends Screen {
 
 			if (scoreReset) {
 				collider.death();
-				cougL = new CougarLock(g, cougar);				
+				cLock = new CougarLock(g, cougar);				
 				paint3.setColor(Color.RED);
 				paint6.setColor(Color.RED);
 				if (scoreDeathDur < 60) {
@@ -1865,7 +1866,8 @@ public class GameScreen extends Screen {
 
 
 			//CLock
-			cougL.draw();
+			cLock.draw();
+			
 
 		}
 
@@ -1910,7 +1912,7 @@ public class GameScreen extends Screen {
 		Assets.click = null;
 		collider = null;
 		//		cougL.setRunning(false);
-		cougL = null;
+		cLock = null;
 		// Call garbage collector to clean up memory.
 		//		System.gc();
 	}

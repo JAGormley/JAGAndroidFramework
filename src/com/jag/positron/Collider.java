@@ -148,7 +148,6 @@ public class Collider {
 			}
 			pt.update();
 		}
-
 	}
 
 	public boolean getDeath(){
@@ -161,7 +160,6 @@ public class Collider {
 		}
 		bolt.strike(x, y+Assets.neg.getHeight()/2);
 		coil.setStrike(x,y);
-		
 	}
 
 	public boolean isLazer() {

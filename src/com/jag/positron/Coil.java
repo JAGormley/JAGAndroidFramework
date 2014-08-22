@@ -86,7 +86,9 @@ public class Coil {
 				//				strandClear = false;
 			}
 		}
-
+		if (strike)
+		System.out.println(strands.size());
+		
 		Iterator<Strand> it = strands.iterator();
 		while (it.hasNext()) {
 			Strand s = it.next();
@@ -143,29 +145,29 @@ public class Coil {
 
 
 		if (!charged){
-			if (skullTiplyer > .25)
+			if (skullTiplyer > .075)
 				skullTiplyer-=skullShrinkMult;
-			if (skullTiplyer < .25)
-				skullTiplyer = .25;
+			if (skullTiplyer < .075)
+				skullTiplyer = .075;
 			//			skullTiplyer = .25;
 			//			g.drawCircFill(sw/2, headLoc, headSize, headCol, 255);			
 			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2), (int) (origin.y - skh*skullTiplyer/2), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
 		}
 		else if (lazer){
-			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/7)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
+			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/15)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
 
 			skw = Assets.coolSkull.getWidth();
 			skh = Assets.coolSkull.getHeight();			
 			int boltTimer = (int) Bolt.fadeTimer.getRemainingMillis();
 			int bAlpha = (boltTimer < Bolt.fadeTimer.getTotalMillis()/2) ? boltTimer-50 : 255;
-			g.drawScaledImage(Assets.coolSkull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/7)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh, bAlpha);
+			g.drawScaledImage(Assets.coolSkull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/15)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh, bAlpha);
 		}
 		else {
-			if (skullTiplyer < 1.6)
+			if (skullTiplyer < .6)
 				skullTiplyer+=skullShrinkMult;
-			if (skullTiplyer > 1.6)
-				skullTiplyer = 1.6;
-			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/7)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
+			if (skullTiplyer > .6)
+				skullTiplyer = .6;
+			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/15)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
 		}
 	}
 	public class Point{
@@ -235,14 +237,17 @@ public class Coil {
 			// FIRST POINT
 			Point point;
 			if (points.size() == 0){
-				if (strike)
+				if (strike) {
 					point = getBoltOrigin();
-				else if (charged)
+//					System.out.println("here");
+				}
+				else if (charged){					
 					point = skullPoint((int)(Assets.skull.getWidth()*skullTiplyer/1.85));
+				}					
 				else point = new Point(origin.x, origin.y);
 				points.add(point);
 			}
-
+			
 			Point prevPoint = origin;
 			int mulTensity = (charged) ? 150 : 20;
 			int pointsPerLine = pointsPer;
@@ -270,6 +275,8 @@ public class Coil {
 				}
 
 				else if (points.size() < pointsPerLine){
+//					if (strike)
+//						System.out.println(points.size());
 					xMult = randstrom.nextInt(mulTensity);
 					if (!dir){
 						xMult = -xMult;
@@ -277,19 +284,30 @@ public class Coil {
 					}
 					else dir = !dir;
 					yMult = randstrom.nextInt(mulTensity)/3;
-					//					System.out.println(xMult);
-
-					if (strike)
-						degs = getBoltRadian();
 					neXtPoint = (int) (prevPoint.x + (radianPointSpacer * Math.cos(degs) + xMult));
 					neYtPoint = (int) (prevPoint.y + (radianPointSpacer * Math.sin(degs)));
 
 					midPoint = new Point(neXtPoint, neYtPoint);
 					points.add(midPoint);
 				}
+//				else if (strike && points.size() < pointsPerLine){
+//					xMult = randstrom.nextInt(mulTensity);
+//					if (!dir){
+//						xMult = -xMult;
+//						dir = !dir;
+//					}
+//					else dir = !dir;
+//					yMult = randstrom.nextInt(mulTensity)/3;	
+////					degs = getStrikeRadian();
+//					neXtPoint = (int) (prevPoint.x + (radianPointSpacer * Math.cos(degs) + xMult));
+//					neYtPoint = (int) (prevPoint.y + (radianPointSpacer * Math.sin(degs)));
+//
+//					midPoint = new Point(neXtPoint, neYtPoint);
+//					points.add(midPoint);
+//					
+//				}
 				prevPoint = midPoint;
 			}
-
 		}
 
 		public ArrayList<Point> getPoints(){
@@ -297,7 +315,6 @@ public class Coil {
 		}
 
 		private void slideOuter(){
-
 			radian += mover/100;	
 			outer.x = (int) ((float)(radius * Math.cos(radian)) + origin.x);
 			outer.y = (int) ((float)(radius * Math.sin(radian)) + origin.y);
@@ -342,7 +359,7 @@ public class Coil {
 			//			System.out.println("deg: "+ deg);
 			return deg;
 		}
-		private double getBoltRadian() {	
+		private double getStrikeRadian() {	
 			Random randy = new Random();
 
 			double deg = Math.atan2(boltOrigin.y-strikePoint.y, boltOrigin.x-strikePoint.x);
@@ -374,5 +391,6 @@ public class Coil {
 	{
 		strike = true;		
 		strikePoint = new Point(x, y);
+		
 	}
 }
