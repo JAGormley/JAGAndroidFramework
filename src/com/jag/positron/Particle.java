@@ -106,10 +106,11 @@ public class Particle {
 					x = startx*cos ;
 				}
 			}
+
 			if (!charged)
-				y = starty*sin*heightMult;
+				y = starty*sin*heightMult-130;
 			else
-				y = starty*sin*heightMult-80;
+				y = starty*sin*heightMult-130;
 		}
 
 		if (dead){
@@ -142,14 +143,21 @@ public class Particle {
 		}
 
 		// LAZER MOVER
-		if (pt != null)
-			if (pt.getRemainingMillis() < pt.getTotalMillis()/2){
+		if (pt != null){
+//			if (pt.getRemainingMillis() < pt.getTotalMillis()/2){
 				//				System.out.println("partX: " + x);
 				//				System.out.println("partY: " + y);
 				Random randy = new Random();
 				double moveX;
 				double moveY;
-				int speeder = randy.nextInt(5)+1;
+				
+				// TODO: GET SPEEDER RIGHT, POINT IT AT SUNGLASSES
+				// GET LIGHTNING FROM SKULL
+				// NEXT TASK.
+				
+				int speeder = randy.nextInt(10)+5;
+				// test
+//				speeder = 20;
 				if (x < spriteX){
 					moveX = (spriteX-x)/speeder;
 					x += moveX;				
@@ -187,7 +195,7 @@ public class Particle {
 		int fadester = lazer ? getFader() : 255;
 
 		if (Math.abs(x-spriteX) > 1 && Math.abs(y-spriteY) > 1){		
-			int partCol = CougarLock.running ? Color.GRAY : Color.BLUE;
+			int partCol = CougarLock.active ? Color.GRAY : Color.BLUE;
 			g.drawCircFill(x, y, 5, partCol, fadester);
 			if (charged){
 				g.drawCircFill(x, y, 4, Color.MAGENTA, fadester);

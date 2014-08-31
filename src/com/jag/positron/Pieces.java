@@ -41,7 +41,7 @@ public class Pieces {
 		backspeed = 25;
 		acc = 0;
 		score = 0;
-		genPoint = (screenHeight/5)*4;
+		genPoint = (int) (screenHeight * .75);
 		switched = false;
 		fadeTimer = new PosTimer(recentInterval*4);
 		shakey = new Shaker(250);

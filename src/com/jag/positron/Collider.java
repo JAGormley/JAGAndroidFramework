@@ -35,7 +35,7 @@ public class Collider {
 		Random rand = new Random();
 		for (int i = 0; i < 100 ; i++){
 			float speed = rand.nextFloat()/10+.1f;
-			parts.add(new Particle(GameScreen.thisGame.getGraphics(), 25, speed, rand.nextFloat()*4	+.8f, rand.nextFloat()*7+4));
+			parts.add(new Particle(GameScreen.thisGame.getGraphics(), 25, speed, rand.nextFloat()*4	+ 1f, rand.nextFloat()*7+4));
 		}
 		bolt = new Bolt(g, this);
 		coil = new Coil(g, this);
@@ -91,13 +91,14 @@ public class Collider {
 				// line is right of sprite
 				initialSide = true;
 		}
-		if (!initialSide && line >= spriteX){
-			charge();
+		if (!CougarLock.active) {
+			if (!initialSide && line >= spriteX){
+				charge();
+			}
+			if (initialSide && line < spriteX){
+				charge();
+			}
 		}
-		if (initialSide && line < spriteX){
-			charge();
-		}
-
 		if (charged){
 			if (!initialSide && line < spriteX || initialSide && line >= spriteX)
 				lazer = true;
@@ -156,7 +157,7 @@ public class Collider {
 
 	public void lazer(int x, int y){
 		for (Particle p: parts){
-			p.setLazer(x, y);
+			p.setLazer(Coil.origin.x, Coil.origin.y);
 		}
 		bolt.strike(x, y+Assets.neg.getHeight()/2);
 		coil.setStrike(x,y);

@@ -96,10 +96,12 @@ public class LoadingScreen extends Screen {
 		
 		Assets.eagle = g.newImage("eagle.png", ImageFormat.ARGB8888);
 		Assets.eagleb = g.newImage("eagleb.png", ImageFormat.ARGB8888);
-		Assets.pos = g.newImage("pos1.png", ImageFormat.ARGB8888);
-		Assets.neg = g.newImage("neg2.png", ImageFormat.ARGB8888);				
+		Assets.pos = g.newImage("pos1prev.png", ImageFormat.ARGB8888);
+		Assets.neg = g.newImage("neg2prev.png", ImageFormat.ARGB8888);		
 		Assets.alarm1 = g.newImage("alarm1b.png", ImageFormat.ARGB8888);
 		Assets.alarm2 = g.newImage("alarm2b.png", ImageFormat.ARGB8888);
+		Assets.posGray = g.newImage("pos1GRAY.png", ImageFormat.ARGB8888);
+		Assets.negGray = g.newImage("neg2GRAY.png", ImageFormat.ARGB8888);
 		
 		Assets.skull = g.newImage("skullorig.png", ImageFormat.ARGB8888);
 		Assets.smallSkull = g.newImage("skull.png", ImageFormat.ARGB8888);
@@ -195,6 +197,7 @@ public class LoadingScreen extends Screen {
 		Assets.gridVoice = game.getAudio().createSound("GRIDVOICE.ogg");
 		Assets.TCdeath = game.getAudio().createSound("tcDeath7.mp3");
 		Assets.teeth = game.getAudio().createSound("teethFINAL.mp3");
+		Assets.ouch = game.getAudio().createSound("OUCH1.mp3");
 
 		Assets.tcDrone = game.getAudio().createMusic("TCdrone.mp3");		
 		Assets.gridDrone = game.getAudio().createMusic("GRIDDRONE.mp3");

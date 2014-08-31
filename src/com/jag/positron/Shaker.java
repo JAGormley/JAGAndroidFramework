@@ -19,6 +19,7 @@ public class Shaker {
 	private int shifter;
 	private boolean xShift;
 	//	private boolean yShift;
+	private boolean cougar;
 
 	/*
 	 * Time in millis
@@ -30,11 +31,20 @@ public class Shaker {
 		timer = new PosTimer(time);
 		moveMag = time/5;
 	}
+	public Shaker(int time, boolean cougar){
+		//		this.x = x;
+		//		this.y = y;	
+		this.cougar = true;
+		mover = new ArrayList<Integer>();		
+		timer = new PosTimer(time);
+		moveMag = 0;
+	}
 
 	public void update(){
 		//		yShift = false;
 		
-		moveMag = (int) (timer.getRemainingMillis()/5);
+		moveMag = (cougar) ? (int) timer.getElapsedMillis()/50: (int) (timer.getRemainingMillis()/5);
+		moveMag = (moveMag < 0) ? 0 : moveMag;
 		shifter = 0;
 
 		//dir is move direction, f is horizontal, t is vertical
@@ -56,7 +66,7 @@ public class Shaker {
 			break;
 			//DOWN (for sprite no down)
 		case 2: 
-			shifter = 0;
+			shifter = (cougar) ? (1 * moveMag) : 0;
 			dir = true;
 			break;	
 			//LEFT
@@ -77,8 +87,7 @@ public class Shaker {
 		}
 		else xShift = true;
 		
-//		System.out.println("x?: " + xShift);
-//		System.out.println("moverList: "+mover.toString());
+		
 
 		mover.remove(0);	
 		

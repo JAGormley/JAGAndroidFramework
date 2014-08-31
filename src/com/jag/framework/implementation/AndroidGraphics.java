@@ -308,6 +308,28 @@ public class AndroidGraphics implements Graphics {
 
 		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, null);       
 	}
+	
+	public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, int alph, int origCol, int replCol){
+		srcRect.left = srcX;
+		srcRect.top = srcY;
+		srcRect.right = srcX + srcWidth;
+		srcRect.bottom = srcY + srcHeight;
+
+		dstRect.left = x;
+		dstRect.top = y;
+		dstRect.right = x + width;
+		dstRect.bottom = y + height;  
+		
+		Paint p = null;
+		ColorFilter filter = null;
+		p = new Paint(origCol);
+		filter = new LightingColorFilter(origCol, replCol); 	
+		p.setColorFilter(filter);	
+		p.setAlpha(alph);
+
+		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, p);   
+		
+	}
 
 	public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, int alpha){
 		srcRect.left = srcX;
@@ -416,7 +438,7 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawPath(yepAth, newPaint);
 	}
 	
-	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha, int color, int strokeWidth, boolean charged){
+	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha, int color, int strokeWidth, boolean charged, boolean strike){
 		Path yepAth = new Path();
 		Paint newPaint = new Paint();
 		yepAth.moveTo(points.get(0).x, points.get(0).y);
@@ -435,7 +457,7 @@ public class AndroidGraphics implements Graphics {
 		newPaint.setStyle(Style.STROKE);
 //		newPaint.setAlpha(alpha);
 		
-		if (charged){			
+		if (charged && !strike){			
 //			System.out.println(alpha);
 			this.lg = new LinearGradient(400, 1100, 400,
 					950, Color.argb(alpha, 0, 255, 255), Color.alpha(0),
@@ -448,7 +470,10 @@ public class AndroidGraphics implements Graphics {
 						950, Color.argb((int) (alpha/1.3), 0, 0, 255), Color.alpha(0),
 						android.graphics.Shader.TileMode.CLAMP);
 				newPaint.setShader(lg2);
-			}
+			}			
+		}
+		else if (strike){
+			newPaint.setAlpha(alpha);
 		}
 		else newPaint.setShader(null);
 		

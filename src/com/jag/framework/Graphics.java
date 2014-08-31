@@ -92,7 +92,10 @@ public interface Graphics {
 
 	public void drawBoltPath(ArrayList<ArrayList<Integer>> points, int i, int alpha);
 
-	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha, int color, int strokeWidth, boolean charged);
+	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha, int color, int strokeWidth, boolean charged, boolean strike);
+
+	public void drawScaledImage(Image image, int i, int j, int xPander,
+			int ySpander, int k, int l, int width, int height, int alph, int rgb, int rgb2);
 	
 
 }

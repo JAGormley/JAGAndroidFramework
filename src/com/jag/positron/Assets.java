@@ -57,7 +57,13 @@ public class Assets {
 		public static Image eagle;
 		public static Image eagleb;
 
-		public static Image smallSkull;	   	
+		public static Image smallSkull;
+
+		public static Image posGray;
+
+		public static Image negGray;
+
+		public static Sound ouch;	   	
 	    
 	    public static void load(PosInit posInit) {
 //	        theme = posInit.getAudio().createMusic("positheme3.mp3");
