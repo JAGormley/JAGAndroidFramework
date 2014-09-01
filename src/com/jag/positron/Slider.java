@@ -1,5 +1,7 @@
 package com.jag.positron;
 
+import java.util.ArrayList;
+
 import android.graphics.Color;
 
 import com.jag.framework.Graphics;
@@ -9,77 +11,149 @@ public class Slider {
 	private static Slider theSlider;
 	private Graphics g;
 	private int moveSpeed; 
-	private int drawX;
-	private int drawY;
 	private int boundX;
 	private int boundY;
 	private int blockSize;
-	Dir dir;
+	private ArrayList<SliderBlock> blocks;
+	private PosTimer sAlph;
+
 	private enum Dir {
 		UP, RIGHT, DOWN, LEFT;
 	}
-	
 	private Slider (){
 		this.g = GameScreen.thisGame.getGraphics();
-		moveSpeed = 30;
+		//global
+		moveSpeed = 15;
+		blockSize = 15;
 		boundX = 90;
 		boundY = 30;
-		dir = Dir.RIGHT;
-		drawX = -boundX;
-		blockSize = 15;
+		blocks = new ArrayList<Slider.SliderBlock>();
+//		sAlph = new PosTimer(2500);
+
+
+		for (int i = 0 ; i < 12 ; i++){
+			blocks.add(new SliderBlock(boundX - (i*blockSize)));
+		}
 	}
-	
-	public void draw(int x, int y){
-		// set first
-		update(x, y);	
-		g.drawRect(drawX+x - (blockSize/2), drawY+y - (blockSize/2), blockSize, blockSize, Color.GRAY, 255);
+
+	public void drawUpdate(int x, int y){		
+		// TRACK
+//		g.drawLine(20, y, x-boundX, y, Color.GRAY, 120, 3);
+//		g.drawLine(x+boundX, y, GameScreen.screenwidth-20, y, Color.GRAY, 120, 3);
+
+		// SLIDER ALPHA
 		
-	}
-	
-	// need to move thing
-	private void update(int x, int y) {
-		switch (dir) {
-		case UP:
-			drawX = -boundX;
-			drawY -= moveSpeed;
-			
-			if (drawY <= -boundY)
-				dir = Dir.RIGHT;
-			break;
-			
-		case RIGHT:
-			drawY = -boundY;
-			drawX += moveSpeed;
-			if (drawX >= boundX){
-				dir = Dir.DOWN;
-			}
-			break;
-			
-		case DOWN:
-			drawX = boundX;
-			drawY += moveSpeed;
-			
-			if (drawY >= boundY)
-				dir = Dir.LEFT;
-			break;
-			
-		case LEFT:
-			drawY = boundY;
-			drawX -= moveSpeed;
-			
-			if (drawX <= -boundX)
-				dir = Dir.UP;
-			break;
+		if (sAlph == null || sAlph.getTrigger()){
+			sAlph = new PosTimer(1500);
+		}
+		sAlph.update();
+		
+		double sRem = sAlph.getRemainingMillis();		
+		double sEla = sAlph.getElapsedMillis();
+		double sTot = sAlph.getTotalMillis();
+		int sAlphProp = (int) ((sRem > sTot/2) ? 					
+				255* ( (sRem-(sTot/2)) / (sTot/2) ) :
+					255* ( (sEla-(sTot/2)) / (sTot/2) ));
+		if (sAlphProp > 255) sAlphProp = 255;
+		if (sAlphProp < 0) sAlphProp = 0;
+		sAlphProp /= 2;
+		
+		int slices = 15;
+		int boxStartX = x-boundX;
+		int boxStartY = y-boundY+(blockSize/2);
+		for (int i = 0 ; i < slices ; i++){
+			g.drawLine((boxStartX/slices)*(i+1), boxStartY, (boxStartX/slices)*(i+1), y+boundY-(blockSize/2), Color.GRAY, 150, 3);
+			g.drawLine(
+					((GameScreen.screenwidth-(x+boundX))/slices)*(i+1) + x+boundX-(blockSize/2), 
+					boxStartY, 
+					((GameScreen.screenwidth-(x+boundX))/slices)*(i+1) + x+boundX-(blockSize/2), 
+					y+boundY-(blockSize/2), 
+					Color.GRAY, 150, 3);
 		}
 		
+		// SLIDER COLOUR BODY
+		int slideSlicer = 10;
+		int sliderSlices = boundX*2/slideSlicer;
+		int blockWidth = (int)(blockSize*(slideSlicer*.08));
+		for (int i = 0; i < slideSlicer ; i++){
+			g.drawRect(x-boundX+(blockSize/2)+(i*sliderSlices), y-boundY+(blockSize/2), blockWidth, boundY*2-(blockSize)+3, Color.RED, sAlphProp);
+		}
 		
-		
-	}
+
+		// SLIDER BLOCKS
+		for (int i = 0; i < blocks.size(); i++) {
+			blocks.get(i).draw(x, y, i);
+		}
+	}	
 
 	public static Slider getInstance(){
 		if (theSlider == null){
 			theSlider = new Slider();
 		}
 		return theSlider;
+	}
+
+
+	///////////// BLOCKS //////////////
+
+	private class SliderBlock {
+		private int drawX;
+		private int drawY;
+		Dir dir;
+
+
+		public SliderBlock(int startX){
+			drawX = startX;
+			dir = Dir.RIGHT;
+		}
+
+		public void draw(int x, int y, int arrayPos){
+			// set first
+			int alph = 255 - (arrayPos*20);
+			alph /= 2;
+			if (alph < 0) alph = 0;
+			update(x, y);	
+			g.drawRect(drawX+x - (blockSize/2), drawY+y - (blockSize/2), blockSize, blockSize, Color.GRAY, alph);
+
+		}
+
+		// need to move thing
+		private void update(int x, int y) {
+			switch (dir) {
+			case UP:
+				drawX = -boundX;
+				drawY -= moveSpeed;
+
+				if (drawY <= -boundY)
+					dir = Dir.RIGHT;
+				break;
+
+			case RIGHT:
+				drawY = -boundY;
+				drawX += moveSpeed;
+				if (drawX >= boundX){
+					dir = Dir.DOWN;
+				}
+				break;
+
+			case DOWN:
+				drawX = boundX;
+				drawY += moveSpeed;
+
+				if (drawY >= boundY)
+					dir = Dir.LEFT;
+				break;
+
+			case LEFT:
+				drawY = boundY;
+				drawX -= moveSpeed;
+
+				if (drawX <= -boundX)
+					dir = Dir.UP;
+				break;
+			}
+		}
+
+
 	}
 }

@@ -87,8 +87,6 @@ public class Shaker {
 		}
 		else xShift = true;
 		
-		
-
 		mover.remove(0);	
 		
 	}

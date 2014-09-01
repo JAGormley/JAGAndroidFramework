@@ -199,11 +199,11 @@ public class GameScreen extends Screen {
 
 		lane = sw / 8;
 		recent = true;
-		
+
 		collider = Collider.getInstance();
 		collider.reset();
 		collider = Collider.getInstance();
-		
+
 		slider = Slider.getInstance();
 
 		lg = new LinearGradient(sh / 2, -(sh / 12), sh / 2,
@@ -533,20 +533,20 @@ public class GameScreen extends Screen {
 				}
 			}
 
-			// POSITIVE BUTTON
-			if (event.type == TouchEvent.TOUCH_DOWN
-					&& ((0 < event.x) && (event.x < Math.round(sh * .207)))
-					&& event.y > Math.round(sh * .83)) {
-				posPressed = true;
-			}
-
-			// NEGATIVE BUTTON
-			if (event.type == TouchEvent.TOUCH_DOWN
-					&& ((Math.round(sh * .456) < event.x) && (event.x < Math
-							.round(sh * .664)))
-							&& event.y > Math.round(sh * .83)) {
-				negPressed = true;
-			}
+//			// POSITIVE BUTTON
+//			if (event.type == TouchEvent.TOUCH_DOWN
+//					&& ((0 < event.x) && (event.x < Math.round(sh * .207)))
+//					&& event.y > Math.round(sh * .83)) {
+//				posPressed = true;
+//			}
+//
+//			// NEGATIVE BUTTON
+//			if (event.type == TouchEvent.TOUCH_DOWN
+//					&& ((Math.round(sh * .456) < event.x) && (event.x < Math
+//							.round(sh * .664)))
+//							&& event.y > Math.round(sh * .83)) {
+//				negPressed = true;
+//			}
 
 			// ACTIVATES ALERT
 			if (event.type == TouchEvent.TOUCH_UP) {
@@ -1361,16 +1361,16 @@ public class GameScreen extends Screen {
 							circleRad -= 1;
 					}
 
-//					g.drawCircOut(fingerx, fingery, circleRad, Color.RED, 5, 150);
+					//					g.drawCircOut(fingerx, fingery, circleRad, Color.RED, 5, 150);
 				}
-				slider.draw(fingerx, (int)fingery);
 			}
-
+			if (!scoreReset)
+				slider.drawUpdate(fingerx, (int)(sh*.951));
 			collider.update();
 
 			if (!scoreReset && !topFreeze) {
 
-				
+
 			}
 
 			if (scoreReset) {
@@ -1466,7 +1466,7 @@ public class GameScreen extends Screen {
 			//CLock
 			if (cLock.getActive())
 				cLock.draw();
-			
+
 
 			// SPRITES
 

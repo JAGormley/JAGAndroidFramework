@@ -320,12 +320,17 @@ public class Coil {
 
 				// STRIKE STRANDS
 				else if (strike && points.size() < pointsPerLine){
-
-					// Next X mult
-					xMult = randstrom.nextInt(mulTensity);
-
+					
 					degs = getStrikeRadian();
-
+					
+					// YMULT FOR HORIZ STRIKE
+//					if (degs < .2 || > 2.8) {
+//						
+//					}
+//					else 					
+						
+					xMult = randstrom.nextInt(mulTensity);							
+					
 					if (!dir){
 						xMult = -xMult;
 						dir = !dir;
