@@ -107,6 +107,11 @@ public class Shaker {
 		return (int) timer.getRemainingMillis();
 	}
 
+	// for when shaking shouldnt dissipate
+	public void resetTimer(){
+		timer.reset();
+	}
+	
 	public boolean shakerIsDead(){
 		return shakeMillisLeft() <= 0;
 	}

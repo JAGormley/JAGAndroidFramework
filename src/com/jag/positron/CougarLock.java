@@ -106,6 +106,8 @@ public class CougarLock {
 			dieDraw();
 		else if (laugh)
 			laughDraw();
+		
+		// regular draw
 		else if (startTimer != null) {
 			if (startTimer.getTrigger()){
 				if (cougShaker == null)

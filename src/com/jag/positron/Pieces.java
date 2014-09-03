@@ -25,6 +25,7 @@ public class Pieces {
 	private Shaker shakey;
 	private int origX;
 	private int origY;
+	private boolean slowing;
 
 
 	public Pieces(int startX, int startY, boolean inittype, GameScreen gameScreen2, double recentInterval){
@@ -88,6 +89,7 @@ public class Pieces {
 				if (type){
 					if (x > scene.getLine()){
 						y -= (y / 12) + 4;
+						slowing = true;
 					}
 					if (x < scene.getLine()){
 						y -= speed*acc;
@@ -97,6 +99,7 @@ public class Pieces {
 				if (!type){
 					if (x < scene.getLine()){
 						y -= (y / 12) + 4;
+						slowing = true;
 					}
 					if (x > scene.getLine()){
 						y -= speed*acc;
@@ -229,6 +232,10 @@ public class Pieces {
 
 	public void setGenPoint(int genPoint) {
 		this.genPoint = genPoint;
+	}
+	
+	public boolean getSlowing(){
+		return slowing;
 	}
 
 	@Override

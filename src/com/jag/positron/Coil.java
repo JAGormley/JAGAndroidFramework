@@ -23,6 +23,7 @@ public class Coil {
 	private int radius;
 	//	private int partNum = 0;
 	private boolean strandClear;
+	private PosTimer fadeTimer;
 	private PosTimer nextChargedBolt;
 	private PosTimer nextChargedBolt2;
 	Random rand;
@@ -30,6 +31,7 @@ public class Coil {
 	private boolean strike;
 	//	private Object strandNum;
 	private Point strikePoint;
+	private Shaker shakey;
 
 	public Coil(Graphics g, Collider collider){
 		this.g = g;
@@ -45,6 +47,8 @@ public class Coil {
 		nextChargedBolt = new PosTimer(rand.nextInt(10));
 		nextChargedBolt2 = new PosTimer(rand.nextInt(800));
 		skullTiplyer = 1.5;
+		shakey = new Shaker(50);
+
 	}	
 
 	public void updateAndDraw(boolean charged, boolean lazer){
@@ -123,26 +127,31 @@ public class Coil {
 	}
 
 	public void draw(boolean charged, boolean lazer){
-		//		if (!charged)
-		//			g.drawLine(sw/2, sh+5, sw/2, origin.y, Color.GRAY, 255, 3);		
-
-		//		Random randy = new Random();
-
-		
+		int bAlpha = 0;
 		int boltAlph = charged ? 180 : 230;
+
+		if (strike){
+			if (fadeTimer == null){
+				fadeTimer = new PosTimer(300);
+			}
+			if (!fadeTimer.getTrigger() && strike) {
+				fadeTimer.update();
+			}
+			int boltTimer = (int) fadeTimer.getRemainingMillis();
+			bAlpha = (boltTimer < 200) ? boltTimer : 200;
+			bAlpha = (bAlpha < 0) ? 0 : bAlpha;
+//			System.out.println();
+		}
 		
-		int boltTimer = (int) Bolt.fadeTimer.getRemainingMillis();
-		int bAlpha = (boltTimer < 200) ? boltTimer : 200;
-		bAlpha = (bAlpha < 0) ? 0 : bAlpha;
-		
-		
+
+
 		for (Strand s : strands){
 			int boltCol = Color.CYAN;
 
 			if (!lazer && !collider.getDeath() && !CougarLock.active && !strike){
 				if (charged)
-//					boltAlph = bAlpha;
-				boltAlph = (boltAlph<0) ? 0 : boltAlph;
+					//					boltAlph = bAlpha;
+					boltAlph = (boltAlph<0) ? 0 : boltAlph;
 				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), boltAlph, Color.BLUE, 7, charged, strike);
 				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), boltAlph, boltCol, 4, charged, strike);
 			}			
@@ -180,22 +189,40 @@ public class Coil {
 
 			skw = Assets.coolSkull.getWidth();
 			skh = Assets.coolSkull.getHeight();			
-			
+
 			g.drawScaledImage(Assets.coolSkull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/3)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh, bAlpha);
 		}
 		else {
+			shakey.resetTimer();
+			shakey.update();
+			int shiftsterX = 0;
+			int shiftsterY = 0;
+			if (shakey.getxShift()){
+				shiftsterX += shakey.getShifter();
+			}
+			else {
+				shiftsterY += shakey.getShifter();
+			}
 			if (skullTiplyer < .7)
 				skullTiplyer+=skullShrinkMult;
 			if (skullTiplyer > .7)
 				skullTiplyer = .7;
-			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2), (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/3)), (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
+			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2)+shiftsterX, (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/3))+shiftsterY, (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
 		}
 	}
 
 	public void setStrike(int x, int y)
 	{
-		strike = true;		
-		strikePoint = new Point(x, y);
+//		if (strikePoint != null)
+//		System.out.println("x: "+x+" sX: "+ strikePoint.x);
+		if (!strike || (strikePoint.x != x && strikePoint.y != y+Assets.pos.getHeight()/2)){
+			strike = true;		
+			strikePoint = new Point(x, y+Assets.pos.getHeight()/2);
+			if (fadeTimer != null) {
+				fadeTimer.reset();
+				System.out.println("here");
+			}
+		}
 	}
 
 	public class Point{
@@ -255,9 +282,6 @@ public class Coil {
 
 		// PointsPerLine, LineLen (this is radius for !charged), 
 		private void setPoints(int pointsPer, int lineLen, boolean charged) {
-			// SKULL BOLT ORIGIN TEST
-			//			if (points.size() > 0)
-			//				g.drawCircFill(points.get(0).x, points.get(0).y, 5, Color.YELLOW, 255);
 			if (!charged)
 				lifeTime.update();
 			else chargedLifetime.update();
@@ -268,14 +292,12 @@ public class Coil {
 			}
 			if (strike) {
 				points.clear();
-				//				System.out.println("thisOne");
 			}
 
 			// FIRST POINT
 			Point point;
 			if (points.size() == 0){
 				if (strike) {
-					//					point = getBoltOrigin();
 					if (boltOrigin == null) {
 						boltOrigin = skullPoint((int)(Assets.skull.getWidth()*skullTiplyer/1.85));
 						while (boltOrigin.y < strikePoint.y)
@@ -320,17 +342,17 @@ public class Coil {
 
 				// STRIKE STRANDS
 				else if (strike && points.size() < pointsPerLine){
-					
+
 					degs = getStrikeRadian();
-					
+
 					// YMULT FOR HORIZ STRIKE
-//					if (degs < .2 || > 2.8) {
-//						
-//					}
-//					else 					
-						
+					//					if (degs < .2 || > 2.8) {
+					//						
+					//					}
+					//					else 					
+
 					xMult = randstrom.nextInt(mulTensity);							
-					
+
 					if (!dir){
 						xMult = -xMult;
 						dir = !dir;
@@ -361,8 +383,6 @@ public class Coil {
 
 				// SKULL STRANDS
 				else if (points.size() < pointsPerLine){
-					//					if (strike)
-					//						System.out.println(points.size());
 					xMult = randstrom.nextInt(mulTensity);
 					if (!dir){
 						xMult = -xMult;

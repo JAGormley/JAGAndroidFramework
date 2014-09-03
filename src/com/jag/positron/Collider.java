@@ -159,7 +159,7 @@ public class Collider {
 		for (Particle p: parts){
 			p.setLazer(Coil.origin.x, Coil.origin.y);
 		}
-		bolt.strike(x, y+Assets.neg.getHeight()/2);
+//		bolt.strike(x, y+Assets.neg.getHeight()/2);
 		coil.setStrike(x,y);
 	}
 

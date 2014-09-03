@@ -32,10 +32,10 @@ public class ShakeString {
 		textPaint.setTypeface(Assets.font);
 		textPaint.setTextSize(Math.round(g.getHeight() * .1));
 		textPaint.setTextAlign(Paint.Align.CENTER);
-//		textPaint.setAntiAlias(true);
+		//		textPaint.setAntiAlias(true);
 		textPaint.setColor(Color.MAGENTA);
 	}
-	
+
 	public ShakeString(Graphics g, String text, int x, int y, Paint txtPnt){
 		this.g = g;
 		this.text = text;
@@ -44,11 +44,10 @@ public class ShakeString {
 		mover = new ArrayList<Integer>();
 		timer = new PosTimer(510);
 		
-		
-//		txtPnt.setShadowLayer(radius, dx, dy, color)
+		//		txtPnt.setShadowLayer(radius, dx, dy, color)
 		textPaint = txtPnt;
-		textPaint.setColor(Color.CYAN);
-		
+		if (txtPnt.getColor() == 0)
+			textPaint.setColor(Color.CYAN);
 	}
 
 	public void drawAndUpdate(){
@@ -109,7 +108,7 @@ public class ShakeString {
 	public boolean shakerIsDead(){
 		return shakeMillisLeft() <= 0;
 	}
-	
+
 	public int getAlph(){
 		return textPaint.getAlpha();
 	}

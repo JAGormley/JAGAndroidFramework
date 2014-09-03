@@ -170,12 +170,24 @@ public class AndroidGraphics implements Graphics {
 	public void drawCircFill(float cx,float cy,float radius,int color, int alpha) {
 		paint3.setColor(color);
 		paint3.setStyle(Style.FILL);
-		//		paint3.setAntiAlias(true);
 		paint3.setAlpha(alpha);
 		//paint3.setMaskFilter(new BlurMaskFilter(20, Blur.NORMAL));
 		canvas.drawCircle(cx, cy, radius, paint3);
 
 	}
+	
+	public void drawOval(float left, float top, float right, float bottom, int color, int alpha){
+		Paint pnt = new Paint();
+		pnt.setColor(color);
+		pnt.setStyle(Style.STROKE);
+		pnt.setStrokeWidth(3);
+		pnt.setAlpha(alpha);
+		
+		RectF rect = new RectF();
+		rect.set(left, top, right, bottom);
+		canvas.drawOval(rect, pnt);
+	}
+	
 
 	public void drawCircFill(float cx,float cy,float radius,int color, int alpha, Paint p) {
 		p.setColor(color);

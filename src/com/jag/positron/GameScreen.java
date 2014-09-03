@@ -82,6 +82,8 @@ public class GameScreen extends Screen {
 	public TimeGrid tgTemp;
 	public ArrayList<ShakeString> sStrings;
 	public ArrayList<ShakeString> lStrings;
+	public ArrayList<ShakeString> tStrings;
+	public ArrayList<ShakeString> cStrings;
 
 	public int lineDuration, scoreDeathDur, levelStart, postScore;
 
@@ -103,75 +105,44 @@ public class GameScreen extends Screen {
 	public Paint paint12;
 
 	public Frenzy f;
-
 	public Collider collider;
-
 	public CougarLock cLock;
-
 	public int tempyScore;
-
 	public boolean newGridPiece;
-
 	public int gridPieceCount;
-
 	public boolean exitCases;
-
 	public boolean newPiece;
-
 	public int gridX;
-
 	public int gridY;
-
 	public Paint paint13;
-
 	public boolean recentTooth;
-
 	public int recentToothInterval = 13;
-
 	public boolean teeth;
-
 	public int toothCount;
-
 	public Pieces tempPiece;
-
 	public boolean frenzy = false;
-
 	public ArrayList<TextFader> faders;
-
 	public Animation cougar;
-
 	protected int drawFace;
-
 	private Paint lockPaint;
-
 	public TopLock tLock;
-
 	protected PosTimer topFade;
-
 	protected PosTimer topFadeDeath;
-
 	protected int freezeScore;
-
 	protected Paint freezeScorePaint;
-
 	protected boolean topFreezeWin;
-
 	protected PosTimer topFadeFinal;
-
 	private Paint freezeScorePaint2;
-
 	private int lowerDist;
-
 	private Bitmap orangeCoug;
-
 	private Bitmap blueCoug;
-
 	private int tempMult;
-
 	private boolean tracing;
-
 	private Slider slider;
-
+	private Magnet mag;
+	private boolean fingerMove;
+	public static Graphics graph;
+	private Message multMessage;
 
 
 	// private PosTriangle posT;
@@ -184,14 +155,19 @@ public class GameScreen extends Screen {
 		sh = game.getLoadHeight();
 		sw = game.getLoadWidth();
 
+		graph = game.getGraphics();
+
 		scene = new Scene(sw / 2);
 		screenheight = game.getGraphics().getHeight();
 		screenwidth = game.getGraphics().getWidth();
 		thisGame = game;
+
 		setPieces(new ArrayList<Pieces>());
 		pts = new ArrayList<PosTriangle>();
 		sStrings = new ArrayList<ShakeString>();
 		lStrings = new ArrayList<ShakeString>();
+		tStrings = new ArrayList<ShakeString>();
+		cStrings = new ArrayList<ShakeString>();
 
 		tracing = false;
 
@@ -205,6 +181,7 @@ public class GameScreen extends Screen {
 		collider = Collider.getInstance();
 
 		slider = Slider.getInstance();
+		mag = Magnet.getInstance();
 
 		lg = new LinearGradient(sh / 2, -(sh / 12), sh / 2,
 				(float) (sh * .033), Color.BLUE, Color.alpha(0),
@@ -419,7 +396,7 @@ public class GameScreen extends Screen {
 
 		nextLevel = false;
 		lock = false;
-		fingery = (float) (screenheight * .85);
+		fingery = (float) (screenheight * .91);
 		level = 1;
 		nextLevel = false;
 		scoreMult = 1;
@@ -496,13 +473,37 @@ public class GameScreen extends Screen {
 		// TOUCH
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
+			fingerMove = false;
+
+			if ((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN)
+					&& currentTC && event.y < Coil.origin.y) {
+				int tcBounds = Assets.coug1.getHeight();
+				if (event.y >= tc.y-tcBounds 
+						&& event.y <= tc.y+tcBounds
+						&& event.x >= tc.x-tcBounds
+						&& event.x <= tc.x+tcBounds){
+					Paint cPaint = new Paint();
+					cPaint.setTypeface(Assets.font);
+					cPaint.setTextSize(Math.round(sh * .066));
+					cPaint.setTextAlign(Paint.Align.CENTER);
+					cPaint.setColor(Color.MAGENTA);
+					score+=scoreMult*10;
+					cStrings.add(new ShakeString(graph, "+"+scoreMult*10, tc.x, tc.y, cPaint));
+					tcDeath = true;
+					tcx = tc.x;
+					tcy = tc.y;
+					tc = null;
+					Assets.TCdeath.play(100);
+					Assets.tcDrone.stop();
+					currentTC = false;
+				}
+			}
 
 			if ((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN)
 					&& event.y >= Math.round(sh * .83)
 					&& ((event.x < scene.getLine() + Math.round(sh * .083)) && (event.x > scene
 							.getLine() - Math.round(sh * .083)))
-							&& (event.y < fingery + Math.round(sh * .083))
-							&& (event.y > fingery - Math.round(sh * .083))) {
+							&& (event.y > fingery - Math.round(sh * .075))) {
 				lock = false;
 				if (!topFreeze) {
 					if (score - scoreTemp < 0)
@@ -522,31 +523,11 @@ public class GameScreen extends Screen {
 				if (event.y >= Math.round(sh * .83) && !topFreeze){
 					touch = true;
 					scene.setLine(event.x);
-					fingery = event.y;
-					circleRad = 0;
-				}
-				if (topFreeze) {
-					touch = true;
-					scene.setLine(event.x);
+					fingerMove = true;
 					fingery = event.y;
 					circleRad = 0;
 				}
 			}
-
-//			// POSITIVE BUTTON
-//			if (event.type == TouchEvent.TOUCH_DOWN
-//					&& ((0 < event.x) && (event.x < Math.round(sh * .207)))
-//					&& event.y > Math.round(sh * .83)) {
-//				posPressed = true;
-//			}
-//
-//			// NEGATIVE BUTTON
-//			if (event.type == TouchEvent.TOUCH_DOWN
-//					&& ((Math.round(sh * .456) < event.x) && (event.x < Math
-//							.round(sh * .664)))
-//							&& event.y > Math.round(sh * .83)) {
-//				negPressed = true;
-//			}
 
 			// ACTIVATES ALERT
 			if (event.type == TouchEvent.TOUCH_UP) {
@@ -571,6 +552,7 @@ public class GameScreen extends Screen {
 			} else {
 				nextLevel = false;
 				level2 = true;
+				multMessage = null;
 			}
 		}
 
@@ -578,6 +560,7 @@ public class GameScreen extends Screen {
 			if (level1b) {
 				levelStart = 0;
 				level1a = true;
+
 			}
 			level = 1.1;
 			scoreMult = 2;
@@ -588,7 +571,7 @@ public class GameScreen extends Screen {
 			} else {
 				nextLevel = false;
 				level2 = true;
-
+				multMessage = null;
 			}
 		}
 
@@ -596,6 +579,7 @@ public class GameScreen extends Screen {
 			if (level2) {
 				levelStart = 0;
 				level1b = true;
+				
 			}
 			level = 1.2;
 			scoreMult = 5;
@@ -606,12 +590,14 @@ public class GameScreen extends Screen {
 			} else {
 				nextLevel = false;
 				level3 = true;
+				multMessage = null;
 			}
 		}
 		if ((score >= 175) && (score < 500)) {
 			if (level3) {
 				levelStart = 0;
 				level2 = true;
+				
 			}
 			if (topFreeze)
 				level = 1;
@@ -625,6 +611,7 @@ public class GameScreen extends Screen {
 			} else {
 				nextLevel = false;
 				level4 = true;
+				multMessage = null;
 			}
 		}
 		if ((score >= 500) && (score < 1350)) {
@@ -632,6 +619,7 @@ public class GameScreen extends Screen {
 			if (level4) {
 				levelStart = 0;
 				level3 = true;
+		
 			}
 			if (topFreeze)
 				level = 1;
@@ -645,12 +633,14 @@ public class GameScreen extends Screen {
 			} else {
 				nextLevel = false;
 				level5 = true;
+				multMessage = null;
 			}
 		}
 		if ((score >= 1350) && (score < 2400)) {
 			if (level5) {
 				levelStart = 0;
 				level4 = true;
+				
 			}
 			if (topFreeze)
 				level = 1.1;
@@ -665,12 +655,14 @@ public class GameScreen extends Screen {
 			} else {
 				nextLevel = false;
 				level6 = true;
+				multMessage = null;
 			}
 		}
 		if ((score >= 2400 && score < 4000)) {
 			if (level6) {
 				levelStart = 0;
 				level5 = true;
+			
 			}
 			if (topFreeze)
 				level = 1.2;
@@ -684,6 +676,7 @@ public class GameScreen extends Screen {
 			} else {
 				nextLevel = false;
 				level7 = true;
+				multMessage = null;
 			}
 		}
 
@@ -691,6 +684,7 @@ public class GameScreen extends Screen {
 			if (level7) {
 				levelStart = 0;
 				level6 = true;
+				
 			}
 			if (topFreeze)
 				level = 1.2;
@@ -743,28 +737,28 @@ public class GameScreen extends Screen {
 			}
 		}
 
-		// timeCHARGE
-		if (!cLock.getActive()){
-			if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
-					&& !currentTG) {
-				// if (!currentTC&&tc==null&&scoreMult==1){
-				if (100 > randomInt3 && !topFreeze) {
-					tc = new TimeCharge((randomInt2 + 1) * lane,
-							(int) Math.round(sh * .78), 5);
-					Assets.tcDrone.play();
-					currentTC = true;
-				}
-			}
-			if ((scoreMult >= 20) && !currentTC && tc == null) {
-				if (400 > randomInt3 && !topFreeze) {
-					tc = new TimeCharge((randomInt2 + 1) * lane,
-							(int) Math.round(sh * .78), 5);
-					Assets.tcDrone.play();
-					currentTC = true;
-					tc.setSpeed(5);
-				}
-			}
-		}
+//		// timeCHARGE
+//		if (!cLock.getActive()){
+//			if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
+//					&& !currentTG) {
+//				// if (!currentTC&&tc==null&&scoreMult==1){
+//				if (100 > randomInt3 && !topFreeze) {
+//					tc = new TimeCharge((randomInt2 + 1) * lane,
+//							(int) Math.round(sh * .78), 5);
+//					Assets.tcDrone.play();
+//					currentTC = true;
+//				}
+//			}
+//			if ((scoreMult >= 20) && !currentTC && tc == null) {
+//				if (400 > randomInt3 && !topFreeze) {
+//					tc = new TimeCharge((randomInt2 + 1) * lane,
+//							(int) Math.round(sh * .78), 5);
+//					Assets.tcDrone.play();
+//					currentTC = true;
+//					tc.setSpeed(5);
+//				}
+//			}
+//		}
 
 		if (tc != null && currentTC) {			
 			tc.update();
@@ -786,19 +780,6 @@ public class GameScreen extends Screen {
 
 
 			}
-
-			if ((!touch) && (currentTC))
-				if ((Math.abs(tc.getY() - fingery) < Math.round(sh * .124))
-						&& (Math.abs(tc.getX() - scene.getLine()) < Math
-								.round(sh * .124))) {
-					tcDeath = true;
-					tcx = tc.x;
-					tcy = tc.y;
-					tc = null;
-					Assets.TCdeath.play(100);
-					Assets.tcDrone.stop();
-					currentTC = false;
-				}
 		}
 
 		// timeGRID
@@ -1084,6 +1065,13 @@ public class GameScreen extends Screen {
 			else if (p.y < Math.round(sh * .008)) {
 				cLock.setPointT();
 				if (!cLock.getActive()){
+					Paint tPaint = new Paint();
+					tPaint.setTypeface(Assets.font);
+					tPaint.setTextSize(Math.round(sh * .033));
+					tPaint.setTextAlign(Paint.Align.CENTER);
+					tPaint.setColor(Color.CYAN);
+
+					tStrings.add(new ShakeString(game.getGraphics(), "+"+String.valueOf(scoreMult*1), p.x, 40, tPaint));
 					pointXs.add(p.x);
 					sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+scoreMult), 
 							sw / 2, (int) Math.round(sh * .84)));
@@ -1319,8 +1307,6 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void paint(float deltaTime) {
-
-
 		Graphics g = game.getGraphics();
 		getAlert().update(10);
 
@@ -1365,14 +1351,13 @@ public class GameScreen extends Screen {
 				}
 			}
 			if (!scoreReset)
-				slider.drawUpdate(fingerx, (int)(sh*.951));
+				slider.drawUpdate(fingerx, (int)(sh*.951), fingerMove);
+			
+			// RUN COLLIDER UPDATE
 			collider.update();
 
-			if (!scoreReset && !topFreeze) {
-
-
-			}
-
+			
+			// SCORERESET DRAW
 			if (scoreReset) {
 				collider.death();
 				if (!cLock.getLaugh())
@@ -1415,58 +1400,26 @@ public class GameScreen extends Screen {
 				}
 			}
 
-			if (nextLevel && scoreMult > 1) {
-				if (levelStart < 70) {
-					paint5.setAlpha(255 - (levelStart * 3));
-					paint7.setAlpha(255 - (levelStart * 3));
-					g.drawString(String.valueOf(scoreMult), g.getWidth() / 2,
-							(int) (g.getHeight() / 2 - Math.round(sh * .083)),
-							paint5);
-					if (scoreMult == 1) {
-						g.drawString(
-								"x",
-								(g.getWidth() / 2)
-								- (int) Math.round(sw * .063), (int) (g
-										.getHeight() / 2 - Math
-										.round(sh * .083)), paint7);
+			
+			// SCOREMULT DRAW
+			if (nextLevel && scoreMult > 1) {					
+					if (multMessage == null)
+							multMessage = new Message(sw/2-(int)(sw * .063), 
+									sh/2-(int)(sh * .083), .5f, .5f, 
+									"x"+String.valueOf(scoreMult), 
+									.1f, g, Color.MAGENTA);
+					if (multMessage != null && multMessage.isAlive()){
+						multMessage.growM(.2f);
+						multMessage.drawMessage();
 					}
-					if ((scoreMult > 1) && (scoreMult < 10)) {
-						g.drawString(
-								"x",
-								(g.getWidth() / 2)
-								- (int) Math.round(sw * .086), (int) (g
-										.getHeight() / 2 - Math
-										.round(sh * .083)), paint7);
-					}
-					if ((scoreMult >= 10) && (scoreMult < 20)) {
-						g.drawString(
-								"x",
-								(g.getWidth() / 2)
-								- (int) Math.round(sw * .113), (int) (g
-										.getHeight() / 2 - Math
-										.round(sh * .083)), paint7);
-					}
-					if ((scoreMult >= 20)) {
-						g.drawString(
-								"x",
-								(g.getWidth() / 2) - (int) Math.round(sw * .15),
-								(int) (g.getHeight() / 2 - Math
-										.round(sh * .083)), paint7);
-					}
-
+					if (levelStart < 70) {
 					levelStart++;
 				}
 			}
 
-			// SHAKERS
-
-			updateShakeStrings(sStrings, true);
-			updateShakeStrings(lStrings, false);
-
 			//CLock
 			if (cLock.getActive())
 				cLock.draw();
-
 
 			// SPRITES
 
@@ -1738,11 +1691,6 @@ public class GameScreen extends Screen {
 
 					collider.checkCharged(killx, killy, scene.getLine());
 
-					paint13.setAlpha(200 - lightningDuration * 10);
-					g.drawString("-" + String.valueOf(10 * tempMult), killx,
-							killy - (int) Math.round(sw * .019), paint13);
-
-
 					if (typePass)
 						g.drawImage(Assets.pos,
 								killx - (int) Math.round(sw * .05), killy,
@@ -1755,12 +1703,12 @@ public class GameScreen extends Screen {
 					if (lightningDuration == 1){
 						g.drawRect(0, 0, g.getWidth() + 1, g.getHeight() + 1,
 								Color.rgb(255, 215, 0));
+
 						// PENALTY SHAKESTRING
 						Paint tempPaint = new Paint();
 						tempPaint.set(paint13);
 						lStrings.add(new ShakeString(g, "-" + String.valueOf(10 * tempMult), killx,
 								killy - (int) Math.round(sw * .019), tempPaint));
-
 					}
 
 					lightningDuration++;
@@ -1790,15 +1738,20 @@ public class GameScreen extends Screen {
 						Color.alpha(0), android.graphics.Shader.TileMode.CLAMP);
 			}
 
-			paint9.setShader(lg);
 
-			//				g.drawRect2(0, 0, g.getWidth(), 100, Color.BLUE, paint9);
-			g.drawLine(0, (int)(j*.01), g.getWidth(), (int)(j*.01), Color.YELLOW, 255, 3, paint9);
-			g.drawLine(0, (int)(j*.2), g.getWidth(), (int)(j*.2), Color.YELLOW, 255, 3, paint9);
-			g.drawLine(0, (int)(j*.4), g.getWidth(), (int)(j*.4), Color.YELLOW, 255, 3, paint9);
-			g.drawLine(0, (int)(j*.6), g.getWidth(), (int)(j*.6), Color.YELLOW, 255, 3, paint9);
-			g.drawLine(0, (int)(j*.8), g.getWidth(), (int)(j*.8), Color.YELLOW, 255, 3, paint9);
-			g.drawLine(0, (int)j, g.getWidth(), (int)j, Color.YELLOW, 255, 3, paint9);
+			int magSprite = (pieces != null && pieces.size() > 0 && pieces.get(0).getSlowing()) ? pieces.get(0).y: sh;
+			if (!scoreReset)
+				mag.updateAndDraw(magSprite);
+			
+			
+			// SHAKERS 2
+			updateShakeStrings(sStrings, true);
+			updateShakeStrings(lStrings, false);
+			updateShakeStrings(tStrings, false);
+			updateShakeStrings(cStrings, false);
+
+
+			paint9.setShader(lg);
 			magnet.update(10);
 
 		}
@@ -1833,7 +1786,6 @@ public class GameScreen extends Screen {
 
 		// Set all variables to null. You will be recreating them in the
 		// constructor.
-		System.out.println("here");
 		paint = null;
 		scene = null;
 		setPieces(null);
@@ -1941,18 +1893,19 @@ public class GameScreen extends Screen {
 		if (shakeS.size() != 0){
 
 			Iterator<ShakeString> ss = shakeS.iterator();
-
 			int position = 0;
 
 			while (ss.hasNext()) {
 				ShakeString shake = ss.next();
 				shake.drawAndUpdate();
-				int alph = (shake.shakeMillisLeft()/2)-50;		
+				int alph = (shake.shakeMillisLeft()/2)-50;
 				if (alph < 0) alph = 0;
 
-				if (pointString)
-					game.getGraphics().drawCircOut(pointXs.get(position), -15, 150-(alph/2), Color.MAGENTA,
-							(alph/20), alph/2);
+				if (pointString) {
+					//					game.getGraphics().drawCircOut(pointXs.get(position), -15, 150-(alph/2), Color.MAGENTA,
+					//							(alph/20), alph/2);
+					mag.scoreLight(alph);
+				}
 
 				if (shake.shakerIsDead()){
 					ss.remove();

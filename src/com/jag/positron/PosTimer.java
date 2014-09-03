@@ -44,7 +44,11 @@ public class PosTimer {
 	}
 
 	public void reset(){
+		startTime = 0;
 		elapsedTime = 0;
+		endTime = 0;
+		currentTime = 0;
+		breakTime = 0;
 		trigger = false;
 	}
 
