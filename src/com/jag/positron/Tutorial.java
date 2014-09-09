@@ -37,6 +37,7 @@ public class Tutorial extends GameScreen {
 	private boolean topped;
 	private boolean doneTut;
 	private int endAlpha;
+	private double tutLevel;
 
 	public Tutorial(Game game) {
 		super(game);
@@ -161,7 +162,7 @@ public class Tutorial extends GameScreen {
 			if (level1a) {
 				levelStart = 0;
 			}
-			level = 1;
+			tutLevel = 1;
 			scoreMult = 1;
 			recentInterval = 30;
 			if (TState == TutState.Four)
@@ -182,7 +183,7 @@ public class Tutorial extends GameScreen {
 				levelStart = 0;
 				level1a = true;
 			}
-			level = 1.2;
+			tutLevel = 1.2;
 			scoreMult = 2;
 			recentInterval = 27;
 			if (levelStart < 68) {
@@ -199,9 +200,9 @@ public class Tutorial extends GameScreen {
 				level2 = true;
 			}
 			if (topFreeze)
-				level = 1;
+				tutLevel = 1;
 			else
-				level = 1.4;
+				tutLevel = 1.4;
 			scoreMult = 5;
 			recentInterval = 24;
 			if (levelStart < 68) {
@@ -218,9 +219,9 @@ public class Tutorial extends GameScreen {
 				level3 = true;
 			}
 			if (topFreeze)
-				level = 1;
+				tutLevel = 1;
 			else
-				level = 1.6;
+				tutLevel = 1.6;
 			scoreMult = 10;
 			recentInterval = 20;
 			if (levelStart < 68) {
@@ -237,9 +238,9 @@ public class Tutorial extends GameScreen {
 				level4 = true;
 			}
 			if (topFreeze)
-				level = 1.1;
+				tutLevel = 1.1;
 			else
-				level = 1.8;
+				tutLevel = 1.8;
 			scoreMult = 15;
 			recentInterval = 17;
 
@@ -257,9 +258,9 @@ public class Tutorial extends GameScreen {
 				level5 = true;
 			}
 			if (topFreeze)
-				level = 1.2;
+				tutLevel = 1.2;
 			else
-				level = 2;
+				tutLevel = 2;
 			scoreMult = 25;
 			recentInterval = 13;
 			if (levelStart < 70) {
@@ -277,9 +278,9 @@ public class Tutorial extends GameScreen {
 				level6 = true;
 			}
 			if (topFreeze)
-				level = 1.2;
+				tutLevel = 1.2;
 			else
-				level = 2.3;
+				tutLevel = 2.3;
 			scoreMult = 50;
 			recentInterval = 13;
 			if (levelStart < 70) {
@@ -510,7 +511,7 @@ public class Tutorial extends GameScreen {
 				}
 				if (p != null){
 					p.wayback = false;
-					p.setSpeedX(p.getSpeedX() * level);
+					p.setSpeedX(p.getSpeedX() * tutLevel);
 					if ((p.getSpeedX() == tempPiece.getSpeedX()) || (p.getSpeedX() == tempPiece.getSpeedX()))
 						getPieces().add(p);
 

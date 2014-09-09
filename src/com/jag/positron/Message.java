@@ -83,13 +83,9 @@ public class Message {
 		p.setShader(new LinearGradient(f.getStart(), mY, f.getEnd(), mY, colour, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP));
 		bgP.setShader(new LinearGradient(f.getStart(), mY, f.getEnd(), mY, Color.GRAY, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP));
 		if (bg){
-			g.drawString(text, mX-10, mY-10, bgP);
+			g.drawString(text, mX-5, mY-5, bgP);
 		}
-		g.drawString(text, mX, mY, p);
-		
-		
-		
-		
+		g.drawString(text, mX, mY, p);		
 		f.update();		
 	}
 		else alive = false;

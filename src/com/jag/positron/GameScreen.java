@@ -75,7 +75,7 @@ public class GameScreen extends Screen {
 	public Animation alert, magnet, elecBase, elecBase2;
 
 	public Paint paint5, paint6;
-	public double level;
+	public double depLevel;
 
 	public TimeCharge tc;
 	public TimeGrid tg;
@@ -106,6 +106,7 @@ public class GameScreen extends Screen {
 
 	public Frenzy f;
 	public Collider collider;
+	public Level level;
 	public CougarLock cLock;
 	public int tempyScore;
 	public boolean newGridPiece;
@@ -182,6 +183,8 @@ public class GameScreen extends Screen {
 
 		slider = Slider.getInstance();
 		mag = Magnet.getInstance();
+		level = Level.getInstance();
+		
 
 		lg = new LinearGradient(sh / 2, -(sh / 12), sh / 2,
 				(float) (sh * .033), Color.BLUE, Color.alpha(0),
@@ -289,7 +292,7 @@ public class GameScreen extends Screen {
 		lockPaint = new Paint();
 		lockPaint.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL));
 
-		recentInterval = 30;
+		recentInterval = 25;
 		timePassed = 0;
 		freeze = false;
 		wrongButton = false;
@@ -397,7 +400,7 @@ public class GameScreen extends Screen {
 		nextLevel = false;
 		lock = false;
 		fingery = (float) (screenheight * .91);
-		level = 1;
+		depLevel = 1;
 		nextLevel = false;
 		scoreMult = 1;
 		updateInterval = 1;
@@ -414,7 +417,7 @@ public class GameScreen extends Screen {
 		Assets.gridDrone.setLooping(true);
 
 		tempPiece = new Pieces(0, 0, true, this, recentInterval);
-		score = 1500;
+		score = 0;
 
 	}
 
@@ -543,9 +546,9 @@ public class GameScreen extends Screen {
 			if (level1a) {
 				levelStart = 0;
 			}
-			level = 1;
+			depLevel = 1;
 			scoreMult = 1;
-			recentInterval = 40;
+			recentInterval = 25;
 			if (levelStart < 68) {
 				nextLevel = true;
 				level1a = false;
@@ -562,9 +565,9 @@ public class GameScreen extends Screen {
 				level1a = true;
 
 			}
-			level = 1.1;
-			scoreMult = 2;
-			recentInterval = 36;
+			depLevel = 1.1;
+			scoreMult = 1;
+			recentInterval = 25;
 			if (levelStart < 68) {
 				nextLevel = true;
 				level1b = false;
@@ -581,7 +584,7 @@ public class GameScreen extends Screen {
 				level1b = true;
 				
 			}
-			level = 1.2;
+			depLevel = 1.2;
 			scoreMult = 5;
 			recentInterval = 30;
 			if (levelStart < 68) {
@@ -600,9 +603,9 @@ public class GameScreen extends Screen {
 				
 			}
 			if (topFreeze)
-				level = 1;
+				depLevel = 1;
 			else
-				level = 1.4;
+				depLevel = 1.4;
 			scoreMult = 10;
 			recentInterval = 26;
 			if (levelStart < 68) {
@@ -622,9 +625,9 @@ public class GameScreen extends Screen {
 		
 			}
 			if (topFreeze)
-				level = 1;
+				depLevel = 1;
 			else
-				level = 1.6;
+				depLevel = 1.6;
 			scoreMult = 15;
 			recentInterval = 20;
 			if (levelStart < 68) {
@@ -643,9 +646,9 @@ public class GameScreen extends Screen {
 				
 			}
 			if (topFreeze)
-				level = 1.1;
+				depLevel = 1.1;
 			else
-				level = 1.8;
+				depLevel = 1.8;
 			scoreMult = 20;
 			recentInterval = 15;
 
@@ -665,9 +668,9 @@ public class GameScreen extends Screen {
 			
 			}
 			if (topFreeze)
-				level = 1.2;
+				depLevel = 1.2;
 			else
-				level = 1.9;
+				depLevel = 1.9;
 			scoreMult = 25;
 			recentInterval = 14;
 			if (levelStart < 70) {
@@ -687,9 +690,9 @@ public class GameScreen extends Screen {
 				
 			}
 			if (topFreeze)
-				level = 1.2;
+				depLevel = 1.2;
 			else
-				level = 2.3;
+				depLevel = 3;
 			scoreMult = 50;
 			recentInterval = 13;
 			if (levelStart < 70) {
@@ -713,14 +716,6 @@ public class GameScreen extends Screen {
 
 
 		// DELAY PIECES
-		if (topFreeze){
-			if (scoreMult == 10)
-				recentInterval = 17;
-			if (scoreMult == 15)
-				recentInterval = 14;
-			if (scoreMult > 15)
-				recentInterval = 10;
-		}
 		if (!freeze && !scoreReset && !cLock.getStartup()) {
 			timePassed += 1;
 			if ((timePassed % recentInterval) == 0) {
@@ -737,28 +732,28 @@ public class GameScreen extends Screen {
 			}
 		}
 
-//		// timeCHARGE
-//		if (!cLock.getActive()){
-//			if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
-//					&& !currentTG) {
-//				// if (!currentTC&&tc==null&&scoreMult==1){
-//				if (100 > randomInt3 && !topFreeze) {
-//					tc = new TimeCharge((randomInt2 + 1) * lane,
-//							(int) Math.round(sh * .78), 5);
-//					Assets.tcDrone.play();
-//					currentTC = true;
-//				}
-//			}
-//			if ((scoreMult >= 20) && !currentTC && tc == null) {
-//				if (400 > randomInt3 && !topFreeze) {
-//					tc = new TimeCharge((randomInt2 + 1) * lane,
-//							(int) Math.round(sh * .78), 5);
-//					Assets.tcDrone.play();
-//					currentTC = true;
-//					tc.setSpeed(5);
-//				}
-//			}
-//		}
+		// timeCHARGE
+		if (!cLock.getActive()){
+			if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
+					&& !currentTG) {
+				// if (!currentTC&&tc==null&&scoreMult==1){
+				if (100 > randomInt3 && !topFreeze) {
+					tc = new TimeCharge((randomInt2 + 1) * lane,
+							(int) Math.round(sh * .78), 10);
+					Assets.tcDrone.play();
+					currentTC = true;
+				}
+			}
+			if ((scoreMult >= 20) && !currentTC && tc == null) {
+				if (400 > randomInt3 && !topFreeze) {
+					tc = new TimeCharge((randomInt2 + 1) * lane,
+							(int) Math.round(sh * .78), 5);
+					Assets.tcDrone.play();
+					currentTC = true;
+					tc.setSpeed(10);
+				}
+			}
+		}
 
 		if (tc != null && currentTC) {			
 			tc.update();
@@ -898,10 +893,9 @@ public class GameScreen extends Screen {
 			//			System.out.println(p==null);
 			if (p != null){
 				p.wayback = false;
-				p.setSpeedX(p.getSpeedX() * level);
+				p.setSpeedX(p.getSpeedX() * depLevel);
 				if ((p.getSpeedX() == tempPiece.getSpeedX()) || (topFreeze && topFade != null))
 					getPieces().add(p);
-
 				else
 					tempPiece = p;
 				exitCases = false;
@@ -1019,15 +1013,12 @@ public class GameScreen extends Screen {
 				Assets.click.play(150);
 				killx = p.x;
 				killy = p.y;
-				//				System.out.println("x: "+p.x);
-				//				System.out.println("y: "+p.y);
 				lightning = true;
 				it.remove();
 			}
 
 			else if (p.isVisible() && p.wayback && !freeze
 					&& !exitCases && !newPiece && !topFreeze) {
-
 				if (scoreMult <= 15)
 					p.setBackspeed(25);
 				if (scoreMult > 15)
@@ -1040,12 +1031,7 @@ public class GameScreen extends Screen {
 					killx = p.x;
 					killy = p.y;
 				}
-				//				 System.out.println("yes7");
-			}
-
-			else if (p.isVisible() && p.wayback && !freeze
-					&& !exitCases && !newPiece) {
-				//				 System.out.println("yes7abccc");
+//								 System.out.println("yes7");
 			}
 
 			else if (p.isVisible() && freeze && !exitCases && p.wayback) {
@@ -1059,7 +1045,7 @@ public class GameScreen extends Screen {
 					killx = p.x;
 					killy = p.y;
 				}
-				//				 System.out.println("yes7b");
+//								 System.out.println("yes7b");
 			}
 
 			else if (p.y < Math.round(sh * .008)) {
@@ -1284,9 +1270,10 @@ public class GameScreen extends Screen {
 					&& event.y < Math.round(sh * .423)) {
 				//				nullify();
 				//				cLock = null;
-				collider.reset();
+//				collider.reset();
 				Assets.theme.stop();
 				Assets.click2.play(100);
+				nullify();
 				game.setScreen(new MainMenuScreen(game));
 			}
 		}
@@ -1404,7 +1391,7 @@ public class GameScreen extends Screen {
 			// SCOREMULT DRAW
 			if (nextLevel && scoreMult > 1) {					
 					if (multMessage == null)
-							multMessage = new Message(sw/2-(int)(sw * .063), 
+							multMessage = new Message(sw/2, 
 									sh/2-(int)(sh * .083), .5f, .5f, 
 									"x"+String.valueOf(scoreMult), 
 									.1f, g, Color.MAGENTA);
@@ -1417,7 +1404,7 @@ public class GameScreen extends Screen {
 				}
 			}
 
-			//CLock
+			//cLock
 			if (cLock.getActive())
 				cLock.draw();
 
@@ -1540,14 +1527,17 @@ public class GameScreen extends Screen {
 
 				g.drawLine(1, (int) Math.round(sh * .871), 1,
 						tg.getY() - tg.getSize(), Color.GREEN, 255, 12, paint10);
+				
 				g.drawLine((int) Math.round(sw * .101),
 						(int) Math.round(sh * .871),
 						(int) Math.round(sw * .101), tg.getY() - tg.getSize(),
 						Color.GREEN, 255, 12, paint10);
+				
 				g.drawLine((int) Math.round(sw * .201),
 						(int) Math.round(sh * .871),
 						(int) Math.round(sw * .201), tg.getY() - tg.getSize(),
 						Color.GREEN, 255, 12, paint10);
+				
 				g.drawLine((int) Math.round(sw * .301),
 						(int) Math.round(sh * .871),
 						(int) Math.round(sw * .301), tg.getY() - tg.getSize(),
@@ -1792,9 +1782,12 @@ public class GameScreen extends Screen {
 		scene = null;
 		paint2 = null;
 		paint3 = null;
-		Assets.theme = null;
-		Assets.click = null;
+//		Assets.theme = null;
+//		Assets.click = null;
 		collider = null;
+		mag = null;
+		level = null;
+		slider = null;
 		//		cougL.setRunning(false);
 		//		cLock = null;
 		// Call garbage collector to clean up memory.

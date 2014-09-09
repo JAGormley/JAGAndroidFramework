@@ -26,9 +26,11 @@ public class Pieces {
 	private int origX;
 	private int origY;
 	private boolean slowing;
+	private int accMod;
 
 
 	public Pieces(int startX, int startY, boolean inittype, GameScreen gameScreen2, double recentInterval){
+		accMod = 12;
 		scene = GameScreen.getScene();
 		screenHeight = GameScreen.screenheight;
 		gamescreen = gameScreen2;
@@ -37,7 +39,8 @@ public class Pieces {
 		speed = 15;
 		visible = true;
 		direction = true;
-		type = inittype;
+//		type = inittype;
+		type = true;
 		wayback = false;
 		backspeed = 25;
 		acc = 0;
@@ -52,12 +55,14 @@ public class Pieces {
 	}
 
 	public void update(){
+//		System.out.println(speed);
+		
 		if (!fadeTimer.getTrigger()){
 			fadeTimer.update();
 			shakey.update();
 
 			if (shakey.getxShift()){
-				type = !type;
+//				type = !type;
 				x = origX;
 				x += shakey.getShifter();
 			}
@@ -88,7 +93,7 @@ public class Pieces {
 
 				if (type){
 					if (x > scene.getLine()){
-						y -= (y / 12) + 4;
+						y -= (y / accMod) + 4;
 						slowing = true;
 					}
 					if (x < scene.getLine()){
@@ -98,7 +103,7 @@ public class Pieces {
 				}
 				if (!type){
 					if (x < scene.getLine()){
-						y -= (y / 12) + 4;
+						y -= (y / accMod) + 4;
 						slowing = true;
 					}
 					if (x > scene.getLine()){
@@ -213,7 +218,10 @@ public class Pieces {
 	public void resetSwitched(){
 		switched = false;
 	}
-
+	
+	public void setAccMod(int m){
+		accMod = m;
+	}
 
 	public void setBackspeed(int b){
 		backspeed = b;
@@ -237,6 +245,8 @@ public class Pieces {
 	public boolean getSlowing(){
 		return slowing;
 	}
+	
+	
 
 	@Override
 	public int hashCode() {
