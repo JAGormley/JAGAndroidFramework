@@ -166,6 +166,9 @@ public class Collider {
 	public boolean isLazer() {
 		return lazer;
 	}
+	public boolean isCharged(){
+		return charged;
+	}
 
 	public void setLazer(boolean lazer) {
 		this.lazer = lazer;

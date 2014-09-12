@@ -27,7 +27,7 @@ import com.jag.framework.Graphics.ImageFormat;
 import com.jag.framework.Input.TouchEvent;
 import com.jag.framework.Screen;
 import com.jag.positron.Coil.Point;
-import com.jag.positron.Tutorial.TutState;
+//import com.jag.positron.Tutorial.TutState;
 
 public class GameScreen extends Screen {
 	enum GameState {
@@ -54,16 +54,18 @@ public class GameScreen extends Screen {
 	public Particle pcl;
 
 	Paint paint, paint2, paint3, paint4;
-	Image fore, rings1, rings2, base1, base2, bolt, currentMagnet,
+	Image fore, rings1, rings2, base1, base2, bolt,
 	lightningLineImage;
 
 	boolean recent, freeze, touch, posPressed, negPressed, wrongButton,
 	lightning, lock, nextLevel, redRing, levelInA, levelInB, level1a, level1b,
-	level2, level3, level4, level5, level6, level7, level8, scoreReset,
+	level2, level3, level4, level5, level6, level7, level8,
 	typePass;
 
 	List<TouchEvent> touchEvents;
 
+	public boolean scoreReset;
+	
 	int timePassed, difficulty, recentInterval, score, scoreTemp,
 	scoreTempTemp, scoreTempDraw, drawTimer, killx, killy,
 	lightningDuration, ballDuration, scoreMult, updateInterval, tcx,
@@ -144,12 +146,14 @@ public class GameScreen extends Screen {
 	private boolean fingerMove;
 	public static Graphics graph;
 	private Message multMessage;
+	private Game freshGame;
 
 
 	// private PosTriangle posT;
 
 	public GameScreen(Game game) {
 		super(game);
+		freshGame = game;
 
 		// Initialize game objects here
 
@@ -184,7 +188,7 @@ public class GameScreen extends Screen {
 		slider = Slider.getInstance();
 		mag = Magnet.getInstance();
 		level = Level.getInstance();
-		
+
 
 		lg = new LinearGradient(sh / 2, -(sh / 12), sh / 2,
 				(float) (sh * .033), Color.BLUE, Color.alpha(0),
@@ -213,10 +217,11 @@ public class GameScreen extends Screen {
 
 		paint4 = new Paint();
 		paint4.setTypeface(Assets.font);
-		paint4.setTextSize(Math.round(sh * .035));
+		paint4.setTextSize(Math.round(sh * .027));
 		paint4.setTextAlign(Paint.Align.CENTER);
+		paint4.setAlpha(40);
 		//		paint4.setAntiAlias(true); 
-		paint4.setColor(Color.RED);
+		paint4.setColor(Color.MAGENTA);
 
 		paint5 = new Paint();
 		paint5.setTypeface(Assets.font);
@@ -292,7 +297,7 @@ public class GameScreen extends Screen {
 		lockPaint = new Paint();
 		lockPaint.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL));
 
-		recentInterval = 25;
+		recentInterval = 40;
 		timePassed = 0;
 		freeze = false;
 		wrongButton = false;
@@ -302,97 +307,12 @@ public class GameScreen extends Screen {
 		getAlert().addFrame(Assets.alarm1, 100);
 		getAlert().addFrame(Assets.alarm2, 100);
 
-		magnet = new Animation();
-		magnet.addFrame(Assets.bf1, 100);
-		magnet.addFrame(Assets.bf2, 100);
-		magnet.addFrame(Assets.bf3, 100);
-		magnet.addFrame(Assets.bf4, 100);
-		currentMagnet = magnet.getImage();
-
 		cougar = new Animation();
 		cougar.addFrame(Assets.coug1, 100);
 		cougar.addFrame(Assets.coug2, 100);
 		cougar.addFrame(Assets.coug3, 100);
 		cougar.addFrame(Assets.coug4, 100);
 		cougar.addFrame(Assets.coug5, 100);
-
-		elecBase2 = new Animation();
-		elecBase2.addFrame(Assets.pbase0, 20);
-		elecBase2.addFrame(Assets.pbase1, 20);
-		elecBase2.addFrame(Assets.pbase2, 20);
-		elecBase2.addFrame(Assets.pbase3, 20);
-		elecBase2.addFrame(Assets.pbase4, 20);
-		elecBase2.addFrame(Assets.pbase5, 20);
-		elecBase2.addFrame(Assets.pbase6, 20);
-		elecBase2.addFrame(Assets.pbase7, 20);
-		elecBase2.addFrame(Assets.pbase8, 20);
-		elecBase2.addFrame(Assets.pbase9, 20);
-		elecBase2.addFrame(Assets.pbase10, 20);
-		elecBase2.addFrame(Assets.pbase11, 20);
-		elecBase2.addFrame(Assets.pbase12, 20);
-		elecBase2.addFrame(Assets.pbase13, 20);
-		elecBase2.addFrame(Assets.pbase14, 20);
-		elecBase2.addFrame(Assets.pbase15, 20);
-		elecBase2.addFrame(Assets.pbase16, 20);
-		elecBase2.addFrame(Assets.pbase17, 20);
-		elecBase2.addFrame(Assets.pbase18, 20);
-		elecBase2.addFrame(Assets.pbase19, 20);
-		elecBase2.addFrame(Assets.pbase20, 20);
-		elecBase2.addFrame(Assets.pbase21, 20);
-		elecBase2.addFrame(Assets.pbase22, 20);
-		elecBase2.addFrame(Assets.pbase23, 20);
-		elecBase2.addFrame(Assets.pbase24, 20);
-		elecBase2.addFrame(Assets.pbase25, 20);
-		elecBase2.addFrame(Assets.pbase26, 20);
-		elecBase2.addFrame(Assets.pbase27, 20);
-		elecBase2.addFrame(Assets.pbase28, 20);
-		elecBase2.addFrame(Assets.pbase29, 20);
-		elecBase2.addFrame(Assets.pbase30, 20);
-		elecBase2.addFrame(Assets.pbase31, 20);
-		elecBase2.addFrame(Assets.pbase32, 20);
-		elecBase2.addFrame(Assets.pbase33, 20);
-		elecBase2.addFrame(Assets.pbase34, 20);
-		elecBase2.addFrame(Assets.pbase35, 20);
-
-		elecBase = new Animation();
-		elecBase.addFrame(Assets.nbase35, 20);
-		elecBase.addFrame(Assets.nbase34, 20);
-		elecBase.addFrame(Assets.nbase33, 20);
-		elecBase.addFrame(Assets.nbase32, 20);
-		elecBase.addFrame(Assets.nbase31, 20);
-		elecBase.addFrame(Assets.nbase30, 20);
-		elecBase.addFrame(Assets.nbase29, 20);
-		elecBase.addFrame(Assets.nbase28, 20);
-		elecBase.addFrame(Assets.nbase27, 20);
-		elecBase.addFrame(Assets.nbase26, 20);
-		elecBase.addFrame(Assets.nbase25, 20);
-		elecBase.addFrame(Assets.nbase24, 20);
-		elecBase.addFrame(Assets.nbase23, 20);
-		elecBase.addFrame(Assets.nbase22, 20);
-		elecBase.addFrame(Assets.nbase21, 20);
-		elecBase.addFrame(Assets.nbase21, 20);
-		elecBase.addFrame(Assets.nbase20, 20);
-		elecBase.addFrame(Assets.nbase19, 20);
-		elecBase.addFrame(Assets.nbase19, 20);
-		elecBase.addFrame(Assets.nbase18, 20);
-		elecBase.addFrame(Assets.nbase17, 20);
-		elecBase.addFrame(Assets.nbase16, 20);
-		elecBase.addFrame(Assets.nbase15, 20);
-		elecBase.addFrame(Assets.nbase14, 20);
-		elecBase.addFrame(Assets.nbase13, 20);
-		elecBase.addFrame(Assets.nbase12, 20);
-		elecBase.addFrame(Assets.nbase11, 20);
-		elecBase.addFrame(Assets.nbase10, 20);
-		elecBase.addFrame(Assets.nbase9, 20);
-		elecBase.addFrame(Assets.nbase8, 20);
-		elecBase.addFrame(Assets.nbase7, 20);
-		elecBase.addFrame(Assets.nbase6, 20);
-		elecBase.addFrame(Assets.nbase5, 20);
-		elecBase.addFrame(Assets.nbase4, 20);
-		elecBase.addFrame(Assets.nbase3, 20);
-		elecBase.addFrame(Assets.nbase2, 20);
-		elecBase.addFrame(Assets.nbase1, 20);
-		elecBase.addFrame(Assets.nbase0, 20);
 
 		cLock = new CougarLock(game.getGraphics(), cougar);
 		cLock.setActive(false);
@@ -416,13 +336,14 @@ public class GameScreen extends Screen {
 		Assets.tcDrone.setLooping(true);
 		Assets.gridDrone.setLooping(true);
 
-		tempPiece = new Pieces(0, 0, true, this, recentInterval);
-		score = 0;
+		tempPiece = new Pieces(0, 0, true, this, level.getRecentInterval());
+		score = 750;
 
 	}
 
 	@Override
 	public void update(float deltaTime) {
+		System.out.println(currentTG);
 		touchEvents = game.getInput().getTouchEvents();
 
 		if (state == GameState.Ready)
@@ -469,7 +390,7 @@ public class GameScreen extends Screen {
 				}
 			}
 			if (getAlert().getImage() == Assets.alarm2 && !topFreeze) {
-				scoreTemp += scoreTempTemp * scoreMult;
+				scoreTemp += scoreTempTemp * level.getScoreMult();
 				scoreTempTemp = 0;
 			}
 		}
@@ -490,8 +411,8 @@ public class GameScreen extends Screen {
 					cPaint.setTextSize(Math.round(sh * .066));
 					cPaint.setTextAlign(Paint.Align.CENTER);
 					cPaint.setColor(Color.MAGENTA);
-					score+=scoreMult*10;
-					cStrings.add(new ShakeString(graph, "+"+scoreMult*10, tc.x, tc.y, cPaint));
+					score+=level.getScoreMult()*10;
+					cStrings.add(new ShakeString(graph, "+"+level.getScoreMult()*10, tc.x, tc.y, cPaint));
 					tcDeath = true;
 					tcx = tc.x;
 					tcy = tc.y;
@@ -542,175 +463,14 @@ public class GameScreen extends Screen {
 
 		// CHECKS AND UPDAteS:
 
-		if (score < 35) {
-			if (level1a) {
-				levelStart = 0;
-			}
-			depLevel = 1;
-			scoreMult = 1;
-			recentInterval = 25;
-			if (levelStart < 68) {
-				nextLevel = true;
-				level1a = false;
-			} else {
-				nextLevel = false;
-				level2 = true;
-				multMessage = null;
-			}
-		}
-
-		if (score >= 35 && score < 75) {
-			if (level1b) {
-				levelStart = 0;
-				level1a = true;
-
-			}
-			depLevel = 1.1;
-			scoreMult = 1;
-			recentInterval = 25;
-			if (levelStart < 68) {
-				nextLevel = true;
-				level1b = false;
-			} else {
-				nextLevel = false;
-				level2 = true;
-				multMessage = null;
-			}
-		}
-
-		if ((score >= 75) && (score < 175)) {
-			if (level2) {
-				levelStart = 0;
-				level1b = true;
-				
-			}
-			depLevel = 1.2;
-			scoreMult = 5;
-			recentInterval = 30;
-			if (levelStart < 68) {
-				nextLevel = true;
-				level2 = false;
-			} else {
-				nextLevel = false;
-				level3 = true;
-				multMessage = null;
-			}
-		}
-		if ((score >= 175) && (score < 500)) {
-			if (level3) {
-				levelStart = 0;
-				level2 = true;
-				
-			}
-			if (topFreeze)
-				depLevel = 1;
-			else
-				depLevel = 1.4;
-			scoreMult = 10;
-			recentInterval = 26;
-			if (levelStart < 68) {
-				nextLevel = true;
-				level3 = false;
-			} else {
-				nextLevel = false;
-				level4 = true;
-				multMessage = null;
-			}
-		}
-		if ((score >= 500) && (score < 1350)) {
-
-			if (level4) {
-				levelStart = 0;
-				level3 = true;
-		
-			}
-			if (topFreeze)
-				depLevel = 1;
-			else
-				depLevel = 1.6;
-			scoreMult = 15;
-			recentInterval = 20;
-			if (levelStart < 68) {
-				nextLevel = true;
-				level4 = false;
-			} else {
-				nextLevel = false;
-				level5 = true;
-				multMessage = null;
-			}
-		}
-		if ((score >= 1350) && (score < 2400)) {
-			if (level5) {
-				levelStart = 0;
-				level4 = true;
-				
-			}
-			if (topFreeze)
-				depLevel = 1.1;
-			else
-				depLevel = 1.8;
-			scoreMult = 20;
-			recentInterval = 15;
-
-			if (levelStart < 70) {
-				nextLevel = true;
-				level5 = false;
-			} else {
-				nextLevel = false;
-				level6 = true;
-				multMessage = null;
-			}
-		}
-		if ((score >= 2400 && score < 4000)) {
-			if (level6) {
-				levelStart = 0;
-				level5 = true;
-			
-			}
-			if (topFreeze)
-				depLevel = 1.2;
-			else
-				depLevel = 1.9;
-			scoreMult = 25;
-			recentInterval = 14;
-			if (levelStart < 70) {
-				nextLevel = true;
-				level6 = false;
-			} else {
-				nextLevel = false;
-				level7 = true;
-				multMessage = null;
-			}
-		}
-
-		if ((score >= 3500)) {
-			if (level7) {
-				levelStart = 0;
-				level6 = true;
-				
-			}
-			if (topFreeze)
-				depLevel = 1.2;
-			else
-				depLevel = 3;
-			scoreMult = 50;
-			recentInterval = 13;
-			if (levelStart < 70) {
-				nextLevel = true;
-				level7 = false;
-			} else {
-				nextLevel = false;
-				level8 = true;
-			}
-		}
+		level.update(score, scoreReset);
+		//		System.out.println("mult: "+level.getScoreMult());
+		//		System.out.println("level: "+level.getLevel());
+		//		System.out.println("speed: "+level.getSpriteSpeed());
 
 		Random randomGenerator = new Random();
 		int randomInt = randomGenerator.nextInt(6);
 		int randomInt2 = randomGenerator.nextInt(7);
-		int randomInt3 = randomGenerator.nextInt(45000);
-		int randomInt4 = randomGenerator.nextInt(45000);
-		int randomInt5 = randomGenerator.nextInt(300);
-		int randomInt6 = randomGenerator.nextInt(45000);
 		boolean randomBool = randomGenerator.nextBoolean();
 		int chanceOfNewPiece = 8;
 
@@ -718,40 +478,29 @@ public class GameScreen extends Screen {
 		// DELAY PIECES
 		if (!freeze && !scoreReset && !cLock.getStartup()) {
 			timePassed += 1;
-			if ((timePassed % recentInterval) == 0) {
+			if ((timePassed % level.getRecentInterval()) == 0) {
 				recent = false;
 			}
 			if ((timePassed % recentToothInterval) == 0) {
 				recentTooth = false;
 			}
-			if (randomInt6 < 70 && (scoreMult == 15 || scoreMult == 25)) {
-				teeth = true;
-			}
-			if (randomInt5 == 200 && scoreMult >= 50) {
+			if (level.falcSpacer()) {
 				teeth = true;
 			}
 		}
 
 		// timeCHARGE
-		if (!cLock.getActive()){
-			if ((scoreMult == 5 || scoreMult == 10) && !currentTC && tc == null
-					&& !currentTG) {
-				// if (!currentTC&&tc==null&&scoreMult==1){
-				if (100 > randomInt3 && !topFreeze) {
+		if (!cLock.getActive() && !currentTG 
+				&& !currentTC && tc == null && !scoreReset){
+			
+
+				if (level.cougSpacer()) {
 					tc = new TimeCharge((randomInt2 + 1) * lane,
-							(int) Math.round(sh * .78), 10);
+							(int) Math.round(sh * .78), level.getCougSpeed());
 					Assets.tcDrone.play();
 					currentTC = true;
-				}
-			}
-			if ((scoreMult >= 20) && !currentTC && tc == null) {
-				if (400 > randomInt3 && !topFreeze) {
-					tc = new TimeCharge((randomInt2 + 1) * lane,
-							(int) Math.round(sh * .78), 5);
-					Assets.tcDrone.play();
-					currentTC = true;
-					tc.setSpeed(10);
-				}
+					level.nullTimer("coug");
+				
 			}
 		}
 
@@ -771,31 +520,18 @@ public class GameScreen extends Screen {
 				currentTG = false;
 				Assets.tcDrone.stop();
 				currentTC = false;
-
-
-
 			}
 		}
 
 		// timeGRID
-		if ((scoreMult == 10 && scoreMult < 15) && !currentTG && tg == null
-				&& !currentTC) {
-			if (100 > randomInt4 && !topFreeze) {
+		if (!currentTG && tg == null) {
+			if (level.gridSpacer()) {
 				tg = new TimeGrid((int) Math.round(sh * .87));
 				currentTG = true;
 				Assets.gridDrone.play();
 				gridX = -10;
 				gridY = -10;
-			}
-		}
-		if ((scoreMult >= 50) && !currentTG && tg == null) {
-			if (400 > randomInt4 && !topFreeze) {
-				tg = new TimeGrid((int) Math.round(sh * .87));
-				currentTG = true;
-				Assets.gridDrone.play();
-				tg.setSizeSpeed(2);
-				gridX = -10;
-				gridY = -10;
+				level.nullTimer("grid");
 			}
 		}
 
@@ -813,7 +549,7 @@ public class GameScreen extends Screen {
 		if (tg != null) {
 			tg.update();
 			for (GridLine gl : tg.getGLs()) {
-				gl.setY(gl.getY() + tg.getGridSpeed());
+				gl.setY(gl.getY() + level.getGridSpeed());
 				if (gl.getY() > sh) {
 					gl.setY(0);
 				}
@@ -850,7 +586,7 @@ public class GameScreen extends Screen {
 				}
 			}
 		}
-		if (freeze) {
+		if (freeze || cLock.getActive()) {
 			pts.clear();
 		}
 
@@ -869,6 +605,7 @@ public class GameScreen extends Screen {
 		if (toothCount >= 25) {
 			teeth = false;
 			toothCount = 0;
+			level.nullTimer("falc");
 		}
 
 		// Pieces
@@ -884,7 +621,7 @@ public class GameScreen extends Screen {
 			Pieces p = null;
 
 			p = new Pieces(pLane,
-					(int) Math.round(sh * .9), randomBool, this, recentInterval);
+					(int) Math.round(sh * .9), randomBool, this, level.getRecentInterval());
 
 
 			if (currentTG) {
@@ -893,7 +630,8 @@ public class GameScreen extends Screen {
 			//			System.out.println(p==null);
 			if (p != null){
 				p.wayback = false;
-				p.setSpeedX(p.getSpeedX() * depLevel);
+				//				p.setSpeedX(p.getSpeedX() * depLevel);
+				p.setSpeedX(level.getSpriteSpeed());
 				if ((p.getSpeedX() == tempPiece.getSpeedX()) || (topFreeze && topFade != null))
 					getPieces().add(p);
 				else
@@ -985,7 +723,7 @@ public class GameScreen extends Screen {
 					}
 				}
 
-				p.update();
+				p.update(level.getAccMod());
 				newPiece = false;
 
 				//				 System.out.println("yes4");
@@ -993,12 +731,12 @@ public class GameScreen extends Screen {
 
 			else if (p.wayback && collider.isLazer() && !exitCases) {
 
-				tempMult = scoreMult;
+				tempMult = level.getScoreMult();
 
-				if (score - 10 * scoreMult < 0) {
+				if (score - 10 * level.getScoreMult() < 0) {
 					score = 0;
 				} else
-					score -= 10 * scoreMult;
+					score -= 10 * level.getScoreMult();
 
 				if (p.type)
 					typePass = true;	
@@ -1031,7 +769,7 @@ public class GameScreen extends Screen {
 					killx = p.x;
 					killy = p.y;
 				}
-//								 System.out.println("yes7");
+				//								 System.out.println("yes7");
 			}
 
 			else if (p.isVisible() && freeze && !exitCases && p.wayback) {
@@ -1045,7 +783,7 @@ public class GameScreen extends Screen {
 					killx = p.x;
 					killy = p.y;
 				}
-//								 System.out.println("yes7b");
+				//								 System.out.println("yes7b");
 			}
 
 			else if (p.y < Math.round(sh * .008)) {
@@ -1057,12 +795,12 @@ public class GameScreen extends Screen {
 					tPaint.setTextAlign(Paint.Align.CENTER);
 					tPaint.setColor(Color.CYAN);
 
-					tStrings.add(new ShakeString(game.getGraphics(), "+"+String.valueOf(scoreMult*1), p.x, 40, tPaint));
+					tStrings.add(new ShakeString(game.getGraphics(), "+"+String.valueOf(level.getScoreMult()*1), p.x, 40, tPaint));
 					pointXs.add(p.x);
-					sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+scoreMult), 
+					sStrings.add(new ShakeString(game.getGraphics(), String.valueOf(score+level.getScoreMult()), 
 							sw / 2, (int) Math.round(sh * .84)));
 
-					score += 1 * scoreMult;
+					score += 1 * level.getScoreMult();
 					if (!CougarLock.running){
 						if (p.type)
 							Assets.posPoint.play(20);
@@ -1144,11 +882,11 @@ public class GameScreen extends Screen {
 				g.drawString(String.valueOf(freezeScore), sw/2, lowerDist, freezeScorePaint);
 				freezeScorePaint2.setTextSize((float) (textSize2*1.2));
 				//				if (level != 1)
-				g.drawString("x " + scoreMult*1.5, sw/2, lowerDist+(sh/20), freezeScorePaint2);
+				g.drawString("x " + level.getScoreMult()*1.5, sw/2, lowerDist+(sh/20), freezeScorePaint2);
 				topFadeFinal.update();
 			}
 			else{
-				score += freezeScore*scoreMult*1.5;
+				score += freezeScore*level.getScoreMult()*1.5;
 				topFreezeWin = false;
 				//				topFadeFinal = null;
 				lowerDist = 0;
@@ -1203,7 +941,7 @@ public class GameScreen extends Screen {
 	public void fail(){
 		collider.reset();
 		collider = Collider.getInstance();
-		tempPiece = new Pieces(0, 0, true, this, recentInterval);
+		tempPiece = new Pieces(0, 0, true, this, level.getRecentInterval());
 		topFreezeWin = false;
 		tLock = null;
 		topFade = null;
@@ -1270,11 +1008,12 @@ public class GameScreen extends Screen {
 					&& event.y < Math.round(sh * .423)) {
 				//				nullify();
 				//				cLock = null;
-//				collider.reset();
+								collider.reset();
+								level.reset();
 				Assets.theme.stop();
 				Assets.click2.play(100);
 				nullify();
-				game.setScreen(new MainMenuScreen(game));
+				game.setScreen(new MainMenuScreen(freshGame));
 			}
 		}
 	}
@@ -1286,7 +1025,7 @@ public class GameScreen extends Screen {
 			if (event.type == TouchEvent.TOUCH_UP) {
 
 				nullify();
-				game.setScreen(new MainMenuScreen(game));
+				game.setScreen(new MainMenuScreen(freshGame));
 				return;
 			}
 		}
@@ -1323,7 +1062,6 @@ public class GameScreen extends Screen {
 				if (touch == false) {
 
 					drawTimer = 0;
-					paint4.setAlpha(255);
 					if ((getAlert().getImage() == Assets.alarm2)
 							&& circleRad > 79) {
 						circleRad += 1;
@@ -1339,11 +1077,8 @@ public class GameScreen extends Screen {
 			}
 			if (!scoreReset)
 				slider.drawUpdate(fingerx, (int)(sh*.951), fingerMove);
-			
-			// RUN COLLIDER UPDATE
-			collider.update();
 
-			
+
 			// SCORERESET DRAW
 			if (scoreReset) {
 				collider.death();
@@ -1366,12 +1101,6 @@ public class GameScreen extends Screen {
 						g.drawString(String.valueOf(tempyScore) , sw / 2 +slider,
 								(int) Math.round(sh * .456)+slider, paint12);
 					}
-					if (!topFreeze){
-						//						g.drawString(String.valueOf(score), sw / 2,
-						//								(int) Math.round(sh * .954), paint3);
-						//						g.drawString("high " + String.valueOf(postScore),
-						//								sw / 2, (int) Math.round(sh * .988), paint6);
-					}
 					failCircle(g);
 					scoreDeathDur++;
 				} else {
@@ -1387,30 +1116,15 @@ public class GameScreen extends Screen {
 				}
 			}
 
-			
-			// SCOREMULT DRAW
-			if (nextLevel && scoreMult > 1) {					
-					if (multMessage == null)
-							multMessage = new Message(sw/2, 
-									sh/2-(int)(sh * .083), .5f, .5f, 
-									"x"+String.valueOf(scoreMult), 
-									.1f, g, Color.MAGENTA);
-					if (multMessage != null && multMessage.isAlive()){
-						multMessage.growM(.2f);
-						multMessage.drawMessage();
-					}
-					if (levelStart < 70) {
-					levelStart++;
-				}
-			}
+			// MULTMESSAGE
+			if (level.getMessageTruth())
+				level.displayMessage();
 
 			//cLock
 			if (cLock.getActive())
 				cLock.draw();
 
 			// SPRITES
-
-			//			System.out.println(pointXs.toString());
 
 			for (Pieces p : getPieces()) {
 
@@ -1468,27 +1182,6 @@ public class GameScreen extends Screen {
 				if (flashUpdate == 3)
 					flashUpdate = 0;
 			}
-			if (tc != null) {
-				//				g.drawCircBlue(tc.getX(), tc.getY(),
-				//						(int) Math.round(sh * .075), Color.rgb(255, 215, 0), i);
-				g.drawImage(cougar.getImage(), tc.getX()-cougar.getImage().getWidth()/2, tc.getY()-cougar.getImage().getHeight()/2, -1);	
-				cougar.update(10);
-			}
-
-			if (tcDeath) {
-				if (ballDuration < 20) {
-					if (blueCoug == null)
-						blueCoug = cougar.getImage().getBitmap().copy(cougar.getImage().getBitmap().getConfig() ,true);					
-					g.drawImage(blueCoug, tcx-cougar.getImage().getWidth()/2, tcy-cougar.getImage().getHeight()/2, 
-							200 - ballDuration * 10);
-					ballDuration++;
-				} else {
-					tcDeath = false;
-					ballDuration = 0;
-					blueCoug = null;
-				}
-			}
-
 			// GRID
 
 			if (recent && currentTG && newGridPiece) {
@@ -1527,17 +1220,17 @@ public class GameScreen extends Screen {
 
 				g.drawLine(1, (int) Math.round(sh * .871), 1,
 						tg.getY() - tg.getSize(), Color.GREEN, 255, 12, paint10);
-				
+
 				g.drawLine((int) Math.round(sw * .101),
 						(int) Math.round(sh * .871),
 						(int) Math.round(sw * .101), tg.getY() - tg.getSize(),
 						Color.GREEN, 255, 12, paint10);
-				
+
 				g.drawLine((int) Math.round(sw * .201),
 						(int) Math.round(sh * .871),
 						(int) Math.round(sw * .201), tg.getY() - tg.getSize(),
 						Color.GREEN, 255, 12, paint10);
-				
+
 				g.drawLine((int) Math.round(sw * .301),
 						(int) Math.round(sh * .871),
 						(int) Math.round(sw * .301), tg.getY() - tg.getSize(),
@@ -1624,6 +1317,32 @@ public class GameScreen extends Screen {
 					lineDuration = 0;
 				}
 			}
+			// RUN COLLIDER UPDATE
+			collider.update();
+
+			
+			// COUGDRAW
+			if (tc != null) {
+				//				g.drawCircBlue(tc.getX(), tc.getY(),
+				//						(int) Math.round(sh * .075), Color.rgb(255, 215, 0), i);
+				g.drawImage(cougar.getImage(), tc.getX()-cougar.getImage().getWidth()/2, tc.getY()-cougar.getImage().getHeight()/2, -1);	
+				cougar.update(10);
+			}
+
+			if (tcDeath) {
+				if (ballDuration < 20) {
+					if (blueCoug == null)
+						blueCoug = cougar.getImage().getBitmap().copy(cougar.getImage().getBitmap().getConfig() ,true);					
+					g.drawImage(blueCoug, tcx-cougar.getImage().getWidth()/2, tcy-cougar.getImage().getHeight()/2, 
+							200 - ballDuration * 10);
+					ballDuration++;
+				} else {
+					tcDeath = false;
+					ballDuration = 0;
+					blueCoug = null;
+				}
+			}
+
 
 			// TEETH
 
@@ -1668,8 +1387,6 @@ public class GameScreen extends Screen {
 				if (topFreeze)
 					buttonCol = Color.YELLOW;
 
-				elecBase.update(10);
-				elecBase2.update(10);
 			}
 
 			// LIGHTNING
@@ -1732,20 +1449,22 @@ public class GameScreen extends Screen {
 			int magSprite = (pieces != null && pieces.size() > 0 && pieces.get(0).getSlowing()) ? pieces.get(0).y: sh;
 			if (!scoreReset)
 				mag.updateAndDraw(magSprite);
-			
-			
+
+
 			// SHAKERS 2
 			updateShakeStrings(sStrings, true);
 			updateShakeStrings(lStrings, false);
 			updateShakeStrings(tStrings, false);
 			updateShakeStrings(cStrings, false);
+			// high holder
+			if (!cLock.getActive() && !scoreReset && !collider.charged){
+				paint4.setAlpha(100);	
+				g.drawString("high " + String.valueOf(postScore),
+						sw / 2, Coil.origin.y + 85, paint4);
 
-
+			}
 			paint9.setShader(lg);
-			magnet.update(10);
-
 		}
-
 
 		// draw the UI
 		if (state == GameState.Ready)
@@ -1782,8 +1501,8 @@ public class GameScreen extends Screen {
 		scene = null;
 		paint2 = null;
 		paint3 = null;
-//		Assets.theme = null;
-//		Assets.click = null;
+		//		Assets.theme = null;
+		//		Assets.click = null;
 		collider = null;
 		mag = null;
 		level = null;
@@ -1880,6 +1599,16 @@ public class GameScreen extends Screen {
 		this.pieces = pieces;
 	}
 
+//	public boolean getCurrentTC(){
+//		return currentTC;
+//	}
+//	public boolean getCurrentTG(){
+//		return currentTG;
+//	}
+//	public boolean getScoreReset(){
+//		return scoreReset;
+//	}
+	
 	//////////////// HELPERS //////////////////
 
 	private void updateShakeStrings(ArrayList<ShakeString> shakeS, Boolean pointString){

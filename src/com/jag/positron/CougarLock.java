@@ -122,7 +122,7 @@ public class CougarLock {
 				else countdown = null;
 				if (countdown == null){
 					countdown = new Message(sw/2, sh/2, .5f, .5f, String.valueOf((int)(runTimer.getRemainingMillis()/1000+.999)), 
-							.5f, g, Color.GRAY);
+							.5f, g, Color.GRAY, false);
 					countdown.setMAlpha(70);
 				}
 

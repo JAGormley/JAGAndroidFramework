@@ -83,8 +83,7 @@ public class MainMenuScreen extends Screen {
 				Assets.coug5 = g.newImage("coug5b.png", ImageFormat.RGB565);
 				Assets.mFace = g.newImage("face2PIXX.gif", ImageFormat.RGB565);
 				Assets.mFaced = g.newImage("facedeathPIX3.gif", ImageFormat.RGB565);
-				game.setScreen(new Tutorial(game));
-
+//				game.setScreen(new Tutorial(game));
 
 			}
 
@@ -96,9 +95,6 @@ public class MainMenuScreen extends Screen {
 			if (event.x > game.getLoadWidth()*.53 && event.y > game.getLoadHeight()*.91 && instr == 0 && event.type == TouchEvent.TOUCH_UP && loaded){		
 				android.os.Process.killProcess(android.os.Process.myPid());
 			}
-
-
-
 		}
 	}
 

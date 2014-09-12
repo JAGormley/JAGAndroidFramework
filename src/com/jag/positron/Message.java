@@ -31,24 +31,24 @@ public class Message {
 	private float origTSize;
 	private boolean firstUpdate;
 	private boolean bg;
-/**
- * 
- * @param x
- * @param y
- * @param nonFadeTime: in secs
- * @param fadeTime: in secs
- * @param text
- * @param textSize: in pix
- * @param g: main Graphics object 
- * @param colour
- */
-	public Message (int x, int y, float nonFadeTime, float fadeTime, String text, float textSize, Graphics g, int colour){
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param nonFadeTime: in secs
+	 * @param fadeTime: in secs
+	 * @param text
+	 * @param textSize: in pix
+	 * @param g: main Graphics object 
+	 * @param colour
+	 */
+	public Message (int x, int y, float nonFadeTime, float fadeTime, String text, float textSize, Graphics g, int colour, boolean bg){
 		this.g = g;
 		this.text = text;
 		this.fadeTime = fadeTime;
 		this.nonFadeTime = nonFadeTime;
 		this.nonFadeTime= nonFadeTime; 
-		this.bg = true;
+		this.bg = bg;
 		firstUpdate = true;
 		mX = x;
 		mY = y;
@@ -59,16 +59,15 @@ public class Message {
 		p.setTextSize(Math.round(GameScreen.screenheight * textSize));
 		p.setTextAlign(Paint.Align.CENTER);
 		p.setColor(colour);
-		
 		bgP.setTypeface(Assets.font);
 		bgP.setTextSize(Math.round(GameScreen.screenheight * textSize));
 		bgP.setTextAlign(Paint.Align.CENTER);
 		bgP.setColor(Color.GRAY);
-		
+
 		this.f = new TextFader (fadeTime, x, p.measureText(text)*AndroidGame.actualLoadWidth/800);
 		alive = true;
 	}
-	
+
 	public void drawMessage(){
 		if (firstUpdate){
 			startTime = SystemClock.elapsedRealtime();
@@ -76,31 +75,35 @@ public class Message {
 		}
 		elapsedTime = (SystemClock.elapsedRealtime() - startTime)/1000;
 		if (elapsedTime < nonFadeTime){
-			g.drawString(text, mX-10, mY-10, bgP);
+			if (bg)
+				g.drawString(text, mX-5, mY-5, bgP);
 			g.drawString(text, mX, mY, p);
 		}
-		else if (f.isAlive()){
-		p.setShader(new LinearGradient(f.getStart(), mY, f.getEnd(), mY, colour, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP));
-		bgP.setShader(new LinearGradient(f.getStart(), mY, f.getEnd(), mY, Color.GRAY, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP));
-		if (bg){
-			g.drawString(text, mX-5, mY-5, bgP);
+
+		else if (f == null || f.isAlive()){
+			if (f == null)
+				this.f = new TextFader (fadeTime, mX, p.measureText(text)*AndroidGame.actualLoadWidth/800);
+			p.setShader(new LinearGradient(f.getStart(), mY, f.getEnd(), mY, colour, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP));
+			bgP.setShader(new LinearGradient(f.getStart(), mY, f.getEnd(), mY, Color.GRAY, Color.alpha(0), android.graphics.Shader.TileMode.CLAMP));
+			if (bg){
+				g.drawString(text, mX-5, mY-5, bgP);
+			}
+			g.drawString(text, mX, mY, p);		
+			f.update();
 		}
-		g.drawString(text, mX, mY, p);		
-		f.update();		
-	}
 		else alive = false;
 	}
-	
+
 	/** grow the word by this percent of its original size
 	 **/
 	public void growM(float totalGrowthPercent){
 		float tempDiv = (elapsedTime/(nonFadeTime+fadeTime));
 		textSize = origTSize+((totalGrowthPercent*origTSize)*tempDiv);
-		
+
 		p.setTextSize(textSize);
 		bgP.setTextSize(textSize);
 	}
-	
+
 	public void setX(int x){
 		mX = x;
 	}
@@ -115,6 +118,7 @@ public class Message {
 	}
 	public void setMAlpha(int alpha){
 		p.setAlpha(alpha);
+		bgP.setAlpha(alpha);
 	}
 	public String getText(){
 		return text;

@@ -26,11 +26,11 @@ public class Pieces {
 	private int origX;
 	private int origY;
 	private boolean slowing;
-	private int accMod;
+//	private int accMod;
 
 
 	public Pieces(int startX, int startY, boolean inittype, GameScreen gameScreen2, double recentInterval){
-		accMod = 12;
+//		accMod = 12;
 		scene = GameScreen.getScene();
 		screenHeight = GameScreen.screenheight;
 		gamescreen = gameScreen2;
@@ -54,7 +54,7 @@ public class Pieces {
 
 	}
 
-	public void update(){
+	public void update(float accMod){
 //		System.out.println(speed);
 		
 		if (!fadeTimer.getTrigger()){
@@ -220,7 +220,7 @@ public class Pieces {
 	}
 	
 	public void setAccMod(int m){
-		accMod = m;
+//		accMod = m;
 	}
 
 	public void setBackspeed(int b){
