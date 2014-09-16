@@ -63,7 +63,7 @@ public class Slider {
 				double sRem = sAlph.getRemainingMillis();		
 				double sEla = sAlph.getElapsedMillis();
 				double sTot = sAlph.getTotalMillis();
-				int sAlphProp = (int) ((sRem > sTot/2) ? 					
+				int sAlphProp = (int) ((sRem > sTot/2) ?
 						255* ( (sRem-(sTot/2)) / (sTot/2) ) :
 							255* ( (sEla-(sTot/2)) / (sTot/2) ));
 				if (sAlphProp > 255) sAlphProp = 255;
@@ -74,7 +74,7 @@ public class Slider {
 		int slideSlicer = 10;
 		int sliderSlices = boundX*2/slideSlicer;
 		int blockWidth = (int)(blockSize*(slideSlicer*.08));
-		int sliderCol = (fingerMove) ? Color.MAGENTA : Color.RED;
+		int sliderCol = (fingerMove) ? Color.CYAN : Color.RED;
 		
 		for (int i = 0; i < slideSlicer ; i++){
 			g.drawRect(x-boundX+(blockSize/2)+(i*sliderSlices), y-boundY+(blockSize/2), blockWidth, boundY*2-(blockSize)+3, sliderCol, sAlphProp);

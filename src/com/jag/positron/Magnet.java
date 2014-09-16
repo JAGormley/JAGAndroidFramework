@@ -39,7 +39,7 @@ public class Magnet {
 		if (spriteY < height && stretcher < stretchMax){		
 			stretcher+=stretchFactor;
 		}
-		else if (stretcher > 1) stretcher -= stretchFactor;
+		else if (stretcher > 1) stretcher -= stretchFactor*3;
 		if (stretcher < 1) stretcher = 1; 
 
 		for (int i = 0; i < lines.size(); i++) {
@@ -59,13 +59,13 @@ public class Magnet {
 		
 		// COLOR TRANSITIONS
 		if (stretcher == 1){
-			h = 300f;
-			b = (.5f * ((float)light/205f)) +.5f;
+			h = 180;
 			s = ((float)light/205f);
+			b = (.5f * ((float)light/205f)) +.5f;			
 		}
 		else {
-			b = (.5f * ((float)stretcher/(float)stretchMax)) +.5f;
 			s = 1f * ((float)stretcher/(float)stretchMax);
+			b = (.5f * ((float)stretcher/(float)stretchMax)) +.5f;			
 		}
 		int col = Color.HSVToColor(new float[]{h,s,b});
 

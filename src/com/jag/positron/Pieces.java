@@ -30,7 +30,6 @@ public class Pieces {
 
 
 	public Pieces(int startX, int startY, boolean inittype, GameScreen gameScreen2, double recentInterval){
-//		accMod = 12;
 		scene = GameScreen.getScene();
 		screenHeight = GameScreen.screenheight;
 		gamescreen = gameScreen2;
@@ -39,7 +38,7 @@ public class Pieces {
 		speed = 15;
 		visible = true;
 		direction = true;
-//		type = inittype;
+		type = inittype;
 		type = true;
 		wayback = false;
 		backspeed = 25;
@@ -62,7 +61,7 @@ public class Pieces {
 			shakey.update();
 
 			if (shakey.getxShift()){
-//				type = !type;
+				type = !type;
 				x = origX;
 				x += shakey.getShifter();
 			}

@@ -37,6 +37,7 @@ public class Level {
 		COUGAR, GRID, FALCON;
 	}
 
+	// NOTE: recentInterval & getSpeed are the main difficulty determiners
 	private Level(){
 		sw = GameScreen.screenwidth;
 		sh = GameScreen.screenheight;
@@ -72,8 +73,7 @@ public class Level {
 		levelSpriteNumber.add(0, 0);
 		System.out.println(levelSpriteNumber.toString());
 		System.out.println(scoreMults.toString());
-		System.out.println(scoreThreshs.toString());
-		
+		System.out.println(scoreThreshs.toString());	
 	}
 
 	public void update(int score, boolean scoreReset){
@@ -90,7 +90,7 @@ public class Level {
 			}
 		}
 
-		recentInterval = (int) (-.41*Math.pow(5*level, 1.15)) + 40;
+		
 //		System.out.println(recentInterval);
 		for (int i = 0; i < scoreThreshs.size()-1; i++) {
 			if (score >= scoreThreshs.get(i) && score < scoreThreshs.get(i+1)){
@@ -103,6 +103,7 @@ public class Level {
 			if (getScoreMult() != 1)
 				message = true;
 			multMessage = null;
+			recentInterval = (int) (-.41*Math.pow(5*level, 1.11)) + 40;
 			prevLevel = level;
 		}
 	}
@@ -125,19 +126,6 @@ public class Level {
 		}
 	}
 
-	public Integer getSpriteSpeed(){
-		return (int) (.47*Math.pow(5*level, 1.1	)) + 15;
-	}
-	public Integer getBackSpeed(){
-		return (int) (.55*Math.pow(level, 2))+ 25;
-	}
-	public Integer getAccMod(){
-		return (12-level+1 < 3) ? 3 : 12-level+1;
-	}
-	public Integer getCougSpeed(){
-		return (int) Math.pow(.5*level, 1.2) + 7;
-	}
-	// FIX
 	public boolean cougSpacer(){
 		if (cougTimer == null)
 			cougTimer = new PosTimer(randy.nextInt(30000-(level*1500)));
@@ -180,8 +168,7 @@ public class Level {
 		else if (obs == Obs.FALCON){
 			if (level <= 5 || level == 6)
 				return true;
-			else return !fEnable;
-			
+			else return !fEnable;			
 		}
 		else return true;
 	}
@@ -204,7 +191,18 @@ public class Level {
 	public Boolean getMessageTruth(){
 		return message;
 	}
-	
+	public Integer getSpriteSpeed(){
+		return (int) (.47*Math.pow(3*level, 1.1	)) + 15;
+	}
+	public Integer getBackSpeed(){
+		return (int) (.55*Math.pow(level, 1.5))+ 25;
+	}
+	public Integer getAccMod(){
+		return (12-level+1 < 3) ? 3 : 12-level+1;
+	}
+	public Integer getCougSpeed(){
+		return (int) Math.pow(.5*level, 1.2) + 7;
+	}
 	public static Level getInstance(){
 		if (theLevel == null){
 			theLevel = new Level();

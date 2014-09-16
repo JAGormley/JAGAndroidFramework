@@ -65,7 +65,7 @@ public class GameScreen extends Screen {
 	List<TouchEvent> touchEvents;
 
 	public boolean scoreReset;
-	
+
 	int timePassed, difficulty, recentInterval, score, scoreTemp,
 	scoreTempTemp, scoreTempDraw, drawTimer, killx, killy,
 	lightningDuration, ballDuration, scoreMult, updateInterval, tcx,
@@ -148,6 +148,11 @@ public class GameScreen extends Screen {
 	private Message multMessage;
 	private Game freshGame;
 
+	private PosTimer frameTimer;
+	private int frameCount = 0;
+
+	private int frames;
+
 
 	// private PosTriangle posT;
 
@@ -204,9 +209,10 @@ public class GameScreen extends Screen {
 		paint.setColor(Color.WHITE);
 
 		paint2 = new Paint();
-		paint2.setColor(Color.BLUE);
-		paint2.setStyle(Style.STROKE);
-		paint2.setStrokeWidth(Math.round(sh * .01));
+		paint2.setColor(Color.RED);
+		paint2.setTypeface(Assets.font);
+		paint2.setTextSize(Math.round(sh * .027));
+		paint2.setTextAlign(Paint.Align.CENTER);
 
 		paint3 = new Paint();
 		paint3.setTypeface(Assets.font);
@@ -342,7 +348,7 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void update(float deltaTime) {
-		
+
 		touchEvents = game.getInput().getTouchEvents();
 
 		if (state == GameState.Ready)
@@ -366,7 +372,7 @@ public class GameScreen extends Screen {
 				game.getGraphics().clearScreen(Color.BLACK);
 				state = GameState.Running;
 				Assets.theme.stop();
-				//				Debug.startMethodTracing();
+								Debug.startMethodTracing();
 			}
 		}
 	}
@@ -452,6 +458,7 @@ public class GameScreen extends Screen {
 		// CHECKS AND UPDAteS:
 
 		level.update(score, scoreReset);
+	
 		//		System.out.println("mult: "+level.getScoreMult());
 		//		System.out.println("level: "+level.getLevel());
 		//		System.out.println("speed: "+level.getSpriteSpeed());
@@ -482,13 +489,13 @@ public class GameScreen extends Screen {
 				&& !currentTC && tc == null 
 				&& !scoreReset && !level.obsGate(Level.Obs.COUGAR)){
 
-				if (level.cougSpacer()) {
-					tc = new TimeCharge((randomInt2 + 1) * lane,
-							(int) Math.round(sh * .78), level.getCougSpeed());
-					Assets.tcDrone.play();
-					currentTC = true;
-					level.nullTimer(Level.Obs.COUGAR);
-				
+			if (level.cougSpacer()) {
+				tc = new TimeCharge((randomInt2 + 1) * lane,
+						(int) Math.round(sh * .78), level.getCougSpeed());
+				Assets.tcDrone.play();
+				currentTC = true;
+				level.nullTimer(Level.Obs.COUGAR);
+
 			}
 		}
 
@@ -620,6 +627,7 @@ public class GameScreen extends Screen {
 				p.wayback = false;
 				//				p.setSpeedX(p.getSpeedX() * depLevel);
 				p.setSpeedX(level.getSpriteSpeed());
+				p.setBackspeed(level.getBackSpeed());
 				if ((p.getSpeedX() == tempPiece.getSpeedX()) || (topFreeze && topFade != null))
 					getPieces().add(p);
 				else
@@ -674,13 +682,6 @@ public class GameScreen extends Screen {
 			else if (cLock.getStartup()){
 				//				System.out.println("here");
 				recent = true;
-			}
-
-			else if (p.isVisible() && topFreeze && !freeze && p.wayback
-					&& !negPressed && !posPressed && !exitCases) {
-				p.setBackspeed((int) Math.round(sh * .0124));	
-				p.updateback();
-				//								System.out.println("yes2");
 			}
 
 			else if (p.isVisible() && !p.wayback && !freeze && currentTG
@@ -745,10 +746,6 @@ public class GameScreen extends Screen {
 
 			else if (p.isVisible() && p.wayback && !freeze
 					&& !exitCases && !newPiece && !topFreeze) {
-				if (scoreMult <= 15)
-					p.setBackspeed(25);
-				if (scoreMult > 15)
-					p.setBackspeed(30);
 				p.updateback();
 				freeze = true;
 
@@ -761,10 +758,6 @@ public class GameScreen extends Screen {
 			}
 
 			else if (p.isVisible() && freeze && !exitCases && p.wayback) {
-				if (scoreMult <= 15)
-					p.setBackspeed(25);
-				if (scoreMult > 15)
-					p.setBackspeed(30);
 				p.updateback();
 				collider.checkCharged(p.x, p.y, scene.getLine());
 				if (collider.isLazer()){
@@ -781,7 +774,7 @@ public class GameScreen extends Screen {
 					tPaint.setTypeface(Assets.font);
 					tPaint.setTextSize(Math.round(sh * .033));
 					tPaint.setTextAlign(Paint.Align.CENTER);
-					tPaint.setColor(Color.CYAN);
+					tPaint.setColor(Color.MAGENTA);
 
 					tStrings.add(new ShakeString(game.getGraphics(), "+"+String.valueOf(level.getScoreMult()*1), p.x, 40, tPaint));
 					pointXs.add(p.x);
@@ -996,8 +989,8 @@ public class GameScreen extends Screen {
 					&& event.y < Math.round(sh * .423)) {
 				//				nullify();
 				//				cLock = null;
-								collider.reset();
-								level.reset();
+				collider.reset();
+				level.reset();
 				Assets.theme.stop();
 				Assets.click2.play(100);
 				nullify();
@@ -1021,6 +1014,7 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void paint(float deltaTime) {
+
 		Graphics g = game.getGraphics();
 		getAlert().update(10);
 
@@ -1065,6 +1059,19 @@ public class GameScreen extends Screen {
 			}
 			if (!scoreReset)
 				slider.drawUpdate(fingerx, (int)(sh*.951), fingerMove);
+			
+			if (ControlPanel.framerate){
+				if (frameTimer == null || frameTimer.getTrigger()){
+					frames = frameCount*2;
+					frameTimer = new PosTimer(500);
+					frameCount = 0;			
+				}
+				else {
+					g.drawString(String.valueOf(frames), 30, 150, paint2);
+					frameTimer.update();
+					frameCount++;			
+				}
+			}
 
 
 			// SCORERESET DRAW
@@ -1308,7 +1315,7 @@ public class GameScreen extends Screen {
 			// RUN COLLIDER UPDATE
 			collider.update();
 
-			
+
 			// COUGDRAW
 			if (tc != null) {
 				//				g.drawCircBlue(tc.getX(), tc.getY(),
@@ -1587,16 +1594,6 @@ public class GameScreen extends Screen {
 		this.pieces = pieces;
 	}
 
-//	public boolean getCurrentTC(){
-//		return currentTC;
-//	}
-//	public boolean getCurrentTG(){
-//		return currentTG;
-//	}
-//	public boolean getScoreReset(){
-//		return scoreReset;
-//	}
-	
 	//////////////// HELPERS //////////////////
 
 	private void updateShakeStrings(ArrayList<ShakeString> shakeS, Boolean pointString){
