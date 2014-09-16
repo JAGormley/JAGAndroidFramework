@@ -337,13 +337,12 @@ public class GameScreen extends Screen {
 		Assets.gridDrone.setLooping(true);
 
 		tempPiece = new Pieces(0, 0, true, this, level.getRecentInterval());
-		score = 750;
-
+		score = 7000;
 	}
 
 	@Override
 	public void update(float deltaTime) {
-		System.out.println(currentTG);
+		
 		touchEvents = game.getInput().getTouchEvents();
 
 		if (state == GameState.Ready)
@@ -429,17 +428,6 @@ public class GameScreen extends Screen {
 							.getLine() - Math.round(sh * .083)))
 							&& (event.y > fingery - Math.round(sh * .075))) {
 				lock = false;
-				if (!topFreeze) {
-					if (score - scoreTemp < 0)
-						score = 0;
-					else {
-						//						score -= scoreTemp;
-					}
-					if (scoreTemp != 0) {
-						scoreTempDraw = scoreTemp;
-						scoreTemp = 0;
-					}
-				}
 			}
 
 			if ((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN)
@@ -484,22 +472,22 @@ public class GameScreen extends Screen {
 			if ((timePassed % recentToothInterval) == 0) {
 				recentTooth = false;
 			}
-			if (level.falcSpacer()) {
+			if (level.falcSpacer() && !level.obsGate(Level.Obs.FALCON)) {
 				teeth = true;
 			}
 		}
 
 		// timeCHARGE
 		if (!cLock.getActive() && !currentTG 
-				&& !currentTC && tc == null && !scoreReset){
-			
+				&& !currentTC && tc == null 
+				&& !scoreReset && !level.obsGate(Level.Obs.COUGAR)){
 
 				if (level.cougSpacer()) {
 					tc = new TimeCharge((randomInt2 + 1) * lane,
 							(int) Math.round(sh * .78), level.getCougSpeed());
 					Assets.tcDrone.play();
 					currentTC = true;
-					level.nullTimer("coug");
+					level.nullTimer(Level.Obs.COUGAR);
 				
 			}
 		}
@@ -524,14 +512,14 @@ public class GameScreen extends Screen {
 		}
 
 		// timeGRID
-		if (!currentTG && tg == null) {
+		if (!currentTG && tg == null && !level.obsGate(Level.Obs.GRID)) {
 			if (level.gridSpacer()) {
 				tg = new TimeGrid((int) Math.round(sh * .87));
 				currentTG = true;
 				Assets.gridDrone.play();
 				gridX = -10;
 				gridY = -10;
-				level.nullTimer("grid");
+				level.nullTimer(Level.Obs.GRID);
 			}
 		}
 
@@ -605,7 +593,7 @@ public class GameScreen extends Screen {
 		if (toothCount >= 25) {
 			teeth = false;
 			toothCount = 0;
-			level.nullTimer("falc");
+			level.nullTimer(Level.Obs.FALCON);
 		}
 
 		// Pieces

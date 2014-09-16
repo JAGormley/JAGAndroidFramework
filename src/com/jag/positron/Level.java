@@ -3,6 +3,8 @@ package com.jag.positron;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.jag.positron.Level.Obs;
+
 import android.graphics.Color;
 
 public class Level {
@@ -25,6 +27,15 @@ public class Level {
 	private PosTimer gridTimer;
 	private PosTimer falcTimer;
 	private Random randy;
+	// Obstacle enable/disable
+	private boolean cEnable = true;
+	private boolean gEnable = true;
+	private boolean fEnable = true;
+	
+	
+	public enum Obs {
+		COUGAR, GRID, FALCON;
+	}
 
 	private Level(){
 		sw = GameScreen.screenwidth;
@@ -32,7 +43,6 @@ public class Level {
 		randy = new Random();
 		level = 1;
 		prevLevel = level;
-		//		recentInterval = (int) (-.41*Math.pow(level, 2)) + 40;
 		scoreMults = new ArrayList<Integer>();
 		levelSpriteNumber = new ArrayList<Integer>();
 		scoreThreshs = new ArrayList<Integer>();
@@ -54,18 +64,20 @@ public class Level {
 
 
 		// set number of sprites per level
-		for (int i = 0; i < numLevels; i++) {
-			levelSpriteNumber.add( (int)(25/((-.41*Math.pow(5*(level+i), 1.15) + 40) * .018)) );
-			scoreThreshs.add(scoreMults.get(i)*levelSpriteNumber.get(i));		
-			//			System.out.println((int) (-.41*Math.pow(4*(level+i), 1.2)) + 40);
+		for (int i = 0; i < numLevels; i++) {	
+			levelSpriteNumber.add( (int)(25/((-.41*Math.pow(5*(level+i), 1.1) + 40) * .018)) );
+			int accumulator = (i > 0) ? scoreThreshs.get(i-1): 0;
+			scoreThreshs.add(scoreMults.get(i)*levelSpriteNumber.get(i) + accumulator);				
 		}
-		// set score threshold per level
-		for (int i = 0; i < numLevels; i++) {
-
-		}
+		levelSpriteNumber.add(0, 0);
+		System.out.println(levelSpriteNumber.toString());
+		System.out.println(scoreMults.toString());
+		System.out.println(scoreThreshs.toString());
+		
 	}
 
 	public void update(int score, boolean scoreReset){
+//		System.out.println(level);
 		if (!scoreReset){
 			if (cougTimer != null){
 				cougTimer.update();
@@ -79,9 +91,11 @@ public class Level {
 		}
 
 		recentInterval = (int) (-.41*Math.pow(5*level, 1.15)) + 40;
+//		System.out.println(recentInterval);
 		for (int i = 0; i < scoreThreshs.size()-1; i++) {
 			if (score >= scoreThreshs.get(i) && score < scoreThreshs.get(i+1)){
 				level = i+1;
+//				System.out.println(level);
 			}
 		}
 
@@ -126,30 +140,50 @@ public class Level {
 	// FIX
 	public boolean cougSpacer(){
 		if (cougTimer == null)
-			cougTimer = new PosTimer(randy.nextInt(4000-(level*333)));
+			cougTimer = new PosTimer(randy.nextInt(30000-(level*1500)));
 		return cougTimer.getTrigger();
 	}
 
 	public boolean gridSpacer(){
 		if (gridTimer == null)
-			gridTimer = new PosTimer(1000);
+			gridTimer = new PosTimer(randy.nextInt(30000-(level*1500)));
 		return gridTimer.getTrigger();
 	}
 	public boolean falcSpacer(){
 		if (falcTimer == null)
-			falcTimer = new PosTimer(2000);
+			falcTimer = new PosTimer(randy.nextInt(30000-level*1500));
 		return falcTimer.getTrigger();
 	}
-	public void nullTimer(String timer){
-		if (timer == "coug") {
+	public void nullTimer(Obs cougar){
+		if (cougar == Obs.COUGAR) {
 			cougTimer = null;
 		}
-		else if (timer == "grid"){
+		else if (cougar == Obs.GRID){
 			gridTimer = null;
 		}
-		else if (timer == "falc"){
+		else if (cougar == Obs.FALCON){
 			falcTimer = null;
 		}
+	}
+	public boolean obsGate(Obs obs) {
+		if (obs == Obs.COUGAR ){
+			if (level <= 2 || level == 4 || level == 5)
+				return true;
+			else return !cEnable;		
+		}
+		else if (obs == Obs.GRID){
+			if (level <= 3 || level == 5)
+				return true;
+			else return !gEnable;
+			
+		}
+		else if (obs == Obs.FALCON){
+			if (level <= 5 || level == 6)
+				return true;
+			else return !fEnable;
+			
+		}
+		else return true;
 	}
 
 	public Integer getGridSpeed(){
@@ -170,7 +204,7 @@ public class Level {
 	public Boolean getMessageTruth(){
 		return message;
 	}
-
+	
 	public static Level getInstance(){
 		if (theLevel == null){
 			theLevel = new Level();
@@ -182,6 +216,5 @@ public class Level {
 		theLevel = new Level();
 		
 	}
-
 
 }
