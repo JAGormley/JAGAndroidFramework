@@ -31,8 +31,8 @@ public class Level {
 	private boolean cEnable = true;
 	private boolean gEnable = true;
 	private boolean fEnable = true;
-	
-	
+
+
 	public enum Obs {
 		COUGAR, GRID, FALCON;
 	}
@@ -77,7 +77,7 @@ public class Level {
 	}
 
 	public void update(int score, boolean scoreReset){
-//		System.out.println(level);
+		//		System.out.println(level);
 		if (!scoreReset){
 			if (cougTimer != null){
 				cougTimer.update();
@@ -90,12 +90,12 @@ public class Level {
 			}
 		}
 
-		
-//		System.out.println(recentInterval);
+
+		//		System.out.println(recentInterval);
 		for (int i = 0; i < scoreThreshs.size()-1; i++) {
 			if (score >= scoreThreshs.get(i) && score < scoreThreshs.get(i+1)){
 				level = i+1;
-//				System.out.println(level);
+				//				System.out.println(level);
 			}
 		}
 
@@ -139,7 +139,8 @@ public class Level {
 	}
 	public boolean falcSpacer(){
 		if (falcTimer == null)
-			falcTimer = new PosTimer(randy.nextInt(30000-level*1500));
+			falcTimer = new PosTimer(randy.nextInt(15000-level*1500));
+//			falcTimer = new PosTimer(randy.nextInt(30000-level*1500));
 		return falcTimer.getTrigger();
 	}
 	public void nullTimer(Obs cougar){
@@ -163,10 +164,10 @@ public class Level {
 			if (level <= 3 || level == 5)
 				return true;
 			else return !gEnable;
-			
+
 		}
 		else if (obs == Obs.FALCON){
-			if (level <= 5 || level == 6)
+			if (level <= 4 || level == 6)
 				return true;
 			else return !fEnable;			
 		}
@@ -186,7 +187,8 @@ public class Level {
 		return recentInterval;
 	}
 	public Integer getScoreMult(){
-		return scoreMults.get(level);
+		if (CougarLock.active) return 0;
+		else return scoreMults.get(level);
 	}
 	public Boolean getMessageTruth(){
 		return message;
@@ -212,7 +214,7 @@ public class Level {
 
 	public void reset() {
 		theLevel = new Level();
-		
+
 	}
 
 }

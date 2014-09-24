@@ -58,10 +58,15 @@ public class Magnet {
 		float b = 0f;
 		
 		// COLOR TRANSITIONS
-		if (stretcher == 1){
+		if (stretcher == 1 && !CougarLock.active){
 			h = 180;
 			s = ((float)light/205f);
 			b = (.5f * ((float)light/205f)) +.5f;			
+		}
+		else if (CougarLock.active){
+			h = 31;
+			s = ((float)light/205f);
+			b = (.5f * ((float)light/205f)) +.5f;
 		}
 		else {
 			s = 1f * ((float)stretcher/(float)stretchMax);

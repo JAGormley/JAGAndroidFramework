@@ -51,7 +51,7 @@ public class Collider {
 				p.move();
 			p.draw();
 		}
-		
+
 		if (!charged)
 			coil.updateAndDraw(charged, lazer);
 
@@ -156,10 +156,15 @@ public class Collider {
 	}
 
 	public void lazer(int x, int y){
+		int skw = Assets.coolSkull.getWidth();
+		int skh = Assets.coolSkull.getHeight();
 		for (Particle p: parts){
-			p.setLazer(Coil.origin.x, Coil.origin.y);
+			// landing spot of particles:
+			if (p.x < GameScreen.screenwidth/2)
+				p.setLazer(coil.skullGlassesX(false), Coil.origin.y+skh/8);
+			else p.setLazer(coil.skullGlassesX(true), Coil.origin.y+skh/8);
 		}
-//		bolt.strike(x, y+Assets.neg.getHeight()/2);
+		//		bolt.strike(x, y+Assets.neg.getHeight()/2);
 		coil.setStrike(x,y);
 	}
 

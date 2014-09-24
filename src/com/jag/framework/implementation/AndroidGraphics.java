@@ -44,17 +44,37 @@ public class AndroidGraphics implements Graphics {
 	Rect dstRect = new Rect();
 	LinearGradient lg;
 	LinearGradient lg2;
+	private Path yepAth;
+	private Paint newPaint;
+	private Paint pointPaint;
+	private Paint pnt;
+	private RectF rect;
 
 
 	public AndroidGraphics(AssetManager assets, Bitmap frameBuffer) {
 		this.assets = assets;
 		this.frameBuffer = frameBuffer;
 		this.canvas = new Canvas(frameBuffer);
+		rect = new RectF();
 		this.paint = new Paint();
 		this.paint2 = new Paint();
 		this.paint3 = new Paint();
 		this.paint4 = new Paint();
 		this.paint5 = new Paint();
+		
+		
+		pointPaint = new Paint();
+		newPaint = new Paint();
+		newPaint.setColor(Color.CYAN);
+		newPaint.setStrokeWidth(4);
+		newPaint.setAlpha(255);
+		newPaint.setStyle(Style.STROKE);
+		
+		pnt = new Paint();
+		pnt.setStyle(Style.STROKE);
+		pnt.setStrokeWidth(3);
+		
+		yepAth = new Path();
 		this.lg = new LinearGradient(400, 1100, 400,
 				950, Color.argb(100, 0, 255, 255), Color.alpha(0),
 				android.graphics.Shader.TileMode.CLAMP);
@@ -177,13 +197,10 @@ public class AndroidGraphics implements Graphics {
 	}
 	
 	public void drawOval(float left, float top, float right, float bottom, int color, int alpha){
-		Paint pnt = new Paint();
+
 		pnt.setColor(color);
-		pnt.setStyle(Style.STROKE);
-		pnt.setStrokeWidth(3);
 		pnt.setAlpha(alpha);
-		
-		RectF rect = new RectF();
+
 		rect.set(left, top, right, bottom);
 		canvas.drawOval(rect, pnt);
 	}
@@ -233,7 +250,8 @@ public class AndroidGraphics implements Graphics {
 	}
 
 	public void drawEllipse(int left, int top, int right, int bottom) {
-		canvas.drawOval(new RectF(left, top, right, bottom), paint);
+		rect.set(left, top, right, bottom);
+		canvas.drawOval(rect, paint);
 
 	}
 
@@ -411,7 +429,6 @@ public class AndroidGraphics implements Graphics {
 
 	@Override
 	public void drawPath(ArrayList<ArrayList<Integer>> coords, int points){
-		Path yepAth = new Path();
 		Paint newPaint = new Paint();
 		yepAth.moveTo(coords.get(0).get(0), coords.get(0).get(1));
 
@@ -427,70 +444,58 @@ public class AndroidGraphics implements Graphics {
 		newPaint.setStyle(Style.STROKE);
 
 		canvas.drawPath(yepAth, newPaint);
-
+		yepAth.reset();
 	}
 	
 	public void drawBoltPath(ArrayList<ArrayList<Integer>> coords, int points, int alpha){
-		Path yepAth = new Path();
-		Paint newPaint = new Paint();
 		yepAth.moveTo(coords.get(0).get(0), coords.get(0).get(1));
+		newPaint.setAlpha(alpha);
 
 		for (int i = 1 ; i < coords.size(); i++){
 			if ((i % points) == 0)
 				yepAth.moveTo(coords.get(i).get(0), coords.get(i).get(1));
 			yepAth.lineTo(coords.get(i).get(0), coords.get(i).get(1));
 		}
-
-		newPaint.setColor(Color.CYAN);
-		newPaint.setStrokeWidth(4);
-		newPaint.setAlpha(255);
-		newPaint.setStyle(Style.STROKE);
-		newPaint.setAlpha(alpha);
-
 		canvas.drawPath(yepAth, newPaint);
+		yepAth.reset();
 	}
 	
-	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, int alpha, int color, int strokeWidth, boolean charged, boolean strike){
-		Path yepAth = new Path();
-		Paint newPaint = new Paint();
+	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, 
+			int alpha, int color, int strokeWidth, boolean charged, boolean strike){
 		yepAth.moveTo(points.get(0).x, points.get(0).y);
 
 		for (int i = 1 ; i < points.size(); i++){
 			if ((i % ptNum) == 0)
 				yepAth.moveTo(points.get(i).x, points.get(i).y);
-			yepAth.lineTo(points.get(i).x, points.get(i).y);
-			if (charged){
-//				drawCircFill(points.get(i).x, points.get(i).y, 4, Color.YELLOW, 255);				
-			}			
+			yepAth.lineTo(points.get(i).x, points.get(i).y);			
 		}
-				
-		newPaint.setColor(color);
-		newPaint.setStrokeWidth(strokeWidth);
-		newPaint.setStyle(Style.STROKE);
-//		newPaint.setAlpha(alpha);
+		
+		pointPaint.setColor(color);
+		pointPaint.setStrokeWidth(strokeWidth);
+		pointPaint.setStyle(Style.STROKE);
 		
 		if (charged && !strike){			
 //			System.out.println(alpha);
 			this.lg = new LinearGradient(400, 1100, 400,
 					950, Color.argb(alpha, 0, 255, 255), Color.alpha(0),
 					android.graphics.Shader.TileMode.CLAMP);
-			newPaint.setShader(lg);			
+			pointPaint.setShader(lg);			
 			
 			// for backgroundline
 			if (strokeWidth > 4){				
 				this.lg2 = new LinearGradient(400, 1100, 400,
 						950, Color.argb((int) (alpha/1.3), 0, 0, 255), Color.alpha(0),
 						android.graphics.Shader.TileMode.CLAMP);
-				newPaint.setShader(lg2);
+				pointPaint.setShader(lg2);
 			}			
 		}
 		else if (strike){
-			newPaint.setAlpha(alpha);
+			pointPaint.setAlpha(alpha);
 		}
-		else newPaint.setShader(null);
+		else pointPaint.setShader(null);
 		
-//		drawLine(400, 0, 400, 1200, color, Color.CYAN, 20, newPaint);
-		canvas.drawPath(yepAth, newPaint);
+		canvas.drawPath(yepAth, pointPaint);
+		yepAth.reset();
 		
 	}	
 	

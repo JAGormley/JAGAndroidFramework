@@ -32,6 +32,10 @@ public class Coil {
 	//	private Object strandNum;
 	private Point strikePoint;
 	private Shaker shakey;
+	private Random randstrom;
+	public static int bAlpha;
+	public int skw;
+	public int skh;
 
 	public Coil(Graphics g, Collider collider){
 		this.g = g;
@@ -48,6 +52,9 @@ public class Coil {
 		nextChargedBolt2 = new PosTimer(rand.nextInt(800));
 		skullTiplyer = 1.5;
 		shakey = new Shaker(50);
+		randstrom = new Random();
+		skw = Assets.skull.getWidth();
+		skh = Assets.skull.getHeight();
 
 	}	
 
@@ -127,20 +134,19 @@ public class Coil {
 	}
 
 	public void draw(boolean charged, boolean lazer){
-		int bAlpha = 0;
+		bAlpha = 0;
 		int boltAlph = charged ? 180 : 230;
 
 		if (strike){
 			if (fadeTimer == null){
-				fadeTimer = new PosTimer(300);
+				fadeTimer = new PosTimer(350);
 			}
 			if (!fadeTimer.getTrigger() && strike) {
 				fadeTimer.update();
 			}
 			int boltTimer = (int) fadeTimer.getRemainingMillis();
-			bAlpha = (boltTimer < 200) ? boltTimer : 200;
+			bAlpha = (boltTimer < 200) ? boltTimer : 220;
 			bAlpha = (bAlpha < 0) ? 0 : bAlpha;
-//			System.out.println();
 		}
 		
 
@@ -169,9 +175,6 @@ public class Coil {
 			}
 
 		}
-
-		int skw = Assets.skull.getWidth();
-		int skh = Assets.skull.getHeight();
 		double skullShrinkMult = .3;
 
 
@@ -210,6 +213,12 @@ public class Coil {
 			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2)+shiftsterX, (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/3))+shiftsterY, (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
 		}
 	}
+	
+	public int skullGlassesX(boolean dir){
+		if (dir)
+			return (int) (origin.x+skw*(skullTiplyer/2)/6);
+		else return (int) (origin.x-skw*(skullTiplyer/2)/6);
+	}
 
 	public void setStrike(int x, int y)
 	{
@@ -220,7 +229,6 @@ public class Coil {
 			strikePoint = new Point(x, y+Assets.pos.getHeight()/2);
 			if (fadeTimer != null) {
 				fadeTimer.reset();
-				System.out.println("here");
 			}
 		}
 	}
@@ -250,7 +258,8 @@ public class Coil {
 		private double chargedRadius;
 		private int strandNum;
 		private Point boltOrigin;
-		private boolean sComplete;
+		
+		
 
 		private Strand(){
 			points = new ArrayList<Point>();
@@ -260,7 +269,6 @@ public class Coil {
 			lifeTime = new PosTimer(randTime.nextInt(1500)+150);
 			chargedLifetime = new PosTimer(1500);
 			strike = false;
-			sComplete = false;
 		}
 
 		public void update(boolean charged){
@@ -285,7 +293,6 @@ public class Coil {
 			if (!charged)
 				lifeTime.update();
 			else chargedLifetime.update();
-			Random randstrom = new Random();
 
 			if (!charged){
 				points.clear();
@@ -370,7 +377,6 @@ public class Coil {
 
 					if (neYtPoint < strikePoint.y) {
 						midPoint = strikePoint;
-						sComplete = true;
 					}
 					else midPoint = new Point(neXtPoint, neYtPoint);
 

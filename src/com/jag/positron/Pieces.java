@@ -26,11 +26,12 @@ public class Pieces {
 	private int origX;
 	private int origY;
 	private boolean slowing;
-//	private int accMod;
+	private Level level;
 
 
 	public Pieces(int startX, int startY, boolean inittype, GameScreen gameScreen2, double recentInterval){
 		scene = GameScreen.getScene();
+		level = Level.getInstance();
 		screenHeight = GameScreen.screenheight;
 		gamescreen = gameScreen2;
 		x = startX;
@@ -39,7 +40,7 @@ public class Pieces {
 		visible = true;
 		direction = true;
 		type = inittype;
-		type = true;
+		//		type = true;
 		wayback = false;
 		backspeed = 25;
 		acc = 0;
@@ -47,28 +48,23 @@ public class Pieces {
 		genPoint = (int) (screenHeight * .75);
 		switched = false;
 		fadeTimer = new PosTimer(recentInterval*4);
-		shakey = new Shaker(250);
+		shakey = new Shaker(400-((level.getSpriteSpeed()*5)-16));
 		origX = startX;
 		origY = startY;
 
 	}
 
 	public void update(float accMod){
-//		System.out.println(speed);
-		
-		if (!fadeTimer.getTrigger()){
+		//		System.out.println(speed);
+
+		if (!shakey.shakerIsDead()){
 			fadeTimer.update();
 			shakey.update();
-
-			if (shakey.getxShift()){
+			if (shakey.shakeMillisLeft() > shakey.timer.getTotalMillis()/5)
 				type = !type;
-				x = origX;
-				x += shakey.getShifter();
-			}
-			else {
-//				y = origY;
-				y += shakey.getShifter();
-			}
+			x = origX;
+			x += shakey.getShifter();
+
 		}
 		else x = origX;	
 
@@ -96,8 +92,10 @@ public class Pieces {
 						slowing = true;
 					}
 					if (x < scene.getLine()){
+
 						y -= speed*acc;
 						acc += .5;
+
 					}
 				}
 				if (!type){
@@ -108,6 +106,7 @@ public class Pieces {
 					if (x > scene.getLine()){
 						y -= speed*acc;
 						acc += .5;
+
 					}
 				}
 			}
@@ -118,7 +117,7 @@ public class Pieces {
 
 		if (y > (genPoint)){
 			visible = false;
-			wayback = false;
+//			wayback = false;
 		}
 
 		if (!direction&&gamescreen.getTopFreeze()){
@@ -161,9 +160,10 @@ public class Pieces {
 	}
 
 	public int fadeTimer(){
-		if (fadeTimer.getRemainingMillis() > 0)
-			return (int) (fadeTimer.getRemainingMillis());
-		else return 0;
+		return alphize(shakey.timer.getElapsedMillis(), shakey.timer.getTotalMillis());
+		//		if (fadeTimer.getRemainingMillis() > 0)
+		//			return (int) (fadeTimer.getRemainingMillis());
+		//		else return 0;
 	}
 
 	public int getX() {
@@ -217,9 +217,9 @@ public class Pieces {
 	public void resetSwitched(){
 		switched = false;
 	}
-	
+
 	public void setAccMod(int m){
-//		accMod = m;
+		//		accMod = m;
 	}
 
 	public void setBackspeed(int b){
@@ -240,12 +240,21 @@ public class Pieces {
 	public void setGenPoint(int genPoint) {
 		this.genPoint = genPoint;
 	}
-	
+
 	public boolean getSlowing(){
 		return slowing;
 	}
-	
-	
+
+	/*
+	 * p point in range, t range total
+	 */
+	public int alphize(double p, double t){
+		int alph = (int)((p/t)*255);
+		if (alph > 255) alph = 255;
+		if (alph < 0) alph = 0;
+		return alph;
+	}
+
 
 	@Override
 	public int hashCode() {
