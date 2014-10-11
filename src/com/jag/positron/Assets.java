@@ -60,10 +60,10 @@ public class Assets {
 		public static Image smallSkull;
 
 		public static Image posGray;
-
+		public static Image arrow;
 		public static Image negGray;
 
-		public static Sound ouch;	   	
+		public static Sound ouch;   	
 	    
 	    public static void load(PosInit posInit) {
 //	        theme = posInit.getAudio().createMusic("positheme3.mp3");

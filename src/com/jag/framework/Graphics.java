@@ -82,7 +82,8 @@ public interface Graphics {
 
 	public void drawPosTri(PosTriangle pt, int alph);
 	
-
+	public void drawArrow(int x, int y, int size, int color, int alpha, String dir) throws Exception;
+	
 	void drawRect(int x, int y, int width, int height, int color, int alpha);
 
 	public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, int alpha);

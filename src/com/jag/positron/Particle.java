@@ -195,9 +195,9 @@ public class Particle {
 		if (Math.abs(x-spriteX) > 1 && Math.abs(y-spriteY) > 1){		
 			int partCol = CougarLock.active ? Color.GRAY : Color.BLUE;
 			if (!lazer)
-				g.drawCircFill(x, y, 5, partCol, fadester);
+				g.drawCircFill(x, y, 4, partCol, fadester);
 			if (charged){
-				g.drawCircFill(x, y, 4, Color.MAGENTA, fadester);
+				g.drawCircFill(x, y, 3, Color.MAGENTA, fadester);
 			}
 		}
 	}

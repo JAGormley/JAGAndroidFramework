@@ -27,7 +27,7 @@ public class LoadingScreen extends Screen {
 	int screenW;
 	int screenH;	
 
-	public Bitmap thisbitmap, croppedBmp;	
+	public Bitmap thisbitmap, croppedBmp;
 	AssetManager assets;
 
 	public LoadingScreen(Game game) {
@@ -81,23 +81,11 @@ public class LoadingScreen extends Screen {
 			Assets.pauseScreen = g.newImage("PAUSESCREENs.png", ImageFormat.RGB565);
 		}
 
-
-		//		Assets.instr1 = g.newImage("instr1.png", ImageFormat.RGB565);
-		//		Assets.instr2 = g.newImage("instr2.png", ImageFormat.RGB565);
-		//		Assets.instr3 = g.newImage("instr3.png", ImageFormat.RGB565);
-		//		Assets.instr4 = g.newImage("instr4.png", ImageFormat.RGB565);
-		//		Assets.instr5 = g.newImage("instr5.png", ImageFormat.RGB565);
-		//		Assets.instr6 = g.newImage("instr6.png", ImageFormat.RGB565);
-		//		Assets.instr7 = g.newImage("instr7.png", ImageFormat.RGB565);
-		//		Assets.instr8 = g.newImage("instr8.png", ImageFormat.RGB565);
-		//		Assets.instr9 = g.newImage("instr9.png", ImageFormat.RGB565);
-		//		Assets.instrPause = g.newImage("instrPAUSE2.png", ImageFormat.ARGB8888);
-
 		
 		Assets.eagle = g.newImage("eagle.png", ImageFormat.ARGB8888);
 		Assets.eagleb = g.newImage("eagleb.png", ImageFormat.ARGB8888);
 		Assets.pos = g.newImage("pos1prev.png", ImageFormat.ARGB8888);
-		Assets.neg = g.newImage("neg2prev.png", ImageFormat.ARGB8888);		
+		Assets.neg = g.newImage("neg2prev.png", ImageFormat.ARGB8888);
 		Assets.alarm1 = g.newImage("alarm1b.png", ImageFormat.ARGB8888);
 		Assets.alarm2 = g.newImage("alarm2b.png", ImageFormat.ARGB8888);
 		Assets.posGray = g.newImage("pos1GRAY.png", ImageFormat.ARGB8888);
@@ -106,6 +94,7 @@ public class LoadingScreen extends Screen {
 		Assets.skull = g.newImage("skullorig.png", ImageFormat.ARGB8888);
 		Assets.smallSkull = g.newImage("skull.png", ImageFormat.ARGB8888);
 		Assets.coolSkull = g.newImage("skullorigglass.png", ImageFormat.ARGB8888);
+		Assets.arrow = g.newImage("arrow.png", ImageFormat.ARGB8888);
 //
 		
 		//PBASE

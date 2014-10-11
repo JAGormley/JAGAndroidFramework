@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.jag.positron.Level.Obs;
+import com.jag.positron.Tooltips.Tip;
 
 import android.graphics.Color;
 
 public class Level {
 	private static Level theLevel;
-	private int level;
-	private int recentInterval;
+	public int level;
+	public int recentInterval;
 	// this is an array that contains number of sprites required to access next level
 	private ArrayList<Integer> levelSpriteNumber;
 	private ArrayList<Integer> scoreThreshs;
@@ -31,6 +32,7 @@ public class Level {
 	private boolean cEnable = true;
 	private boolean gEnable = true;
 	private boolean fEnable = true;
+	private Tooltips tooltips;
 
 
 	public enum Obs {
@@ -48,6 +50,7 @@ public class Level {
 		levelSpriteNumber = new ArrayList<Integer>();
 		scoreThreshs = new ArrayList<Integer>();
 		numLevels = 12;
+		tooltips = Tooltips.getInstance();
 
 		// explicitly define scoreMult levels
 		scoreMults.add(0);
@@ -139,8 +142,7 @@ public class Level {
 	}
 	public boolean falcSpacer(){
 		if (falcTimer == null)
-			falcTimer = new PosTimer(randy.nextInt(15000-level*1500));
-//			falcTimer = new PosTimer(randy.nextInt(30000-level*1500));
+			falcTimer = new PosTimer(randy.nextInt(30000-level*1500));
 		return falcTimer.getTrigger();
 	}
 	public void nullTimer(Obs cougar){
@@ -173,7 +175,7 @@ public class Level {
 		}
 		else return true;
 	}
-
+	
 	public Integer getGridSpeed(){
 		return 2;
 	}
@@ -184,7 +186,7 @@ public class Level {
 		return level;
 	}
 	public Integer getRecentInterval(){
-		return recentInterval;
+		 return recentInterval;
 	}
 	public Integer getScoreMult(){
 		if (CougarLock.active) return 0;
@@ -194,7 +196,10 @@ public class Level {
 		return message;
 	}
 	public Integer getSpriteSpeed(){
-		return (int) (.47*Math.pow(3*level, 1.1	)) + 15;
+		if (Tooltips.currentTip == Tip.MOVE){
+			return 8;
+		}
+		else return (int) (.47*Math.pow(3*level, 1.1)) + 15;
 	}
 	public Integer getBackSpeed(){
 		return (int) (.55*Math.pow(level, 1.5))+ 25;

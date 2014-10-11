@@ -16,6 +16,7 @@ public class Slider {
 	private int blockSize;
 	private ArrayList<SliderBlock> blocks;
 	private PosTimer sAlph;
+	public static int sliderAlph;
 
 	private enum Dir {
 		UP, RIGHT, DOWN, LEFT;
@@ -56,34 +57,35 @@ public class Slider {
 		// SLIDER ALPHA
 		
 				if (sAlph == null || sAlph.getTrigger()){
-					sAlph = new PosTimer(1500);
+					sAlph = new PosTimer(750);
 				}
 				sAlph.update();
 				
 				double sRem = sAlph.getRemainingMillis();		
 				double sEla = sAlph.getElapsedMillis();
 				double sTot = sAlph.getTotalMillis();
-				int sAlphProp = (int) ((sRem > sTot/2) ?
+				sliderAlph = (int) ((sRem > sTot/2) ?
 						255* ( (sRem-(sTot/2)) / (sTot/2) ) :
 							255* ( (sEla-(sTot/2)) / (sTot/2) ));
-				if (sAlphProp > 255) sAlphProp = 255;
-				if (sAlphProp < 0) sAlphProp = 0;
-				sAlphProp /= 3;
+				if (sliderAlph > 255) sliderAlph = 255;
+				if (sliderAlph < 0) sliderAlph = 0;
+				sliderAlph /= 3;
 		
 		// SLIDER COLOUR BODY
 		int slideSlicer = 10;
 		int sliderSlices = boundX*2/slideSlicer;
 		int blockWidth = (int)(blockSize*(slideSlicer*.08));
 		int sliderCol = (fingerMove) ? Color.CYAN : Color.RED;
+		sliderAlph = (fingerMove) ? 200 : sliderAlph;
 		
 		for (int i = 0; i < slideSlicer ; i++){
-			g.drawRect(x-boundX+(blockSize/2)+(i*sliderSlices), y-boundY+(blockSize/2), blockWidth, boundY*2-(blockSize)+3, sliderCol, sAlphProp);
+			g.drawRect(x-boundX+(blockSize/2)+(i*sliderSlices), y-boundY+(blockSize/2), blockWidth, boundY*2-(blockSize)+3, sliderCol, sliderAlph);
 		}
 		
 
 		// SLIDER BLOCKS
 		for (int i = 0; i < blocks.size(); i++) {
-			blocks.get(i).draw(x, y, i);
+//			blocks.get(i).draw(x, y, i);
 		}
 	}	
 

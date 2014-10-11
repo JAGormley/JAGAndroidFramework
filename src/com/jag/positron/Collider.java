@@ -6,6 +6,7 @@ import java.util.Random;
 import android.graphics.Color;
 
 import com.jag.framework.Graphics;
+import com.jag.positron.Tooltips.Tip;
 
 public class Collider {
 	public ArrayList<Particle> parts;	
@@ -46,10 +47,12 @@ public class Collider {
 		if (charged)
 			coil.updateAndDraw(charged, lazer);
 		//		coil.draw();
-		for (Particle p: parts){
-			if (!CougarLock.starting)
-				p.move();
-			p.draw();
+		if (!(Tooltips.currentTip == Tip.MOVE)){
+			for (Particle p: parts){
+				if (!CougarLock.starting)
+					p.move();
+				p.draw();
+			}
 		}
 
 		if (!charged)

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.SystemClock;
 
 import com.jag.framework.Graphics;
+import com.jag.positron.Tooltips.Tip;
 
 public class Coil {
 
@@ -154,7 +155,7 @@ public class Coil {
 		for (Strand s : strands){
 			int boltCol = Color.CYAN;
 
-			if (!lazer && !collider.getDeath() && !CougarLock.active && !strike){
+			if (!lazer && !collider.getDeath() && !CougarLock.active && !strike && !(Tooltips.currentTip == Tip.MOVE)){
 				if (charged)
 					//					boltAlph = bAlpha;
 					boltAlph = (boltAlph<0) ? 0 : boltAlph;
@@ -170,7 +171,7 @@ public class Coil {
 			}
 
 			// COIL CONTACT POINTS
-			if (!charged && !CougarLock.active) {
+			if (!charged && !CougarLock.active && !(Tooltips.currentTip == Tip.MOVE)) {
 				g.drawCircFill(s.outer.x, s.outer.y, 2, Color.MAGENTA, 200);
 			}
 

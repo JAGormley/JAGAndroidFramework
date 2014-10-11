@@ -61,19 +61,19 @@ public class AndroidGraphics implements Graphics {
 		this.paint3 = new Paint();
 		this.paint4 = new Paint();
 		this.paint5 = new Paint();
-		
-		
+
+
 		pointPaint = new Paint();
 		newPaint = new Paint();
 		newPaint.setColor(Color.CYAN);
 		newPaint.setStrokeWidth(4);
 		newPaint.setAlpha(255);
 		newPaint.setStyle(Style.STROKE);
-		
+
 		pnt = new Paint();
 		pnt.setStyle(Style.STROKE);
 		pnt.setStrokeWidth(3);
-		
+
 		yepAth = new Path();
 		this.lg = new LinearGradient(400, 1100, 400,
 				950, Color.argb(100, 0, 255, 255), Color.alpha(0),
@@ -173,6 +173,22 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
 	}
 
+	public void drawArrow(int x, int y, int size, int color, int alpha, String dir) throws Exception{
+		if (dir == "up"){
+			drawRect(x, y, 10, 75, color, alpha);
+		}
+		else if (dir == "down"){
+
+		}
+		else if (dir == "left"){
+
+		}
+		else if (dir == "right"){
+
+		}
+		else throw new Exception("direction not recognized dum dum");
+	}
+
 	@Override
 	public void drawRect(int x, int y, int width, int height, int color, int alpha) {
 
@@ -195,7 +211,7 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawCircle(cx, cy, radius, paint3);
 
 	}
-	
+
 	public void drawOval(float left, float top, float right, float bottom, int color, int alpha){
 
 		pnt.setColor(color);
@@ -204,7 +220,7 @@ public class AndroidGraphics implements Graphics {
 		rect.set(left, top, right, bottom);
 		canvas.drawOval(rect, pnt);
 	}
-	
+
 
 	public void drawCircFill(float cx,float cy,float radius,int color, int alpha, Paint p) {
 		p.setColor(color);
@@ -338,7 +354,7 @@ public class AndroidGraphics implements Graphics {
 
 		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, null);       
 	}
-	
+
 	public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, int alph, int origCol, int replCol){
 		srcRect.left = srcX;
 		srcRect.top = srcY;
@@ -349,7 +365,7 @@ public class AndroidGraphics implements Graphics {
 		dstRect.top = y;
 		dstRect.right = x + width;
 		dstRect.bottom = y + height;  
-		
+
 		Paint p = null;
 		ColorFilter filter = null;
 		p = new Paint(origCol);
@@ -358,7 +374,7 @@ public class AndroidGraphics implements Graphics {
 		p.setAlpha(alph);
 
 		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, p);   
-		
+
 	}
 
 	public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, int alpha){
@@ -446,7 +462,7 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawPath(yepAth, newPaint);
 		yepAth.reset();
 	}
-	
+
 	public void drawBoltPath(ArrayList<ArrayList<Integer>> coords, int points, int alpha){
 		yepAth.moveTo(coords.get(0).get(0), coords.get(0).get(1));
 		newPaint.setAlpha(alpha);
@@ -459,7 +475,7 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawPath(yepAth, newPaint);
 		yepAth.reset();
 	}
-	
+
 	public void drawPointBoltPath(ArrayList<Coil.Point> points, int ptNum, 
 			int alpha, int color, int strokeWidth, boolean charged, boolean strike){
 		yepAth.moveTo(points.get(0).x, points.get(0).y);
@@ -469,18 +485,18 @@ public class AndroidGraphics implements Graphics {
 				yepAth.moveTo(points.get(i).x, points.get(i).y);
 			yepAth.lineTo(points.get(i).x, points.get(i).y);			
 		}
-		
+
 		pointPaint.setColor(color);
 		pointPaint.setStrokeWidth(strokeWidth);
 		pointPaint.setStyle(Style.STROKE);
-		
+
 		if (charged && !strike){			
-//			System.out.println(alpha);
+			//			System.out.println(alpha);
 			this.lg = new LinearGradient(400, 1100, 400,
 					950, Color.argb(alpha, 0, 255, 255), Color.alpha(0),
 					android.graphics.Shader.TileMode.CLAMP);
 			pointPaint.setShader(lg);			
-			
+
 			// for backgroundline
 			if (strokeWidth > 4){				
 				this.lg2 = new LinearGradient(400, 1100, 400,
@@ -493,12 +509,12 @@ public class AndroidGraphics implements Graphics {
 			pointPaint.setAlpha(alpha);
 		}
 		else pointPaint.setShader(null);
-		
+
 		canvas.drawPath(yepAth, pointPaint);
 		yepAth.reset();
-		
+
 	}	
-	
+
 
 	@SuppressLint("NewApi")
 	@Override
@@ -523,7 +539,7 @@ public class AndroidGraphics implements Graphics {
 		canvas.drawBitmap(bit, x, y, p);
 
 	}
-	
+
 	public void drawColImage(Bitmap bit, int x, int y, int alph, int origCol, int replCol) {
 		Paint p = null;
 		ColorFilter filter = null;

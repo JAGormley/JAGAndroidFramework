@@ -28,6 +28,7 @@ import com.jag.framework.Input.TouchEvent;
 import com.jag.framework.Screen;
 import com.jag.positron.Coil.Point;
 //import com.jag.positron.Tutorial.TutState;
+import com.jag.positron.Tooltips.Tip;
 
 public class GameScreen extends Screen {
 	enum GameState {
@@ -54,6 +55,7 @@ public class GameScreen extends Screen {
 	public Particle pcl;
 
 	Paint paint, paint2, paint3, paint4;
+	public Paint cPaint;
 	Image fore, rings1, rings2, base1, base2, bolt,
 	lightningLineImage;
 
@@ -111,6 +113,7 @@ public class GameScreen extends Screen {
 	public Collider collider;
 	public Level level;
 	public CougarLock cLock;
+	public Tooltips tooltips;
 	public int tempyScore;
 	public boolean newGridPiece;
 	public int gridPieceCount;
@@ -157,6 +160,10 @@ public class GameScreen extends Screen {
 
 	private boolean obsDeath;
 
+	private float current;
+
+	private float previous;
+
 
 	// private PosTriangle posT;
 
@@ -197,7 +204,9 @@ public class GameScreen extends Screen {
 		slider = Slider.getInstance();
 		mag = Magnet.getInstance();
 		level = Level.getInstance();
-
+		tooltips = Tooltips.getInstance();
+//		tooltips.activate(Tip.MOVE);
+		
 		lg = new LinearGradient(sh / 2, -(sh / 12), sh / 2,
 				(float) (sh * .033), Color.BLUE, Color.alpha(0),
 				android.graphics.Shader.TileMode.CLAMP);
@@ -215,7 +224,7 @@ public class GameScreen extends Screen {
 		paint2.setColor(Color.RED);
 		paint2.setTypeface(Assets.font);
 		paint2.setTextSize(Math.round(sh * .027));
-		paint2.setTextAlign(Paint.Align.CENTER);
+		paint2.setTextAlign(Paint.Align.LEFT);
 
 		paint3 = new Paint();
 		paint3.setTypeface(Assets.font);
@@ -294,6 +303,12 @@ public class GameScreen extends Screen {
 		tPaint.setTextSize(Math.round(sh * .033));
 		tPaint.setTextAlign(Paint.Align.CENTER);
 		tPaint.setColor(Color.MAGENTA);
+
+		cPaint = new Paint();
+		cPaint.setTypeface(Assets.font);
+		cPaint.setTextSize(Math.round(sh * .066));
+		cPaint.setTextAlign(Paint.Align.CENTER);
+		cPaint.setColor(Color.MAGENTA);
 
 		freezeScorePaint = new Paint();
 		freezeScorePaint.setTypeface(Assets.font);
@@ -414,27 +429,14 @@ public class GameScreen extends Screen {
 			TouchEvent event = touchEvents.get(i);
 			fingerMove = false;
 
-			if ((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN)
+			if (((event.type == TouchEvent.TOUCH_DRAGGED || event.type == TouchEvent.TOUCH_DOWN))
 					&& currentTC && event.y < Coil.origin.y) {
 				int tcBounds = Assets.coug1.getHeight();
 				if (event.y >= tc.y-tcBounds 
 						&& event.y <= tc.y+tcBounds
 						&& event.x >= tc.x-tcBounds
 						&& event.x <= tc.x+tcBounds){
-					Paint cPaint = new Paint();
-					cPaint.setTypeface(Assets.font);
-					cPaint.setTextSize(Math.round(sh * .066));
-					cPaint.setTextAlign(Paint.Align.CENTER);
-					cPaint.setColor(Color.MAGENTA);
-					score+=level.getScoreMult()*10;
-					cStrings.add(new ShakeString(graph, "+"+level.getScoreMult()*10, tc.x, tc.y, cPaint));
-					tcDeath = true;
-					tcx = tc.x;
-					tcy = tc.y;
-					tc = null;
-					Assets.TCdeath.play(100);
-					Assets.tcDrone.stop();
-					currentTC = false;
+					obsDeath("c");
 				}
 			}
 
@@ -468,6 +470,7 @@ public class GameScreen extends Screen {
 		// CHECKS AND UPDAteS:
 
 		level.update(score, scoreReset);
+		tooltips.update();
 
 		//		System.out.println("mult: "+level.getScoreMult());
 		//		System.out.println("level: "+level.getLevel());
@@ -520,7 +523,7 @@ public class GameScreen extends Screen {
 				cLock.setStartPos(tcx, tcy);
 				cLock.setStartup(true);
 				recent = true;
-				tg = null;
+//				tg = null;
 				tc = null;
 				currentTG = false;
 				Assets.tcDrone.stop();
@@ -542,7 +545,7 @@ public class GameScreen extends Screen {
 
 		if (tg != null) {
 			if (tg.getY() - tg.getSize() < (screenheight / 2 - (int) Math
-					.round(sh * .166))) {
+					.round(sh * .166)) || scoreReset || cLock.getActive()) {
 				tgDeath = true;
 				tgTemp = tg;
 				tg = null;
@@ -665,7 +668,7 @@ public class GameScreen extends Screen {
 				topFadeFinal = null;
 				// Assets.tcDrone.pause();
 				tLock = null;
-				tg = null;
+//				tg = null;
 				currentTC = false;
 				currentTG = false;
 				Assets.gridDrone.stop();
@@ -682,7 +685,7 @@ public class GameScreen extends Screen {
 				freezeDur = 0;
 				teeth = false;
 
-				//				System.out.println("case1");
+								System.out.println("case1");
 			}
 
 			// COUGARLOCK
@@ -693,7 +696,7 @@ public class GameScreen extends Screen {
 
 			else if (p.isVisible() && !p.wayback && !freeze && currentTG
 					&& p.getY() > tg.getY() - tg.getSize() && !exitCases) {
-				//				System.out.println("yes3");
+								System.out.println("yes3");
 				p.setY((int) ((tg.getY() - tg.getSize()) - Math
 						.round(sh * .017)));
 				// if (currentTG){
@@ -722,11 +725,11 @@ public class GameScreen extends Screen {
 				p.update(level.getAccMod());
 				newPiece = false;
 
-				//				 System.out.println("yes4");
+								 System.out.println("yes4");
 			}
 
 			else if (p.wayback && collider.isLazer() && !exitCases) {
-				//				System.out.println("wb1");
+								System.out.println("wb1");
 
 				tempMult = level.getScoreMult();
 
@@ -756,7 +759,7 @@ public class GameScreen extends Screen {
 			else if (p.isVisible() && p.wayback && !freeze
 					&& !exitCases && !newPiece && !topFreeze) {
 				p.updateback();
-				//				System.out.println("wb2");
+								System.out.println("wb2");
 				freeze = true;
 
 				collider.checkCharged(p.x, p.y, scene.getLine());
@@ -765,19 +768,19 @@ public class GameScreen extends Screen {
 					killx = p.x;
 					killy = p.y;
 				}
-				//								 System.out.println("yes7");
+												 System.out.println("yes7");
 			}
 
 			else if (p.isVisible() && freeze && !exitCases && p.wayback) {
 				p.updateback();
-				//				System.out.println("wb3");
+								System.out.println("wb3");
 				collider.checkCharged(p.x, p.y, scene.getLine());
 				if (collider.isLazer()){
 					resetObs();
 					killx = p.x;
 					killy = p.y;
 				}
-				//								 System.out.println("yes7b");
+												 System.out.println("yes7b");
 			}
 
 			else if (p.y < Math.round(sh * .008)) {
@@ -814,7 +817,7 @@ public class GameScreen extends Screen {
 			// FINAL
 			else if (!exitCases
 					&& p.y >= p.getGenPoint() - Math.round(sh * .012)
-					&& !p.fadeIn() && p.wayback) {
+					&& p.wayback) {
 				killx = p.x;
 				killy = p.y;
 				if (postScore < score) {
@@ -825,7 +828,7 @@ public class GameScreen extends Screen {
 				System.out.println("case10");
 				tc = null;
 				Assets.tcDrone.pause();
-				tg = null;
+//				tg = null;
 				setPieces(new ArrayList<Pieces>());
 				Assets.failSound.play(100);
 				currentTC = false;
@@ -949,7 +952,7 @@ public class GameScreen extends Screen {
 		tempyScore = score;
 		tc = null;
 		Assets.tcDrone.pause();
-		tg = null;
+//		tg = null;
 		setPieces(new ArrayList<Pieces>());
 		Assets.failSound.play(150);
 		currentTC = false;
@@ -1069,6 +1072,7 @@ public class GameScreen extends Screen {
 				slider.drawUpdate(fingerx, (int)(sh*.951), fingerMove);
 
 			if (ControlPanel.framerate){
+
 				int countTime = 500;
 				if (frameTimer == null || frameTimer.getTrigger()){
 					frames = frameCount*(1000/countTime);
@@ -1321,6 +1325,7 @@ public class GameScreen extends Screen {
 				}
 			}
 			// RUN COLLIDER UPDATE
+			
 			collider.update();
 
 
@@ -1372,25 +1377,13 @@ public class GameScreen extends Screen {
 				}
 			if ((freeze || cLock.getActive() || scoreReset) && pts.size() != 0) {
 				obsDeath("f");
+				//				obsDeath("g");
 			}
 
 			// LAUNCHERS
-			int launchCol = 0;
-			if (topFreeze)
-				launchCol = Color.RED;
-			if (!topFreeze)
-				launchCol = Color.GRAY;
-
-
 			if (!topFreeze) {
 				if (baseGrowth <= Math.round(sw * .16))
 					baseGrowth += Math.round(sw * .043);
-
-				int buttonCol = 0;
-				if (!topFreeze)
-					buttonCol = Color.BLUE;
-				if (topFreeze)
-					buttonCol = Color.YELLOW;
 
 			}
 
@@ -1455,14 +1448,15 @@ public class GameScreen extends Screen {
 			if (!scoreReset)
 				mag.updateAndDraw(magSprite);
 
-
+			tooltips.draw();
+			
 			// SHAKERS 2
 			updateShakeStrings(sStrings, true);
 			updateShakeStrings(lStrings, false);
 			updateShakeStrings(tStrings, false);
 			updateShakeStrings(cStrings, false);
 			// high holder
-			if (!cLock.getActive() && !scoreReset && !collider.charged){
+			if (!cLock.getActive() && !scoreReset && !collider.charged && !(Tooltips.currentTip == Tip.MOVE)){
 				paint4.setAlpha(100);	
 				g.drawString("high " + String.valueOf(postScore),
 						sw / 2, Coil.origin.y + 85, paint4);
@@ -1480,8 +1474,6 @@ public class GameScreen extends Screen {
 			drawPausedUI();
 		if (state == GameState.GameOver)
 			drawGameOverUI();
-
-
 	}
 
 	void failCircle(Graphics g){
@@ -1640,13 +1632,24 @@ public class GameScreen extends Screen {
 
 		// COUGAR
 		if (obsName == "c"){
+			if (!freeze){
+				score+=level.getScoreMult()*10;
+				cStrings.add(new ShakeString(graph, "+"+level.getScoreMult()*10, tc.x, tc.y, cPaint));
+				Assets.TCdeath.play(100);
+			}
 			tcDeath = true;
+			tcx = tc.x;
+			tcy = tc.y;
+			tc = null;
+			currentTC = false;
+			Assets.tcDrone.stop();
 		}
 
 
 		// GRID
 		else if (obsName == "g"){
-			tgDeath = true;
+			if (currentTG)
+				tgDeath = true;
 		}
 
 
@@ -1654,21 +1657,17 @@ public class GameScreen extends Screen {
 		else if (obsName == "f"){
 			obsDeath = true;
 			if (fDeathTimer == null)
-				fDeathTimer = new PosTimer(510);
+				fDeathTimer = new PosTimer(250);
 			else fDeathTimer.update();
 
-			int falcAlph = (int) (fDeathTimer.getRemainingMillis()/2);
-			falcAlph = (falcAlph < 0) ? 0 : falcAlph;
-			
-			System.out.println("alpha: "+falcAlph);
-			
+			int falcAlph = (int) (ControlPanel.alphize(fDeathTimer.getRemainingMillis(), 250));
 
 			for (PosTriangle posT : pts) {
-				int greaterAlph =  280 - (posT.getX() / 3);
+				int greaterAlph =  falcAlph - (255 - (280 - (posT.getX() / 3)));
 				greaterAlph = (greaterAlph < 0) ? 0 : greaterAlph;
-				int lessAlph = (posT.getX() / 3) - 249;
+				int lessAlph = falcAlph - (255 - ((posT.getX() / 3) - 249));
 				lessAlph = (lessAlph < 0) ? 0 : lessAlph;
-				
+
 				if (!posT.getSide()) {
 					if (posT.getX() > Math.round(sh * .083)){
 						g.drawImage(Assets.eagleb, posT.getX() - Assets.eagleb.getWidth()/2, 
@@ -1690,6 +1689,8 @@ public class GameScreen extends Screen {
 						g.drawImage(Assets.eagle, posT.getX() - Assets.eagle.getWidth()/2, 
 								posT.getHeight() - Assets.eagle.getHeight()/2, falcAlph);
 			}
+			
+			
 
 			if (fDeathTimer.getTrigger()){
 				resetObs();
