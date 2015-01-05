@@ -1123,7 +1123,7 @@
 //
 //					g.drawImage(Assets.neg, p.x - Assets.neg.getWidth()/2,
 //							p.y - Assets.neg.getHeight()/2, paintSPRITE);
-//					// TSTATE2
+					// TSTATE2
 //					if (TState == TutState.Two && !p.wayback && !TwoB){
 //						Paint painty = new Paint();
 //						painty.setTypeface(Assets.font);

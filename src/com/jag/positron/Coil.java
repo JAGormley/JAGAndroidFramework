@@ -37,6 +37,7 @@ public class Coil {
 	public static int bAlpha;
 	public int skw;
 	public int skh;
+	private PosTimer fadeIn;
 
 	public Coil(Graphics g, Collider collider){
 		this.g = g;
@@ -60,6 +61,12 @@ public class Coil {
 	}	
 
 	public void updateAndDraw(boolean charged, boolean lazer){
+		if (fadeIn == null && !(Tooltips.currentTip == Tip.MOVE)){
+			fadeIn = new PosTimer(500);
+		}
+		else if (fadeIn != null&&!fadeIn.trigger){
+			fadeIn.update();
+		}
 		nextChargedBolt.update();
 		nextChargedBolt2.update();
 
@@ -85,20 +92,6 @@ public class Coil {
 				strands.clear();
 				strandClear = true;
 			}
-			//
-			//			//			//SET SIZE OF CHARGED STRANDARRAY
-			//			while (strands.size() < 5 && charged && nextChargedBolt.getTrigger()){
-			//				//				System.out.println("strands: "+ strands.size());
-			//				strands.add(new Strand());
-			//				nextChargedBolt = new PosTimer(rand.nextInt(300));
-			//				//				strandClear = false;
-			//			}
-			//			while (strands.size() < 5 && charged && nextChargedBolt2.getTrigger()){
-			//				//				System.out.println("strands: "+ strands.size());
-			//				strands.add(new Strand());
-			//				nextChargedBolt2 = new PosTimer(rand.nextInt(800));
-			//				//				strandClear = false;
-			//			}
 		}
 
 		// STRIKE NUMBER
@@ -135,8 +128,13 @@ public class Coil {
 	}
 
 	public void draw(boolean charged, boolean lazer){
+
+		if (!charged)
+			g.drawLine(sw/2, sh+5, sw/2, origin.y, Color.GRAY, 255, 3);
 		bAlpha = 0;
-		int boltAlph = charged ? 180 : 230;
+		int boltAlph = (fadeIn != null && !fadeIn.trigger) ? 
+				ControlPanel.alphize(fadeIn.getElapsedMillis(), fadeIn.getTotalMillis()) 
+				: 220;
 
 		if (strike){
 			if (fadeTimer == null){
@@ -149,16 +147,11 @@ public class Coil {
 			bAlpha = (boltTimer < 200) ? boltTimer : 220;
 			bAlpha = (bAlpha < 0) ? 0 : bAlpha;
 		}
-		
-
-
 		for (Strand s : strands){
 			int boltCol = Color.CYAN;
 
 			if (!lazer && !collider.getDeath() && !CougarLock.active && !strike && !(Tooltips.currentTip == Tip.MOVE)){
-				if (charged)
-					//					boltAlph = bAlpha;
-					boltAlph = (boltAlph<0) ? 0 : boltAlph;
+				boltAlph = (boltAlph<0) ? 0 : boltAlph;
 				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), boltAlph, Color.BLUE, 7, charged, strike);
 				g.drawPointBoltPath(s.getPoints(), s.getPoints().size(), boltAlph, boltCol, 4, charged, strike);
 			}			
@@ -214,7 +207,7 @@ public class Coil {
 			g.drawScaledImage(Assets.skull, (int)(sw/2-skw*skullTiplyer/2)+shiftsterX, (int) ((origin.y - skh*skullTiplyer/2)+(skh*skullTiplyer/3))+shiftsterY, (int)(skw*skullTiplyer), (int)(skh*skullTiplyer), 0, 0, skw, skh);
 		}
 	}
-	
+
 	public int skullGlassesX(boolean dir){
 		if (dir)
 			return (int) (origin.x+skw*(skullTiplyer/2)/6);
@@ -223,8 +216,8 @@ public class Coil {
 
 	public void setStrike(int x, int y)
 	{
-//		if (strikePoint != null)
-//		System.out.println("x: "+x+" sX: "+ strikePoint.x);
+		//		if (strikePoint != null)
+		//		System.out.println("x: "+x+" sX: "+ strikePoint.x);
 		if (!strike || (strikePoint.x != x && strikePoint.y != y+Assets.pos.getHeight()/2)){
 			strike = true;		
 			strikePoint = new Point(x, y+Assets.pos.getHeight()/2);
@@ -259,8 +252,7 @@ public class Coil {
 		private double chargedRadius;
 		private int strandNum;
 		private Point boltOrigin;
-		
-		
+
 
 		private Strand(){
 			points = new ArrayList<Point>();
@@ -351,13 +343,7 @@ public class Coil {
 				// STRIKE STRANDS
 				else if (strike && points.size() < pointsPerLine){
 
-					degs = getStrikeRadian();
-
-					// YMULT FOR HORIZ STRIKE
-					//					if (degs < .2 || > 2.8) {
-					//						
-					//					}
-					//					else 					
+					degs = getStrikeRadian();				
 
 					xMult = randstrom.nextInt(mulTensity);							
 
@@ -454,23 +440,10 @@ public class Coil {
 		}
 
 
-		private double getStrikeRadian() {	
-			Random randy = new Random();
+		private double getStrikeRadian() {
 
 			double deg = Math.atan2(boltOrigin.y-strikePoint.y, boltOrigin.x-strikePoint.x);
 			return deg;
-		}
-
-		private Point getBoltOrigin(){
-			Random randy = new Random();
-			if (boltOrigin == null) {
-				strandNum = randy.nextInt(parts.size());
-				int pointX = (int) parts.get(strandNum).x;	
-				int pointY = (int) parts.get(strandNum).y;
-
-				boltOrigin = new Point(pointX, pointY);				
-			}
-			return boltOrigin;
 		}
 	}
 

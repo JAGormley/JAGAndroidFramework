@@ -52,8 +52,5 @@ public class TextFader {
 	
 	public boolean isAlive(){
 		return alive;
-	}
-	
-
-	
+	}	
 }

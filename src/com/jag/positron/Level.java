@@ -45,7 +45,7 @@ public class Level {
 		sh = GameScreen.screenheight;
 		randy = new Random();
 		level = 1;
-		prevLevel = level;
+		prevLevel = level-1;
 		scoreMults = new ArrayList<Integer>();
 		levelSpriteNumber = new ArrayList<Integer>();
 		scoreThreshs = new ArrayList<Integer>();
@@ -80,7 +80,6 @@ public class Level {
 	}
 
 	public void update(int score, boolean scoreReset){
-		//		System.out.println(level);
 		if (!scoreReset){
 			if (cougTimer != null){
 				cougTimer.update();
@@ -98,7 +97,6 @@ public class Level {
 		for (int i = 0; i < scoreThreshs.size()-1; i++) {
 			if (score >= scoreThreshs.get(i) && score < scoreThreshs.get(i+1)){
 				level = i+1;
-				//				System.out.println(level);
 			}
 		}
 
@@ -175,7 +173,7 @@ public class Level {
 		}
 		else return true;
 	}
-	
+
 	public Integer getGridSpeed(){
 		return 2;
 	}
@@ -186,7 +184,10 @@ public class Level {
 		return level;
 	}
 	public Integer getRecentInterval(){
-		 return recentInterval;
+		if (tooltips.active && Tooltips.currentTip == Tip.POINT){
+			return 100;
+		}
+		else return recentInterval;
 	}
 	public Integer getScoreMult(){
 		if (CougarLock.active) return 0;
@@ -196,13 +197,19 @@ public class Level {
 		return message;
 	}
 	public Integer getSpriteSpeed(){
-		if (Tooltips.currentTip == Tip.MOVE){
+		if (tooltips.active && Tooltips.currentTip == Tip.POINT){
 			return 8;
 		}
 		else return (int) (.47*Math.pow(3*level, 1.1)) + 15;
 	}
 	public Integer getBackSpeed(){
-		return (int) (.55*Math.pow(level, 1.5))+ 25;
+		if (tooltips.active && Tooltips.currentTip == Tip.POINT){
+			return 70;
+		}
+		else if (tooltips.active && Tooltips.currentTip == Tip.LIGHTNING){
+			return 7;
+		}
+		else return (int) (.55*Math.pow(level, 1.5))+ 25;
 	}
 	public Integer getAccMod(){
 		return (12-level+1 < 3) ? 3 : 12-level+1;

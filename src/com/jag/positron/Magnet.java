@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.graphics.Color;
 
 import com.jag.framework.Graphics;
+import com.jag.positron.Tooltips.Tip;
 
 public class Magnet {
 	public static Magnet theMagnet;
@@ -31,6 +32,7 @@ public class Magnet {
 	}	
 
 	public void updateAndDraw(int spriteY){
+		if (!(Tooltips.currentTip == Tip.MOVE))
 		if (speedTimer == null || speedTimer.getTrigger()){
 			speedTimer = new PosTimer(3000);
 		}
@@ -90,5 +92,9 @@ public class Magnet {
 	public void scoreLight(int alph) {
 		light = alph;
 
+	}
+
+	public void reset() {
+		theMagnet = new Magnet();		
 	}
 }

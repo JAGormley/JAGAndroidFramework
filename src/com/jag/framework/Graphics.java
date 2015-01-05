@@ -76,6 +76,8 @@ public interface Graphics {
 
 	public void drawCircOut(float cx,float cy,float radius,int color, int stroke, int alpha);
 
+	public void drawArrow(boolean dir, int x, int y, int length, int width, int color, int alph);
+	
 	public void drawImage(Image Image, int x, int y, int alpha);
 	
 	public void drawImage(Image Image, int x, int y, Paint p);

@@ -39,9 +39,6 @@ public class PosTriangle {
 			path.offset(0, height-1200);
 			x = 1250;
 		}
-
-
-
 	}
 
 	public void moveTri(){

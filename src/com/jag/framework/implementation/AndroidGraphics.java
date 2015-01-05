@@ -18,6 +18,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Path.Direction;
 import android.graphics.Point;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
@@ -45,8 +46,11 @@ public class AndroidGraphics implements Graphics {
 	LinearGradient lg;
 	LinearGradient lg2;
 	private Path yepAth;
+	private Path arrowPath;
 	private Paint newPaint;
 	private Paint pointPaint;
+	private Paint pathPaint1;
+	private Paint pathPaint2;
 	private Paint pnt;
 	private RectF rect;
 
@@ -61,7 +65,10 @@ public class AndroidGraphics implements Graphics {
 		this.paint3 = new Paint();
 		this.paint4 = new Paint();
 		this.paint5 = new Paint();
-
+		this.pathPaint1 = new Paint();
+		this.pathPaint2 = new Paint();
+		this.pathPaint2.setStyle(Style.FILL_AND_STROKE);
+		pathPaint2.setStrokeWidth(10);
 
 		pointPaint = new Paint();
 		newPaint = new Paint();
@@ -73,6 +80,8 @@ public class AndroidGraphics implements Graphics {
 		pnt = new Paint();
 		pnt.setStyle(Style.STROKE);
 		pnt.setStrokeWidth(3);
+
+		arrowPath = new Path();	
 
 		yepAth = new Path();
 		this.lg = new LinearGradient(400, 1100, 400,
@@ -366,14 +375,14 @@ public class AndroidGraphics implements Graphics {
 		dstRect.right = x + width;
 		dstRect.bottom = y + height;  
 
-		Paint p = null;
+		//		Paint p = null;
 		ColorFilter filter = null;
-		p = new Paint(origCol);
+		pathPaint1 = new Paint(origCol);
 		filter = new LightingColorFilter(origCol, replCol); 	
-		p.setColorFilter(filter);	
-		p.setAlpha(alph);
+		pathPaint1.setColorFilter(filter);	
+		pathPaint1.setAlpha(alph);
 
-		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, p);   
+		canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, pathPaint1);   
 
 	}
 
@@ -434,8 +443,6 @@ public class AndroidGraphics implements Graphics {
 
 		canvas.drawLine(x, y, x2, y2, p);	
 	}
-
-
 	/*
 	 * (non-Javadoc)
 	 * @see com.jag.framework.Graphics#drawPath(java.util.ArrayList)
@@ -445,7 +452,7 @@ public class AndroidGraphics implements Graphics {
 
 	@Override
 	public void drawPath(ArrayList<ArrayList<Integer>> coords, int points){
-		Paint newPaint = new Paint();
+		//		pathPaint2 = new Paint();
 		yepAth.moveTo(coords.get(0).get(0), coords.get(0).get(1));
 
 		for (int i = 1 ; i < coords.size(); i++){
@@ -461,6 +468,31 @@ public class AndroidGraphics implements Graphics {
 
 		canvas.drawPath(yepAth, newPaint);
 		yepAth.reset();
+	}
+
+	public void drawArrow(boolean dir, int x, int y, int length, int width, int color, int alph){
+		if (dir){
+			drawRect(x-length, y+((50-width)/2), length, width, color, alph);
+			arrowPath.moveTo(x, y);
+			arrowPath.lineTo(x+50, y+25);
+			arrowPath.lineTo(x, y+50);
+			arrowPath.lineTo(x, y);
+			arrowPath.close();
+		}
+		else {
+			drawRect(x+100, y+((50-width)/2), length, width, color, alph);
+			arrowPath.moveTo(x+100, y);
+			arrowPath.lineTo(x+50, y+25);
+			arrowPath.lineTo(x+100, y+50);
+			arrowPath.lineTo(x+100, y);
+			arrowPath.close();
+		}
+
+		pathPaint2.setAlpha(255);
+		pathPaint2.setColor(Color.CYAN);
+		canvas.drawPath(arrowPath, pathPaint2);
+		arrowPath.reset();
+
 	}
 
 	public void drawBoltPath(ArrayList<ArrayList<Integer>> coords, int points, int alpha){
@@ -487,10 +519,11 @@ public class AndroidGraphics implements Graphics {
 		}
 
 		pointPaint.setColor(color);
+		pointPaint.setAlpha(alpha);
 		pointPaint.setStrokeWidth(strokeWidth);
 		pointPaint.setStyle(Style.STROKE);
 
-		if (charged && !strike){			
+		if (charged && !strike){		
 			//			System.out.println(alpha);
 			this.lg = new LinearGradient(400, 1100, 400,
 					950, Color.argb(alpha, 0, 255, 255), Color.alpha(0),

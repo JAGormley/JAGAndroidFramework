@@ -16,8 +16,7 @@ public class Collider {
 	private boolean set;
 	private boolean initialSide;
 	private PosTimer pt;
-	private boolean lazer;
-	private Bolt bolt;
+	public static boolean lazer;
 	private Coil coil;
 	private Graphics g;
 	private boolean chargeSwitch;
@@ -38,7 +37,6 @@ public class Collider {
 			float speed = rand.nextFloat()/10+.1f;
 			parts.add(new Particle(GameScreen.thisGame.getGraphics(), 25, speed, rand.nextFloat()*4	+ 1f, rand.nextFloat()*7+4));
 		}
-		bolt = new Bolt(g, this);
 		coil = new Coil(g, this);
 		chargeSwitch = false;
 	}
@@ -46,8 +44,7 @@ public class Collider {
 	public void update(){
 		if (charged)
 			coil.updateAndDraw(charged, lazer);
-		//		coil.draw();
-		if (!(Tooltips.currentTip == Tip.MOVE)){
+		if (!(Tooltips.currentTip == Tip.MOVE) && !Tooltips.pointStart()){
 			for (Particle p: parts){
 				if (!CougarLock.starting)
 					p.move();
@@ -167,7 +164,6 @@ public class Collider {
 				p.setLazer(coil.skullGlassesX(false), Coil.origin.y+skh/8);
 			else p.setLazer(coil.skullGlassesX(true), Coil.origin.y+skh/8);
 		}
-		//		bolt.strike(x, y+Assets.neg.getHeight()/2);
 		coil.setStrike(x,y);
 	}
 

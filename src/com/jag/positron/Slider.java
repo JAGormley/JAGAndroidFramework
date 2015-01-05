@@ -6,6 +6,7 @@ import android.graphics.Color;
 
 import com.jag.framework.Graphics;
 import com.jag.positron.Coil.Point;
+import com.jag.positron.Tooltips.Tip;
 
 public class Slider {
 	private static Slider theSlider;
@@ -76,7 +77,7 @@ public class Slider {
 		int sliderSlices = boundX*2/slideSlicer;
 		int blockWidth = (int)(blockSize*(slideSlicer*.08));
 		int sliderCol = (fingerMove) ? Color.CYAN : Color.RED;
-		sliderAlph = (fingerMove) ? 200 : sliderAlph;
+		sliderAlph = (fingerMove && Tooltips.currentTip != Tip.LIGHTNING) ? 200 : sliderAlph;
 		
 		for (int i = 0; i < slideSlicer ; i++){
 			g.drawRect(x-boundX+(blockSize/2)+(i*sliderSlices), y-boundY+(blockSize/2), blockWidth, boundY*2-(blockSize)+3, sliderCol, sliderAlph);

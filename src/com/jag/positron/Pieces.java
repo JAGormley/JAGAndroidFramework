@@ -161,9 +161,6 @@ public class Pieces {
 
 	public int fadeTimer(){
 		return alphize(shakey.timer.getElapsedMillis(), shakey.timer.getTotalMillis());
-		//		if (fadeTimer.getRemainingMillis() > 0)
-		//			return (int) (fadeTimer.getRemainingMillis());
-		//		else return 0;
 	}
 
 	public int getX() {
